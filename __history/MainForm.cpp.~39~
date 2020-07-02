@@ -19,7 +19,6 @@ GLdouble modelMatrix[16];
 GLdouble projMatrix[16];
 GLint viewport[4];
 GLdouble objx, objy, objz = 0;
-TPoint *targetArr = new TPoint[100];
 
 // ---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner) : TForm(Owner) {
@@ -57,15 +56,15 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	glEnable(GL_LIGHTING); // разрешаем работу с освещенностью
 	glEnable(GL_LIGHT0); // включаем источник света 0
 
-	String ch = (char *)(glGetString(GL_VENDOR));
-	String ch2 = (char *)(glGetString(GL_RENDERER));
-	RzGL_Vendor->Caption = ch + ", " + ch2;
-	RzGL_Version->Caption = ((char *) glGetString(GL_VERSION));
+	glViewport(0, 0, RzPanel1->Width, RzPanel1->Height);
+	RzGL_Vendor->Caption = (char *) glGetString(GL_VENDOR);
+	RzGL_Renderer->Caption = (char *) glGetString(GL_RENDERER);
+	RzGL_Version->Caption = (char *) glGetString(GL_VERSION);
 
-	// PosZoomX1 = -1;
-	// PosZoomX2 = -1;
-	// PosZoomY1 = -0.5;
-	// PosZoomY2 = -0.5;
+	PosZoomX1 = -1;
+	PosZoomX2 = -1;
+	PosZoomY1 = -0.5;
+	PosZoomY2 = -0.5;
 
 	Zoom = 1;
 
@@ -81,11 +80,11 @@ void __fastcall TForm1::FormDestroy(TObject *Sender) {
 void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 	int i = 0, j = 0;
 	float x = 0.0, y = 0.0, a = 0.0;
-	unsigned int Cl;
-	if (ColorDialog1->Color == 0) // Cl = ColorToRGB(clGreen);
-			Cl = RGB(55, 53, 74);
-	else
-		Cl = ColorToRGB(ColorDialog1->Color);
+	unsigned int Cl = 0;
+
+	// Cl=ColorToRGB(clTeal);
+	Cl = RGB(55, 53, 74);
+
 	glClearColor(double(LOBYTE(Cl)) / 255, double(HIBYTE(Cl)) / 255, double(LOBYTE(HIWORD(Cl))) / 255, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -94,15 +93,15 @@ void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 	PaintTarget();
 	SwapBuffers(dc1);
 }
-
 // ---------------------------------------------------------------------------
+
 void __fastcall TForm1::PaintGrid() {
 	const int nSec = 40;
 	int i = 0, j = 0;
 	float a = 0.0, x = 0.0, y = 0.0, k = 0.0, Cl = 0.0, ClMax = 0.0, ClMin = 0.0;
 	int n = 0;
 	n = 100;
-	glLineWidth(1);
+	glLineWidth(2);
 	MCGrid[0] = 1;
 	MCGrid[1] = 1;
 	MCGrid[2] = 1;
@@ -113,7 +112,7 @@ void __fastcall TForm1::PaintGrid() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_LINE_SMOOTH);
 
-	k = 2;
+	k = 1;
 
 	Cl = 0.15 * k; // * FGridOpacity;
 	ClMax = 0.25 * k; // * FGridOpacity;
@@ -153,7 +152,7 @@ void __fastcall TForm1::PaintGrid() {
 		a = 2 * Pi * i / j;
 		x = sin(a);
 		y = cos(a);
-		glVertex3f(x * 6. / 450, y * 6. / 450, 0.02);
+		glVertex3f(x * 6. / 400, y * 6. / 400, 0.02);
 		glVertex3f(x, y, 0.02);
 		glEnd();
 	}
@@ -171,12 +170,27 @@ void __fastcall TForm1::PaintTarget() {
 	glEnd();
 }
 
+void __fastcall TForm1::FormResize(TObject *Sender) {
+	InvalidateRect(hwnd1, 0, false);
+}
+
+// ---------------------------------------------------------------------------
+
 void __fastcall TForm1::InitViewProection(float x, float y, float dXX, float dYY) {
 	float tmpX = 0.0, tmpY = 0.0;
 	Diagonal = RzPanel1->Width / RzPanel1->Height;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-1.0 * Diagonal / Zoom, 1.0 * Diagonal / Zoom, -1.0 / Zoom, 1.0 / Zoom, -1.0, 1.0);
+	// tmpX = x * Zoom;
+	// tmpY = y * Zoom;
+	// tmpX = -(tmpX - dXX);
+	// tmpY = -(tmpY - dYY);
+	// DX = tmpX / Zoom;
+	// DY = tmpY / Zoom;
+	// glTranslatef(DX, DY, 0);
+	// glViewport(0, 0, RzPanel1->RzPanel1->Width, RzPanel1->RzPanel1->Height);
+	glMatrixMode(GL_MODELVIEW);
 }
 // ---------------------------------------------------------------------------
 
@@ -189,9 +203,9 @@ void __fastcall TForm1::FormMouseWheel(TObject *Sender, TShiftState Shift, int W
 	tmpY = Y / Zoom - DY / Zoom;
 
 	if (WheelDelta < 0)
-		Zoom = Zoom * 1.05;
+		Zoom = Zoom * 2;
 	else
-		Zoom = Zoom / 1.05;
+		Zoom = Zoom / 2;
 
 	InitViewProection(X, Y, tmpX, tmpY);
 	InvalidateRect(hwnd1, NULL, false);
@@ -225,24 +239,19 @@ void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, in
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
 	glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
-	gluUnProject(X, (float)viewport[3] - Y, 0, modelMatrix, projMatrix, viewport, &objx, &objy, &objz);
+	gluUnProject(X, (float)viewport[3]- Y, 0, modelMatrix, projMatrix, viewport, &objx, &objy, &objz);
 
-	D = sqrt(objy * objy + objx * objx) * 450;
-	Az = ArcTan2(objy, objx);
+	D = sqrt(objy * objy + objx * objx);
+	Az = ArcTan2( objy,  objx);
 
-	if (Az > 0)
+//	if (Az > 0)
 		Az = 180 / Pi * Az;
-	else
-		Az = 360 + (180 / Pi * Az);
+//	else
+//		Az = 360 + (180 / Pi * Az);
+// RzMapInfo->Caption = FloatToStr(objy) + " км   " + IntToStr(int(A)) + "\xB0" + "   ";
+	 RzMapInfo->Caption = FloatToStr(D * 400.0) + " км   " + IntToStr(int(Az)) + "\xB0" + "   ";
+	 Caption = FloatToStr(objx) + " X   " + FloatToStr(objy) + " y   ";
 
-	RzMapInfo->Caption = Format("%3.3f км,  %3.0f", ARRAYOFCONST((D, Az))) + " \xB0";
-
-}
-
-// ---------------------------------------------------------------------------
-void __fastcall TForm1::BtnUtilitiesClick(TObject *Sender) {
-	if (ColorDialog1->Execute()) {
-		InvalidateRect(hwnd1, 0, true);
-	}
+	// InvalidateRect(hwnd1, NULL, false);
 }
 // ---------------------------------------------------------------------------

@@ -57,10 +57,12 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	glEnable(GL_LIGHTING); // разрешаем работу с освещенностью
 	glEnable(GL_LIGHT0); // включаем источник света 0
 
+
 	String ch = (char *)(glGetString(GL_VENDOR));
 	String ch2 = (char *)(glGetString(GL_RENDERER));
 	RzGL_Vendor->Caption = ch + ", " + ch2;
 	RzGL_Version->Caption = ((char *) glGetString(GL_VERSION));
+
 
 	// PosZoomX1 = -1;
 	// PosZoomX2 = -1;
@@ -170,6 +172,12 @@ void __fastcall TForm1::PaintTarget() {
 	glVertex2f(tX, tY);
 	glEnd();
 }
+
+void __fastcall TForm1::FormResize(TObject *Sender) {
+	InvalidateRect(hwnd1, 0, false);
+}
+
+// ---------------------------------------------------------------------------
 
 void __fastcall TForm1::InitViewProection(float x, float y, float dXX, float dYY) {
 	float tmpX = 0.0, tmpY = 0.0;

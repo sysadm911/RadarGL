@@ -1,9 +1,9 @@
 object Form1: TForm1
-  Left = 411
+  Left = 0
   Top = 0
   Caption = 'RadarGL'
-  ClientHeight = 1004
-  ClientWidth = 960
+  ClientHeight = 657
+  ClientWidth = 1924
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,123 +11,88 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesigned
+  Position = poDesktopCenter
+  WindowState = wsMaximized
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnMouseWheel = FormMouseWheel
+  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
   object RzStatusBar1: TRzStatusBar
     Left = 0
-    Top = 985
-    Width = 960
+    Top = 638
+    Width = 1924
     Height = 19
     BorderInner = fsNone
     BorderOuter = fsNone
     BorderSides = [sdLeft, sdTop, sdRight, sdBottom]
     BorderWidth = 0
-    DoubleBuffered = True
-    ParentDoubleBuffered = False
     TabOrder = 0
     VisualStyle = vsGradient
-    ExplicitTop = 638
     ExplicitWidth = 611
     object RzGL_Vendor: TRzFieldStatus
-      Left = 380
-      Top = 0
-      Width = 432
-      Height = 19
-      Align = alLeft
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      FieldLabel = #1042#1080#1076#1077#1086#1082#1072#1088#1090#1072':'
-      FieldLabelColor = clGray
-      Alignment = taRightJustify
-      AutoSize = True
-      BlinkIntervalOff = 1000
-      BlinkIntervalOn = 1000
-      ExplicitLeft = 536
-      ExplicitWidth = 289
-    end
-    object RzGL_Version: TRzFieldStatus
-      Left = 812
-      Top = 0
-      Width = 133
-      Height = 19
-      Align = alLeft
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      FieldLabel = #1042#1077#1088#1089#1080#1103' OpenGL:'
-      FieldLabelColor = clGray
-      AutoSize = True
-      BlinkIntervalOff = 1000
-      BlinkIntervalOn = 1000
-      ExplicitLeft = 815
-    end
-    object RzClockStatus1: TRzClockStatus
-      Left = 233
-      Top = 0
-      Width = 147
-      Height = 19
-      Align = alLeft
-      Font.Charset = RUSSIAN_CHARSET
-      Font.Color = clBlack
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      Format = #1057#1077#1075#1086#1076#1085#1103': ddddd t'
-      Alignment = taCenter
-      AutoSize = True
-      BlinkColor = clGreen
-      BlinkIntervalOff = 1000
-      BlinkIntervalOn = 1000
-    end
-    object RzMapInfo: TRzFieldStatus
       Left = 0
       Top = 0
-      Width = 233
+      Width = 108
       Height = 19
-      FillColor = clSilver
-      ParentFillColor = False
       Align = alLeft
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clNavy
-      Font.Height = -11
+      Font.Color = clWindowText
+      Font.Height = -9
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
-      FieldLabel = #1044#1072#1083#1100#1085#1086#1089#1090#1100' '#1080' '#1072#1079#1080#1084#1091#1090':'
+      FieldLabel = 'GL_VENDOR:'
       FieldLabelColor = clGray
-      BlinkColor = clNavy
-      BlinkIntervalOff = 1000
-      BlinkIntervalOn = 1000
+      AutoSize = True
+    end
+    object RzGL_Renderer: TRzFieldStatus
+      Left = 108
+      Top = 0
+      Width = 119
+      Height = 19
+      Align = alLeft
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -9
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      FieldLabel = 'GL_RENDERER:'
+      FieldLabelColor = clGray
+      AutoSize = True
+      ExplicitLeft = 97
+    end
+    object RzGL_Version: TRzFieldStatus
+      Left = 227
+      Top = 0
+      Width = 112
+      Height = 19
+      Align = alLeft
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -9
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      FieldLabel = 'GL_VERSION:'
+      FieldLabelColor = clGray
+      AutoSize = True
+      ExplicitLeft = 205
     end
   end
   object RzToolbar1: TRzToolbar
     Left = 0
     Top = 0
-    Width = 960
+    Width = 1924
     Height = 29
-    AutoStyle = False
     Images = ImageList1
-    BorderColor = clBackground
     BorderInner = fsNone
-    BorderOuter = fsNone
+    BorderOuter = fsGroove
     BorderSides = [sdTop]
     BorderWidth = 0
-    Color = clFuchsia
     TabOrder = 1
-    VisualStyle = vsGradient
-    ExplicitTop = -8
+    ExplicitWidth = 611
     ToolbarControls = (
       BtnExecute
       RzSpacer1
@@ -143,7 +108,6 @@ object Form1: TForm1
       Top = 2
       Hint = 'Execute'
       DisabledIndex = 1
-      Flat = False
       ImageIndex = 0
       Caption = 'Execute'
     end
@@ -152,17 +116,14 @@ object Form1: TForm1
       Top = 2
       Hint = 'Utilities'
       DisabledIndex = 3
-      Flat = False
       ImageIndex = 2
       Caption = 'Utilities'
-      OnClick = BtnUtilitiesClick
     end
     object BtnPost: TRzToolButton
       Left = 70
       Top = 2
       Hint = 'Post'
       DisabledIndex = 5
-      Flat = False
       ImageIndex = 4
       Caption = 'Post'
     end
@@ -171,7 +132,6 @@ object Form1: TForm1
       Top = 2
       Hint = 'Refresh'
       DisabledIndex = 7
-      Flat = False
       ImageIndex = 6
       Caption = 'Refresh'
     end
@@ -180,7 +140,6 @@ object Form1: TForm1
       Top = 2
       Hint = 'Cancel'
       DisabledIndex = 9
-      Flat = False
       ImageIndex = 8
       Caption = 'Cancel'
     end
@@ -201,25 +160,50 @@ object Form1: TForm1
       Top = 2
     end
   end
-  object RzPanel1: TRzPanel
+  object RzSplitter1: TRzSplitter
     Left = 0
     Top = 29
-    Width = 960
-    Height = 956
-    Align = alLeft
-    BorderOuter = fsNone
-    BorderColor = clBlack
-    BorderHighlight = clBlack
-    BorderShadow = clBlack
-    Color = clBlack
-    DoubleBuffered = False
-    ParentDoubleBuffered = False
-    ParentShowHint = False
-    ShowHint = False
+    Width = 1924
+    Height = 609
+    Position = 938
+    Percent = 49
+    UsePercent = True
+    RealTimeDrag = True
+    HotSpotVisible = True
+    SplitterWidth = 7
+    Align = alClient
     TabOrder = 2
-    OnMouseMove = RzPanel1MouseMove
-    OnPaint = RzPanel1Paint
-    ExplicitHeight = 960
+    ExplicitWidth = 611
+    BarSize = (
+      938
+      0
+      945
+      609)
+    UpperLeftControls = (
+      RzPanel1)
+    LowerRightControls = (
+      RzPanel2)
+    object RzPanel1: TRzPanel
+      Left = 0
+      Top = 0
+      Width = 938
+      Height = 609
+      Align = alClient
+      BorderOuter = fsNone
+      TabOrder = 0
+      OnPaint = RzPanel1Paint
+      ExplicitWidth = 607
+    end
+    object RzPanel2: TRzPanel
+      Left = 0
+      Top = 0
+      Width = 979
+      Height = 609
+      Align = alClient
+      BorderOuter = fsNone
+      TabOrder = 0
+      ExplicitWidth = 0
+    end
   end
   object ImageList1: TImageList
     Left = 48
@@ -627,9 +611,5 @@ object Form1: TForm1
       E00FE00F981C981CE03FE03F00000000F01FF01F00010001F00FF00F00030003
       F807F80700070007F803F803981F981F00000000000000000000000000000000
       000000000000}
-  end
-  object ColorDialog1: TColorDialog
-    Left = 112
-    Top = 544
   end
 end

@@ -57,10 +57,12 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	glEnable(GL_LIGHTING); // разрешаем работу с освещенностью
 	glEnable(GL_LIGHT0); // включаем источник света 0
 
+
 	String ch = (char *)(glGetString(GL_VENDOR));
 	String ch2 = (char *)(glGetString(GL_RENDERER));
 	RzGL_Vendor->Caption = ch + ", " + ch2;
 	RzGL_Version->Caption = ((char *) glGetString(GL_VERSION));
+
 
 	// PosZoomX1 = -1;
 	// PosZoomX2 = -1;
@@ -94,8 +96,8 @@ void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 	PaintTarget();
 	SwapBuffers(dc1);
 }
-
 // ---------------------------------------------------------------------------
+
 void __fastcall TForm1::PaintGrid() {
 	const int nSec = 40;
 	int i = 0, j = 0;
@@ -153,7 +155,7 @@ void __fastcall TForm1::PaintGrid() {
 		a = 2 * Pi * i / j;
 		x = sin(a);
 		y = cos(a);
-		glVertex3f(x * 6. / 450, y * 6. / 450, 0.02);
+		glVertex3f(x * 6. / 400, y * 6. / 400, 0.02);
 		glVertex3f(x, y, 0.02);
 		glEnd();
 	}
@@ -171,12 +173,27 @@ void __fastcall TForm1::PaintTarget() {
 	glEnd();
 }
 
+void __fastcall TForm1::FormResize(TObject *Sender) {
+	InvalidateRect(hwnd1, 0, false);
+}
+
+// ---------------------------------------------------------------------------
+
 void __fastcall TForm1::InitViewProection(float x, float y, float dXX, float dYY) {
 	float tmpX = 0.0, tmpY = 0.0;
 	Diagonal = RzPanel1->Width / RzPanel1->Height;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-1.0 * Diagonal / Zoom, 1.0 * Diagonal / Zoom, -1.0 / Zoom, 1.0 / Zoom, -1.0, 1.0);
+	// tmpX = x * Zoom;
+	// tmpY = y * Zoom;
+	// tmpX = -(tmpX - dXX);
+	// tmpY = -(tmpY - dYY);
+	// DX = tmpX / Zoom;
+	// DY = tmpY / Zoom;
+	// glTranslatef(DX, DY, 0);
+	// glViewport(0, 0, RzPanel1->RzPanel1->Width, RzPanel1->RzPanel1->Height);
+	glMatrixMode(GL_MODELVIEW);
 }
 // ---------------------------------------------------------------------------
 
@@ -189,9 +206,9 @@ void __fastcall TForm1::FormMouseWheel(TObject *Sender, TShiftState Shift, int W
 	tmpY = Y / Zoom - DY / Zoom;
 
 	if (WheelDelta < 0)
-		Zoom = Zoom * 1.05;
+		Zoom = Zoom * 2;
 	else
-		Zoom = Zoom / 1.05;
+		Zoom = Zoom / 2;
 
 	InitViewProection(X, Y, tmpX, tmpY);
 	InvalidateRect(hwnd1, NULL, false);
@@ -227,7 +244,7 @@ void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, in
 	glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
 	gluUnProject(X, (float)viewport[3] - Y, 0, modelMatrix, projMatrix, viewport, &objx, &objy, &objz);
 
-	D = sqrt(objy * objy + objx * objx) * 450;
+	D = sqrt(objy * objy + objx * objx) * 400;
 	Az = ArcTan2(objy, objx);
 
 	if (Az > 0)
@@ -237,6 +254,7 @@ void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, in
 
 	RzMapInfo->Caption = Format("%3.3f км,  %3.0f", ARRAYOFCONST((D, Az))) + " \xB0";
 
+	RzPanel1->Hint = RzMapInfo->Caption;
 }
 
 // ---------------------------------------------------------------------------

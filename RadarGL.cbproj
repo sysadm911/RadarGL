@@ -72,7 +72,6 @@
 				<BuildOrder>0</BuildOrder>
 			</CppCompile>
 			<ResFiles Include="RadarGL.res">
-				<ModuleName>RadarGL.res</ModuleName>
 				<BuildOrder>1</BuildOrder>
 			</ResFiles>
 			<FormResources Include="MainForm.dfm"/>

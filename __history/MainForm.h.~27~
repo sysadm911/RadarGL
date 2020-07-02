@@ -14,28 +14,43 @@
 #include "RzButton.hpp"
 #include <Math.hpp>
 #include <math.h>
+#include "RzSplit.hpp"
 #include <GL/gl.h>
+#include <GL/glu.h>
+#define Pi M_PI
 
-// ID- объектов дл€ быстрого вывода glCallList(ID)
-const GLubyte Place = 1;
-const GLubyte Sectors = 2;
-const GLubyte Grid = 3;
-const GLubyte Mas = 4;
-const GLubyte CU = 5;
-const GLubyte CU2 = 6;
-const GLubyte TIK = 7;
-const GLubyte TIK2 = 8;
-const GLubyte TXT = 9;
-const GLubyte TIKcu2 = 10;
-int GLF_START_LIST = 1000;
-int dalnost = 450000; // ƒјЋ№Ќќ—“№ 400 км
-int gl_cntrot = 0; // глобальный номер оборота
-long double gl = 0.9; // проекци€-
-long double gl_inc = 0.03; // шаг изменени€ проекции
-long double km = 1.0; // масштаб
-GLfloat glx = 0; // смещение проекции по X
-GLfloat gly = 0; // смещение проекции по Y
-GLfloat ry, tx, ty, rz, ang; // поворот- XYZA
+enum TStateInput {
+	siNone, siManualDrag, siSector, siCircle, siClick
+};
+
+struct TColorGL {
+	float R, G, B, a;
+};
+
+struct TRecSector {
+	float dA, dD, Angl, D;
+	int UserID;
+	TColorGL Color;
+	bool Enable;
+};
+
+struct TRecGPSFloat {
+	float x, y, z, m;
+	TStateInput State;
+};
+
+const GLfloat MC[4] = {0.5, 0.0, 1.0, 1.0}; // массив свойств материала
+
+GLfloat ColorGLObj[4];
+GLfloat ObjColor[4] = {0, 1, 0, 0.5};
+GLfloat KMPColorGLObj[4] = {0.6, 0.6, 0, 0.5};
+GLfloat TColorGLObj[4] = {0, 1, 0, 0.5};
+GLfloat WColorGLObj[4] = {0, 1, 0.3, 0.5};
+GLfloat AColorGLObj[4] = {1, 0, 0, 1};
+GLfloat SelColorGLObj[4] = {1, 1, 1, 1};
+GLfloat SecColorGLObj[4] = {1, 1, 0.1, 0.9};
+GLfloat UookColorGLObj[4] = {153 / 255, 153 / 255, 1, 1};
+GLfloat UookModColorGLObj[4] = {1, 0, 0, 1};
 
 // ---------------------------------------------------------------------------
 class TForm1 : public TForm {
@@ -43,7 +58,6 @@ __published: // IDE-managed Components
 
 	TRzStatusBar *RzStatusBar1;
 	TRzToolbar *RzToolbar1;
-	TPanel *Panel1;
 	TRzFieldStatus *RzGL_Vendor;
 	TRzFieldStatus *RzGL_Renderer;
 	TRzFieldStatus *RzGL_Version;
@@ -57,23 +71,43 @@ __published: // IDE-managed Components
 	TRzSpacer *RzSpacer2;
 	TRzSpacer *RzSpacer3;
 	TRzSpacer *RzSpacer4;
+	TRzSplitter *RzSplitter1;
+	TRzPanel *RzPanel1;
+	TRzPanel *RzPanel2;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
-	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall FormResize(TObject *Sender);
+	void __fastcall RzPanel1Paint(TObject *Sender);
 
 private: // User declarations
 
-	void __fastcall texto(GLfloat x, GLfloat y, char *s);
-	void __fastcall paintTXT();
-	void __fastcall PaintSectors();
+	void __fastcall texto(GLfloat x, GLfloat y, String s);
+
 	void __fastcall PaintGrid();
+	void __fastcall PaintGrid2();
+
 	void __fastcall SetDCPixelFormat(HDC hdc);
 
 	HWND hwnd1;
 	HGLRC hrc1;
 	HDC dc1;
+
+	HWND hwnd2;
+	HGLRC hrc2;
+	HDC dc2;
+
+	GLfloat R, G, B, xpos, ypos;
+	bool mode1;
+	GLfloat MCGrid[4];
+	GLfloat MCPoint[4];
+	GLfloat MCTarget[4];
+	GLfloat tX, tY, DX, DY;
+	TColorGL Cl;
+	int FBreakPosSector;
+	float FOldSectorPos;
+	TPoint FLastMousePoint;
+	GLUquadricObj *quadObj;
 
 public: // User declarations
 
