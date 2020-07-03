@@ -5,6 +5,7 @@ object Form1: TForm1
   ClientHeight = 1004
   ClientWidth = 960
   Color = clBtnFace
+  DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -19,9 +20,10 @@ object Form1: TForm1
   TextHeight = 13
   object RzStatusBar1: TRzStatusBar
     Left = 0
-    Top = 985
+    Top = 29
     Width = 960
     Height = 19
+    Align = alTop
     BorderInner = fsNone
     BorderOuter = fsNone
     BorderSides = [sdLeft, sdTop, sdRight, sdBottom]
@@ -30,12 +32,10 @@ object Form1: TForm1
     ParentDoubleBuffered = False
     TabOrder = 0
     VisualStyle = vsGradient
-    ExplicitTop = 638
-    ExplicitWidth = 611
     object RzGL_Vendor: TRzFieldStatus
-      Left = 380
+      Left = 339
       Top = 0
-      Width = 432
+      Width = 118
       Height = 19
       Align = alLeft
       Font.Charset = DEFAULT_CHARSET
@@ -46,15 +46,12 @@ object Form1: TForm1
       ParentFont = False
       FieldLabel = #1042#1080#1076#1077#1086#1082#1072#1088#1090#1072':'
       FieldLabelColor = clGray
-      Alignment = taRightJustify
       AutoSize = True
       BlinkIntervalOff = 1000
       BlinkIntervalOn = 1000
-      ExplicitLeft = 536
-      ExplicitWidth = 289
     end
     object RzGL_Version: TRzFieldStatus
-      Left = 812
+      Left = 457
       Top = 0
       Width = 133
       Height = 19
@@ -70,29 +67,30 @@ object Form1: TForm1
       AutoSize = True
       BlinkIntervalOff = 1000
       BlinkIntervalOn = 1000
-      ExplicitLeft = 815
+      ExplicitLeft = 824
     end
     object RzClockStatus1: TRzClockStatus
-      Left = 233
+      Left = 0
       Top = 0
-      Width = 147
+      Width = 106
       Height = 19
       Align = alLeft
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clBlack
       Font.Height = -11
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
       ParentFont = False
-      Format = #1057#1077#1075#1086#1076#1085#1103': ddddd t'
+      Format = 'ddddd t'
       Alignment = taCenter
       AutoSize = True
       BlinkColor = clGreen
       BlinkIntervalOff = 1000
       BlinkIntervalOn = 1000
+      ExplicitLeft = 371
     end
     object RzMapInfo: TRzFieldStatus
-      Left = 0
+      Left = 106
       Top = 0
       Width = 233
       Height = 19
@@ -110,6 +108,7 @@ object Form1: TForm1
       BlinkColor = clNavy
       BlinkIntervalOff = 1000
       BlinkIntervalOn = 1000
+      ExplicitLeft = 727
     end
   end
   object RzToolbar1: TRzToolbar
@@ -127,7 +126,6 @@ object Form1: TForm1
     Color = clFuchsia
     TabOrder = 1
     VisualStyle = vsGradient
-    ExplicitTop = -8
     ToolbarControls = (
       BtnExecute
       RzSpacer1
@@ -203,7 +201,7 @@ object Form1: TForm1
   end
   object RzPanel1: TRzPanel
     Left = 0
-    Top = 29
+    Top = 48
     Width = 960
     Height = 956
     Align = alLeft
@@ -217,15 +215,16 @@ object Form1: TForm1
     ParentShowHint = False
     ShowHint = False
     TabOrder = 2
+    Transparent = True
+    OnClick = RzPanel1Click
     OnMouseMove = RzPanel1MouseMove
     OnPaint = RzPanel1Paint
-    ExplicitHeight = 960
   end
   object ImageList1: TImageList
-    Left = 48
+    Left = 883
     Top = 544
     Bitmap = {
-      494C01010A0018000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010A001800140010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -629,7 +628,13 @@ object Form1: TForm1
       000000000000}
   end
   object ColorDialog1: TColorDialog
-    Left = 112
+    Left = 819
+    Top = 544
+  end
+  object Timer1: TTimer
+    Interval = 15
+    OnTimer = Timer1Timer
+    Left = 763
     Top = 544
   end
 end

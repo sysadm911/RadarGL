@@ -23,8 +23,9 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<OutputExt>exe</OutputExt>
+			<LinkPackageStatics>rtl.lib;vcl.lib;RaizeComponentsVcl.lib;vclx.lib</LinkPackageStatics>
 			<PackageImports>vclx.bpi;vcl.bpi;rtl.bpi;vclimg.bpi;vclactnband.bpi;dbrtl.bpi;adortl.bpi;vcldb.bpi;vcldbx.bpi;bdertl.bpi;bcbie.bpi;xmlrtl.bpi;dsnap.bpi;dsnapcon.bpi;dbxcds.bpi;dbexpress.bpi;DbxCommonDriver.bpi;DataSnapIndy10ServerTransport.bpi;DataSnapClient.bpi;DbxClientDriver.bpi;vclie.bpi;inet.bpi;IndyProtocols.bpi;inetdbbde.bpi;inetdbxpress.bpi;DataSnapProviderClient.bpi;inetdb.bpi;IndySystem.bpi;IndyCore.bpi;DataSnapServer.bpi;DBXInterBaseDriver.bpi;DBXMySQLDriver.bpi;DBXFirebirdDriver.bpi;DBXSybaseASEDriver.bpi;DBXSybaseASADriver.bpi;DBXOracleDriver.bpi;DBXMSSQLDriver.bpi;DBXInformixDriver.bpi;DBXDb2Driver.bpi;vclib.bpi;ibxpress.bpi;vclribbon.bpi;VclSmp.bpi;bcbsmp.bpi;soaprtl.bpi;svnui.bpi;svn.bpi;vcltouch.bpi;websnap.bpi;webdsnap.bpi;AzureCloud.bpi;intrawebdb_110_150.bpi;Intraweb_110_150.bpi;CodeSiteExpressVcl.bpi;RaizeComponentsVcl.bpi;RaizeComponentsVclDb.bpi;TolikComponents.bpi;RLS.bpi;Tee.bpi;BComPortD7.bpi;ractl6.bpi;FFT_b.bpi</PackageImports>
-			<LinkPackageImports>rtl.bpi;vcl.bpi;RaizeComponentsVcl.bpi;vclx.bpi</LinkPackageImports>
 			<ProjectType>CppVCLApplication</ProjectType>
 			<IncludePath>..\..\..\Desktop\RadarGL\;$(IncludePath)</IncludePath>
 			<_TCHARMapping>wchar_t</_TCHARMapping>
@@ -34,7 +35,6 @@
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE</DCC_UnitAlias>
 			<DynamicRTL>true</DynamicRTL>
-			<UsePackages>true</UsePackages>
 			<IntermediateOutputDir>.\$(Config)\$(Platform)</IntermediateOutputDir>
 			<FinalOutputDir>.\$(Config)\$(Platform)</FinalOutputDir>
 			<BCC_wpar>false</BCC_wpar>
@@ -42,6 +42,7 @@
 			<BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<DynamicRTL>false</DynamicRTL>
 			<BCC_OptimizeForSpeed>false</BCC_OptimizeForSpeed>
 			<BCC_DisableOptimizations>true</BCC_DisableOptimizations>
 			<DCC_Optimize>false</DCC_Optimize>
