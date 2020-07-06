@@ -12,6 +12,10 @@
 #pragma link "RzStatus"
 #pragma link "RzButton"
 #pragma link "RzSplit"
+#pragma link "RzGroupBar"
+#pragma link "RzLstBox"
+#pragma link "RzEdit"
+#pragma link "RzLabel"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 
@@ -23,13 +27,14 @@ GLdouble projMatrix[16];
 GLint viewport[4];
 GLdouble objx, objy, objz = 0;
 TPoint *targetArr = new TPoint[100];
-
+float D, Az = 0;
 GLfloat BezierColor[4] = {0, 1, 0, 1};
 GLfloat PointColor[4] = {1, 0, 0, 1};
 GLfloat TargetColor[4] = {1, 0, 1, 1};
 GLfloat ColorArr[4] = {1, 1, 0, 1};
 int IndexPoint = 0;
 GLfloat OGLpoints[4][3];
+GLfloat TrCoords[4][3];
 bool bezier_ready = false;
 
 // ---------------------------------------------------------------------------
@@ -77,12 +82,9 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	glEnable(GL_LIGHTING); // разрешаем работу с освещенностью
 	glEnable(GL_LIGHT0); // включаем источник света 0
 
-	String ch = (char *)(glGetString(GL_VENDOR));
-	String ch2 = (char *)(glGetString(GL_RENDERER));
-	RzGL_Vendor->Caption = ch + ", " + ch2;
-	RzGL_Version->Caption = ((char *) glGetString(GL_VERSION));
-
 	Zoom = 1;
+	DecimalSeparator = 0x2e;
+	edt_epr->ClearSelection();
 
 }
 
@@ -96,9 +98,6 @@ void __fastcall TForm1::FormDestroy(TObject *Sender) {
 
 void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 
-	PAINTSTRUCT ps;
-
-	BeginPaint(hwnd1, &ps);
 	int i = 0, j = 0;
 	float x = 0.0, y = 0.0, a = 0.0;
 	unsigned int Cl;
@@ -120,17 +119,37 @@ void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, PointColor);
 	PaintPoint();
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, BezierColor);
-	if (IndexPoint == 4)
+
+	if (bezier_ready) {
 		PaintBezier();
+	}
 
 	SwapBuffers(dc1);
-	EndPaint(hwnd1, &ps);
 
 }
 
 // ---------------------------------------------------------------------------
 void TForm1::PaintBezier() {
+	if (edt_beta0 != "" && edt_beta1 != "" && edt_beta2 != "" && edt_beta3 != "" && edt_D0 != "" && edt_D1 != "" && edt_D2 != "" &&
+		edt_D3 != "") {
 
+		OGLpoints[0][0] = StrToFloat(edt_D0->Text) * cos(180 * StrToFloat(edt_beta0->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[0][1] = StrToFloat(edt_D0->Text) * sin(180 * StrToFloat(edt_beta0->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[1][0] = StrToFloat(edt_D1->Text) * cos(180 * StrToFloat(edt_beta1->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[1][1] = StrToFloat(edt_D1->Text) * sin(180 * StrToFloat(edt_beta1->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[2][0] = StrToFloat(edt_D2->Text) * cos(180 * StrToFloat(edt_beta2->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[2][1] = StrToFloat(edt_D2->Text) * sin(180 * StrToFloat(edt_beta2->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[3][0] = StrToFloat(edt_D3->Text) * cos(180 * StrToFloat(edt_beta3->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[3][1] = StrToFloat(edt_D3->Text) * sin(180 * StrToFloat(edt_beta3->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+	}
 	glShadeModel(GL_FLAT);
 	glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4, &OGLpoints[0][0]);
 	glEnable(GL_MAP1_VERTEX_3);
@@ -209,7 +228,6 @@ void TForm1::PaintGrid() {
 
 		glEnd();
 
-
 	}
 	glEndList();
 
@@ -276,7 +294,6 @@ void TForm1::DrawAxis() {
 }
 
 void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y) {
-	float D, Az = 0;
 
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
@@ -303,19 +320,41 @@ void __fastcall TForm1::BtnUtilitiesClick(TObject *Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm1::RzPanel1Click(TObject *Sender) {
+	if (IndexPoint > 4)
+		IndexPoint = 0;
 	AddPoint();
 }
 // ---------------------------------------------------------------------------
 
 void TForm1::AddPoint() {
-	if (IndexPoint > 4) {
-
-		IndexPoint = 0;
-
-	}
 
 	OGLpoints[IndexPoint][0] = objx;
 	OGLpoints[IndexPoint][1] = objy;
+	TrCoords[IndexPoint][0] = Az;
+	TrCoords[IndexPoint][1] = D;
+	if (IndexPoint == 0) {
+		edt_beta0->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[0][0])));
+		edt_D0->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[0][1])));
+
+	}
+	else if (IndexPoint == 1) {
+		edt_beta1->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[1][0])));
+		edt_D1->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[1][1])));
+	}
+	else if (IndexPoint == 2) {
+		edt_beta2->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[2][0])));
+		edt_D2->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[2][1])));
+	}
+	else if (IndexPoint == 3) {
+		edt_beta3->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[3][0])));
+		edt_D3->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[3][1])));
+	}
+	else {
+
+		BtnRefreshClick(this);
+
+	}
+
 	IndexPoint++;
 
 }
@@ -342,13 +381,10 @@ void TForm1::DrawSweep() {
 	glVertex2f(sin(Pi*sweep_az / 180), sin(Pi*(90 - sweep_az) / 180));
 	glEnd();
 
-
 	sweep_az++;
 	if (sweep_az > 360) {
 		sweep_az = 0;
 	}
-
-		Textout("!", 0, 0.5, ColorArr);
 
 }
 
@@ -360,12 +396,7 @@ void __fastcall TForm1::Timer1Timer(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TForm1::WMEraseBkgnd(TWMEraseBkgnd &Message) {
-	 Message.Result = LRESULT(false);
-}
-
 void __fastcall TForm1::Textout(char* str, GLfloat x, GLfloat y, GLfloat *color) {
-
 
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
 	glRasterPos2f(x, y);
@@ -375,3 +406,54 @@ void __fastcall TForm1::Textout(char* str, GLfloat x, GLfloat y, GLfloat *color)
 		i++;
 	}
 }
+
+void __fastcall TForm1::BtnExecuteClick(TObject *Sender) {
+	// if (edt_beta0 != "" && edt_beta1 != "" && edt_beta2 != "" && edt_beta3 != "" && edt_D0 != "" && edt_D1 != "" && edt_D2 != "" &&
+	// edt_D3 != "") {
+
+	bezier_ready = true;
+	InvalidateRect(hwnd1, NULL, false);
+	// }
+
+}
+// ---------------------------------------------------------------------------
+
+void __fastcall TForm1::lbl_beta0Change(TObject *Sender) {
+	// float Az_text, D_text;
+	// Az_text = StrToFloat(edt_beta0->Text);
+	// if ((Az_text != 0.0 ) && (Az_text > 360.0)) {
+	//
+	// ShowMessage("¬ведите значение между 0 и 360 градусов");
+	////		lbl_beta0->Text = "";
+	// }
+}
+
+// ---------------------------------------------------------------------------
+void __fastcall TForm1::lbl_beta0KeyPress(TObject *Sender, wchar_t &Key) {
+	// if (!Key in [#8, '0'..'9', DecimalSeparator]) then
+	// begin
+	// ShowMessage('Please enter a number.  Wrong input: ' + Key);
+	// Key := #0;
+	// end//End first if.
+	// else
+	// if (Key = DecimalSeparator) and (Pos(Key, Edit1.Text) > 0) then
+	// begin
+	// ShowMessage('Please enter a number.  Wrong input: ' + Key);
+	// Key := #0;
+	// end;//End second if.
+}
+// ---------------------------------------------------------------------------
+
+void __fastcall TForm1::BtnRefreshClick(TObject *Sender) {
+
+	edt_beta0->Clear();
+	edt_D0->Clear();
+	edt_beta1->Clear();
+	edt_D1->Clear();
+	edt_beta2->Clear();
+	edt_D2->Clear();
+	edt_beta3->Clear();
+	edt_D3->Clear();
+
+}
+// ---------------------------------------------------------------------------

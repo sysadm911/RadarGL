@@ -113,11 +113,6 @@ object Form1: TForm1
       Height = 87
       Align = alTop
       Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1094#1077#1083#1080':'
-      CaptionFont.Charset = DEFAULT_CHARSET
-      CaptionFont.Color = clWindowText
-      CaptionFont.Height = -9
-      CaptionFont.Name = 'Tahoma'
-      CaptionFont.Style = [fsBold]
       Color = cl3DLight
       FlatColor = clInfoBk
       Font.Charset = DEFAULT_CHARSET
@@ -131,70 +126,61 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 0
       VisualStyle = vsGradient
-      ExplicitTop = -5
-      object lbl_epr: TRzLabel
-        Left = 27
-        Top = 32
-        Width = 76
-        Height = 13
-        Caption = #1069#1055#1056' '#1094#1077#1083#1080' '#1084'.'#1082#1074'.'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        BlinkIntervalOff = 1000
-        BlinkIntervalOn = 1000
-        BorderColor = clActiveCaption
-      end
-      object lbl_speed: TRzLabel
-        Left = 27
-        Top = 55
-        Width = 97
-        Height = 13
-        Caption = #1057#1082#1086#1088#1086#1089#1090#1100' '#1094#1077#1083#1080', '#1084'/'#1089
-        Font.Charset = RUSSIAN_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        BlinkIntervalOff = 1000
-        BlinkIntervalOn = 1000
-      end
-      object edt_epr: TRzMaskEdit
-        Left = 136
-        Top = 29
-        Width = 73
+      object lbl_epr: TLabeledEdit
+        Left = 120
+        Top = 22
+        Width = 89
         Height = 21
-        AutoSelect = False
-        EditMask = '#####;0; '
+        BevelInner = bvNone
+        BevelKind = bkTile
+        BevelOuter = bvNone
+        EditLabel.Width = 52
+        EditLabel.Height = 13
+        EditLabel.Caption = #1069#1055#1056', '#1084' '#1082#1074'.'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Tahoma'
+        EditLabel.Font.Style = []
+        EditLabel.ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
-        MaxLength = 5
+        LabelPosition = lpLeft
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 0
-        Text = '100.00'
+        Text = '10'
       end
-      object edt_speed: TRzMaskEdit
-        Left = 135
-        Top = 52
-        Width = 74
+      object lbl_speed: TLabeledEdit
+        Left = 120
+        Top = 49
+        Width = 89
         Height = 21
-        EditMask = '#####;0; '
+        BevelInner = bvNone
+        BevelKind = bkTile
+        BevelOuter = bvNone
+        EditLabel.Width = 70
+        EditLabel.Height = 13
+        EditLabel.Caption = #1057#1082#1086#1088#1086#1089#1090#1100', '#1084'/'#1089
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Tahoma'
+        EditLabel.Font.Style = []
+        EditLabel.ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
-        MaxLength = 5
+        LabelPosition = lpLeft
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 1
-        Text = '0'
+        Text = '100'
       end
     end
     object rzgrpbx_coord3: TRzGroupBox
@@ -204,11 +190,6 @@ object Form1: TForm1
       Height = 89
       Align = alTop
       Caption = #1050#1086#1085#1077#1095#1085#1099#1077' '#1082#1086#1086#1088#1076#1080#1085#1072#1090#1099' '#1094#1077#1083#1080':'
-      CaptionFont.Charset = DEFAULT_CHARSET
-      CaptionFont.Color = clWindowText
-      CaptionFont.Height = -9
-      CaptionFont.Name = 'Tahoma'
-      CaptionFont.Style = [fsBold]
       Color = cl3DLight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -219,51 +200,53 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 4
       VisualStyle = vsGradient
-      object lbl_beta3: TRzLabel
-        Left = 27
-        Top = 32
-        Width = 106
-        Height = 13
-        Caption = #1040#1079#1080#1084#1091#1090' (0-360) '#1075#1088#1072#1076'.'
-        BlinkIntervalOff = 1000
-        BlinkIntervalOn = 1000
-      end
-      object lbl_D3: TRzLabel
-        Left = 27
-        Top = 58
-        Width = 109
-        Height = 13
-        Caption = #1044#1080#1089#1090#1072#1085#1094#1080#1103' (0-450) '#1082#1084
-        BlinkIntervalOff = 1000
-        BlinkIntervalOn = 1000
-      end
-      object edt_beta3: TRzMaskEdit
-        Left = 136
-        Top = 29
-        Width = 73
+      object lbl_beta3: TLabeledEdit
+        Left = 120
+        Top = 25
+        Width = 89
         Height = 21
-        EditMask = '#####;0; '
+        EditLabel.Width = 75
+        EditLabel.Height = 13
+        EditLabel.Caption = #1040#1079#1080#1084#1091#1090' (0-360)'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Tahoma'
+        EditLabel.Font.Style = [fsUnderline]
+        EditLabel.ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
-        MaxLength = 5
+        LabelPosition = lpLeft
+        MaxLength = 3
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 0
       end
-      object edt_D3: TRzMaskEdit
-        Left = 136
-        Top = 55
-        Width = 73
+      object lbl_D3: TLabeledEdit
+        Left = 120
+        Top = 52
+        Width = 89
         Height = 21
-        EditMask = '#####;0; '
+        EditLabel.Width = 109
+        EditLabel.Height = 13
+        EditLabel.Caption = #1044#1080#1089#1090#1072#1085#1094#1080#1103' (0-450) '#1082#1084
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Tahoma'
+        EditLabel.Font.Style = [fsUnderline]
+        EditLabel.ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
-        MaxLength = 5
+        LabelPosition = lpLeft
+        MaxLength = 3
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 1
       end
@@ -275,11 +258,6 @@ object Form1: TForm1
       Height = 89
       Align = alTop
       Caption = #1053#1072#1095#1072#1083#1100#1085#1099#1077' '#1082#1086#1086#1088#1076#1080#1085#1072#1090#1099' '#1094#1077#1083#1080':'
-      CaptionFont.Charset = DEFAULT_CHARSET
-      CaptionFont.Color = clWindowText
-      CaptionFont.Height = -9
-      CaptionFont.Name = 'Tahoma'
-      CaptionFont.Style = [fsBold]
       Color = cl3DLight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -290,51 +268,54 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 1
       VisualStyle = vsGradient
-      object lbl_beta0: TRzLabel
-        Left = 27
-        Top = 32
-        Width = 106
-        Height = 13
-        Caption = #1040#1079#1080#1084#1091#1090' (0-360) '#1075#1088#1072#1076'.'
-        BlinkIntervalOff = 1000
-        BlinkIntervalOn = 1000
-      end
-      object lbl_D0: TRzLabel
-        Left = 27
-        Top = 58
-        Width = 111
-        Height = 13
-        Caption = #1044#1080#1089#1090#1072#1085#1094#1080#1103' (0-450) '#1082#1084
-        BlinkIntervalOff = 1000
-        BlinkIntervalOn = 1000
-      end
-      object edt_beta0: TRzMaskEdit
-        Left = 136
-        Top = 29
-        Width = 73
+      object lbl_beta0: TLabeledEdit
+        Left = 120
+        Top = 25
+        Width = 89
         Height = 21
-        EditMask = '#####;0; '
+        Color = clBtnFace
+        EditLabel.Width = 75
+        EditLabel.Height = 13
+        EditLabel.Caption = #1040#1079#1080#1084#1091#1090' (0-360)'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Tahoma'
+        EditLabel.Font.Style = [fsUnderline]
+        EditLabel.ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
-        MaxLength = 5
+        LabelPosition = lpLeft
+        MaxLength = 3
         ParentFont = False
         TabOrder = 0
+        OnChange = lbl_beta0Change
       end
-      object edt_D0: TRzMaskEdit
-        Left = 136
-        Top = 55
-        Width = 73
+      object lbl_D0: TLabeledEdit
+        Left = 120
+        Top = 52
+        Width = 89
         Height = 21
-        EditMask = '#####;0; '
+        EditLabel.Width = 109
+        EditLabel.Height = 13
+        EditLabel.Caption = #1044#1080#1089#1090#1072#1085#1094#1080#1103' (0-450) '#1082#1084
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Tahoma'
+        EditLabel.Font.Style = [fsUnderline]
+        EditLabel.ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
-        MaxLength = 5
+        LabelPosition = lpLeft
+        MaxLength = 3
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 1
       end
@@ -346,11 +327,6 @@ object Form1: TForm1
       Height = 89
       Align = alTop
       Caption = #1055#1088#1086#1084#1077#1078#1091#1090#1086#1095#1085#1099#1077' '#1082#1086#1086#1088#1076#1080#1085#1072#1090#1099' '#1094#1077#1083#1080' 1:'
-      CaptionFont.Charset = DEFAULT_CHARSET
-      CaptionFont.Color = clWindowText
-      CaptionFont.Height = -9
-      CaptionFont.Name = 'Tahoma'
-      CaptionFont.Style = [fsBold]
       Color = cl3DLight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -361,51 +337,53 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 2
       VisualStyle = vsGradient
-      object lbl_beta1: TRzLabel
-        Left = 27
-        Top = 32
-        Width = 106
-        Height = 13
-        Caption = #1040#1079#1080#1084#1091#1090' (0-360) '#1075#1088#1072#1076'.'
-        BlinkIntervalOff = 1000
-        BlinkIntervalOn = 1000
-      end
-      object lbl_D1: TRzLabel
-        Left = 27
-        Top = 58
-        Width = 109
-        Height = 13
-        Caption = #1044#1080#1089#1090#1072#1085#1094#1080#1103' (0-450) '#1082#1084
-        BlinkIntervalOff = 1000
-        BlinkIntervalOn = 1000
-      end
-      object edt_beta1: TRzMaskEdit
-        Left = 136
-        Top = 29
-        Width = 73
+      object lbl_beta1: TLabeledEdit
+        Left = 120
+        Top = 25
+        Width = 89
         Height = 21
-        EditMask = '#####;0; '
+        EditLabel.Width = 75
+        EditLabel.Height = 13
+        EditLabel.Caption = #1040#1079#1080#1084#1091#1090' (0-360)'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Tahoma'
+        EditLabel.Font.Style = [fsUnderline]
+        EditLabel.ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
-        MaxLength = 5
+        LabelPosition = lpLeft
+        MaxLength = 3
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 0
       end
-      object edt_D1: TRzMaskEdit
-        Left = 136
-        Top = 55
-        Width = 73
+      object lbl_D1: TLabeledEdit
+        Left = 120
+        Top = 52
+        Width = 89
         Height = 21
-        EditMask = '#####;0; '
+        EditLabel.Width = 109
+        EditLabel.Height = 13
+        EditLabel.Caption = #1044#1080#1089#1090#1072#1085#1094#1080#1103' (0-450) '#1082#1084
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Tahoma'
+        EditLabel.Font.Style = [fsUnderline]
+        EditLabel.ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
-        MaxLength = 5
+        LabelPosition = lpLeft
+        MaxLength = 3
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 1
       end
@@ -417,11 +395,6 @@ object Form1: TForm1
       Height = 89
       Align = alTop
       Caption = #1055#1088#1086#1084#1077#1078#1091#1090#1086#1095#1085#1099#1077' '#1082#1086#1086#1088#1076#1080#1085#1072#1090#1099' '#1094#1077#1083#1080' 2:'
-      CaptionFont.Charset = DEFAULT_CHARSET
-      CaptionFont.Color = clWindowText
-      CaptionFont.Height = -9
-      CaptionFont.Name = 'Tahoma'
-      CaptionFont.Style = [fsBold]
       Color = cl3DLight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -432,51 +405,53 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 3
       VisualStyle = vsGradient
-      object lbl_beta2: TRzLabel
-        Left = 27
-        Top = 32
-        Width = 106
-        Height = 13
-        Caption = #1040#1079#1080#1084#1091#1090' (0-360) '#1075#1088#1072#1076'.'
-        BlinkIntervalOff = 1000
-        BlinkIntervalOn = 1000
-      end
-      object lbl_D2: TRzLabel
-        Left = 27
-        Top = 58
-        Width = 109
-        Height = 13
-        Caption = #1044#1080#1089#1090#1072#1085#1094#1080#1103' (0-450) '#1082#1084
-        BlinkIntervalOff = 1000
-        BlinkIntervalOn = 1000
-      end
-      object edt_beta2: TRzMaskEdit
-        Left = 136
-        Top = 29
-        Width = 73
+      object lbl_beta2: TLabeledEdit
+        Left = 120
+        Top = 25
+        Width = 89
         Height = 21
-        EditMask = '#####;0; '
+        EditLabel.Width = 75
+        EditLabel.Height = 13
+        EditLabel.Caption = #1040#1079#1080#1084#1091#1090' (0-360)'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Tahoma'
+        EditLabel.Font.Style = [fsUnderline]
+        EditLabel.ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
-        MaxLength = 5
+        LabelPosition = lpLeft
+        MaxLength = 3
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 0
       end
-      object edt_D2: TRzMaskEdit
-        Left = 136
-        Top = 55
-        Width = 73
+      object lbl_D2: TLabeledEdit
+        Left = 120
+        Top = 52
+        Width = 89
         Height = 21
-        EditMask = '#####;0; '
+        EditLabel.Width = 109
+        EditLabel.Height = 13
+        EditLabel.Caption = #1044#1080#1089#1090#1072#1085#1094#1080#1103' (0-450) '#1082#1084
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -11
+        EditLabel.Font.Name = 'Tahoma'
+        EditLabel.Font.Style = [fsUnderline]
+        EditLabel.ParentFont = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
-        MaxLength = 5
+        LabelPosition = lpLeft
+        MaxLength = 3
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 1
       end
@@ -485,15 +460,9 @@ object Form1: TForm1
       Left = 1
       Top = 444
       Width = 213
-      Height = 44
+      Height = 29
       AutoStyle = False
       Images = ImageList1
-      RowHeight = 40
-      ButtonLayout = blGlyphTop
-      ButtonWidth = 60
-      ButtonHeight = 40
-      ShowButtonCaptions = True
-      TextOptions = ttoCustom
       BorderColor = clBackground
       BorderInner = fsNone
       BorderOuter = fsNone
@@ -501,70 +470,101 @@ object Form1: TForm1
       BorderWidth = 0
       Color = clGradientInactiveCaption
       TabOrder = 5
-      VisualStyle = vsGradient
+      VisualStyle = vsClassic
       ToolbarControls = (
         BtnExecute
         RzSpacer1
         BtnUtilities
         RzSpacer2
-        BtnRefresh)
+        BtnPost
+        RzSpacer3
+        BtnRefresh
+        RzSpacer4
+        BtnCancel)
       object BtnUtilities: TRzToolButton
-        Left = 72
+        Left = 37
         Top = 2
         Hint = 'Utilities'
         DisabledIndex = 3
         GradientColorStyle = gcsSystem
         Flat = False
         ImageIndex = 2
-        Layout = blGlyphTop
         UseToolbarVisualStyle = False
         VisualStyle = vsGradient
-        Caption = #1060#1086#1085
+        Caption = 'Utilities'
         OnClick = BtnUtilitiesClick
       end
+      object BtnPost: TRzToolButton
+        Left = 70
+        Top = 2
+        Hint = 'Post'
+        DisabledIndex = 5
+        GradientColorStyle = gcsSystem
+        Flat = False
+        ImageIndex = 4
+        UseToolbarVisualStyle = False
+        VisualStyle = vsGradient
+        Caption = 'Post'
+      end
+      object BtnRefresh: TRzToolButton
+        Left = 103
+        Top = 2
+        Hint = 'Refresh'
+        DisabledIndex = 7
+        GradientColorStyle = gcsSystem
+        Flat = False
+        ImageIndex = 6
+        UseToolbarVisualStyle = False
+        VisualStyle = vsGradient
+        Caption = 'Refresh'
+      end
+      object BtnCancel: TRzToolButton
+        Left = 136
+        Top = 2
+        Hint = 'Cancel'
+        DisabledIndex = 9
+        GradientColorStyle = gcsSystem
+        Flat = False
+        ImageIndex = 8
+        UseToolbarVisualStyle = False
+        VisualStyle = vsGradient
+        Caption = 'Cancel'
+      end
       object RzSpacer1: TRzSpacer
-        Left = 64
-        Top = 10
+        Left = 29
+        Top = 2
+      end
+      object RzSpacer2: TRzSpacer
+        Left = 62
+        Top = 2
+      end
+      object RzSpacer3: TRzSpacer
+        Left = 95
+        Top = 2
+      end
+      object RzSpacer4: TRzSpacer
+        Left = 128
+        Top = 2
       end
       object BtnExecute: TRzToolButton
         Left = 4
         Top = 2
         Hint = 'Execute'
         DisabledIndex = 11
+        GradientColorStyle = gcsSystem
         ImageIndex = 10
-        Layout = blGlyphTop
-        Caption = #1058#1077#1089#1090
+        UseToolbarVisualStyle = False
+        VisualStyle = vsGradient
+        Caption = 'Execute'
         OnClick = BtnExecuteClick
       end
-      object RzSpacer2: TRzSpacer
-        Left = 132
-        Top = 10
-      end
-      object BtnRefresh: TRzToolButton
-        Left = 140
-        Top = 2
-        Hint = 'Refresh'
-        DisabledIndex = 13
-        ImageIndex = 12
-        Layout = blGlyphTop
-        Caption = #1056#1077#1089#1090#1072#1088#1090
-        OnClick = BtnRefreshClick
-      end
-    end
-    object RzMemo1: TRzMemo
-      Left = 1
-      Top = 504
-      Width = 213
-      Height = 480
-      Align = alBottom
-      TabOrder = 6
     end
   end
   object ImageList1: TImageList
     Left = 883
     Top = 544
     Bitmap = {
-      494C01010E001800200010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010C001800200010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -583,89 +583,89 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000CC9966009933000099330000CC9966000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000B2B2B2009999990099999900B2B2B2000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000009933
-      000099330000CC660000CC660000993300000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000009999
-      990099999900CCCCCC00CCCCCC00999999000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000099330000CC66
-      0000CC6600009933000099330000CC9966000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000099999900CCCC
-      CC00CCCCCC009999990099999900B2B2B2000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000CC99660099330000CC66
-      000099330000CC99660000000000000000009933000099330000993300009933
-      00009933000099330000993300000000000000000000B2B2B20099999900CCCC
-      CC0099999900B2B2B20000000000000000009999990099999900999999009999
-      9900999999009999990099999900000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000099330000CC6600009933
-      0000CC99660000000000000000000000000099330000CC660000CC660000CC66
-      0000CC660000CC66000099330000000000000000000099999900CCCCCC009999
-      9900B2B2B20000000000000000000000000099999900CCCCCC00CCCCCC00CCCC
-      CC00CCCCCC00CCCCCC0099999900000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000099330000CC6600009933
-      0000000000000000000000000000000000000000000099330000CC660000CC66
-      0000CC660000CC66000099330000000000000000000099999900CCCCCC009999
-      9900000000000000000000000000000000000000000099999900CCCCCC00CCCC
-      CC00CCCCCC00CCCCCC0099999900000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000099330000CC6600009933
-      0000CC99660000000000000000000000000000000000CC99660099330000CC66
-      0000CC660000CC66000099330000000000000000000099999900CCCCCC009999
-      9900B2B2B20000000000000000000000000000000000B2B2B20099999900CCCC
-      CC00CCCCCC00CCCCCC0099999900000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000CC99660099330000CC66
-      000099330000CC99660000000000CC9966009933000099330000CC6600009933
-      0000CC660000CC660000993300000000000000000000B2B2B20099999900CCCC
-      CC0099999900B2B2B20000000000B2B2B2009999990099999900CCCCCC009999
-      9900CCCCCC00CCCCCC0099999900000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000099330000CC66
-      0000CC660000993300009933000099330000CC660000CC66000099330000CC99
-      660099330000CC6600009933000000000000000000000000000099999900CCCC
-      CC00CCCCCC00999999009999990099999900CCCCCC00CCCCCC0099999900B2B2
-      B20099999900CCCCCC0099999900000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000009933
-      000099330000CC660000CC660000CC6600009933000099330000000000000000
-      0000000000009933000099330000000000000000000000000000000000009999
-      990099999900CCCCCC00CCCCCC00CCCCCC009999990099999900000000000000
-      0000000000009999990099999900000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000CC996600993300009933000099330000CC99660000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000B2B2B200999999009999990099999900B2B2B20000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1080,11 +1080,11 @@ object Form1: TForm1
       0000000000009999990099999900999999009999990099999900999999000000
       000000000000000000000000000000000000424D3E000000000000003E000000
       2800000040000000400000000100010000000000000200000000000000000000
-      000000000000000000000000FFFFFF00FFFFFFFF00000000FFFFFFFF00000000
-      F0FFF0FF00000000E0FFE0FF00000000C0FFC0FF000000008301830100000000
-      87018701000000008F818F810000000087818781000000008201820100000000
-      C001C00100000000E039E03900000000F07FF07F00000000FFFFFFFF00000000
-      FFFFFFFF00000000FFFFFFFF00000000FFFFFFFFFBFFFBFFFFFFFFFFF9FFF9FF
+      000000000000000000000000FFFFFF0000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000FFFFFFFFFBFFFBFFFFFFFFFFF9FFF9FF
       FFFFFFFFFCFFFCFF87C387C3FC7FFC7F83838383F03FF03FC107C107F01FF01F
       E00FE00FF80FF80FF01FF01FF83FF83FF83FF83FC01FC01FF01FF01FC00FC00F
       E00FE00FE00FE00FC107C107E03FE03F83838383F01FF01F87C387C3F00FF00F

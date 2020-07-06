@@ -16,6 +16,11 @@
 #include <math.h>
 #include "RzSplit.hpp"
 #include <Dialogs.hpp>
+#include "RzGroupBar.hpp"
+#include "RzLstBox.hpp"
+#include "RzEdit.hpp"
+#include <Mask.hpp>
+#include "RzLabel.hpp"
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -27,23 +32,45 @@ __published: // IDE-managed Components
 
 	TRzStatusBar *RzStatusBar1;
 	TRzToolbar *RzToolbar1;
-	TRzFieldStatus *RzGL_Vendor;
-	TRzFieldStatus *RzGL_Version;
 	TImageList *ImageList1;
-	TRzToolButton *BtnExecute;
 	TRzToolButton *BtnUtilities;
-	TRzToolButton *BtnPost;
-	TRzToolButton *BtnRefresh;
-	TRzToolButton *BtnCancel;
 	TRzSpacer *RzSpacer1;
-	TRzSpacer *RzSpacer2;
-	TRzSpacer *RzSpacer3;
-	TRzSpacer *RzSpacer4;
 	TRzPanel *RzPanel1;
 	TRzClockStatus *RzClockStatus1;
 	TRzFieldStatus *RzMapInfo;
 	TColorDialog *ColorDialog1;
+	TRzPanel *RzPanel2;
+	TRzGroupBox *RzGroupBox1;
+	TRzToolButton *BtnExecute;
+	TRzGroupBox *rzgrpbx_coord3;
+	TRzGroupBox *rzgrpbx_coord0;
+	TRzGroupBox *rzgrpbx_coord1;
+	TRzGroupBox *rzgrpbx_coord2;
 	TTimer *Timer1;
+	TRzLabel *RzLabel2;
+	TRzMaskEdit *RzMaskEdit2;
+	TRzMaskEdit *edt_beta0;
+	TRzLabel *lbl_beta0;
+	TRzMaskEdit *edt_D0;
+	TRzLabel *lbl_D0;
+	TRzLabel *lbl_epr;
+	TRzMaskEdit *edt_epr;
+	TRzLabel *lbl_speed;
+	TRzMaskEdit *edt_speed;
+	TRzLabel *lbl_beta1;
+	TRzMaskEdit *edt_beta1;
+	TRzLabel *lbl_beta2;
+	TRzMaskEdit *edt_beta2;
+	TRzLabel *lbl_beta3;
+	TRzMaskEdit *edt_beta3;
+	TRzLabel *lbl_D1;
+	TRzMaskEdit *edt_D1;
+	TRzLabel *lbl_D2;
+	TRzMaskEdit *edt_D2;
+	TRzLabel *lbl_D3;
+	TRzMaskEdit *edt_D3;
+	TRzSpacer *RzSpacer2;
+	TRzToolButton *BtnRefresh;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
@@ -53,6 +80,10 @@ __published: // IDE-managed Components
 	void __fastcall BtnUtilitiesClick(TObject *Sender);
 	void __fastcall RzPanel1Click(TObject *Sender);
 	void __fastcall Timer1Timer(TObject *Sender);
+	void __fastcall BtnExecuteClick(TObject *Sender);
+	void __fastcall lbl_beta0Change(TObject *Sender);
+	void __fastcall lbl_beta0KeyPress(TObject *Sender, wchar_t &Key);
+	void __fastcall BtnRefreshClick(TObject *Sender);
 
 private: // User declarations
 
@@ -67,7 +98,6 @@ private: // User declarations
 	void PaintCurrentCircle();
 	void DrawAxis();
 
-
 	HWND hwnd1;
 	HGLRC hrc1;
 	HDC dc1;
@@ -80,8 +110,8 @@ private: // User declarations
 public: // User declarations
 
 	float PosZoomX1, PosZoomY1, PosZoomX2, PosZoomY2, Diagonal, Zoom;
-	void __fastcall WMEraseBkgnd(TWMEraseBkgnd &Message);
-	BEGIN_MESSAGE_MAP MESSAGE_HANDLER(WM_ERASEBKGND, TWMEraseBkgnd, WMEraseBkgnd) END_MESSAGE_MAP(TForm)
+
+	void __fastcall TForm1::Textout(char* str, GLfloat x, GLfloat y, GLfloat *color);
 
 		__fastcall TForm1(TComponent* Owner);
 };

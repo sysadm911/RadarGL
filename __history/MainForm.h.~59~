@@ -16,6 +16,8 @@
 #include <math.h>
 #include "RzSplit.hpp"
 #include <Dialogs.hpp>
+#include "RzGroupBar.hpp"
+#include "RzLstBox.hpp"
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -30,7 +32,6 @@ __published: // IDE-managed Components
 	TRzFieldStatus *RzGL_Vendor;
 	TRzFieldStatus *RzGL_Version;
 	TImageList *ImageList1;
-	TRzToolButton *BtnExecute;
 	TRzToolButton *BtnUtilities;
 	TRzToolButton *BtnPost;
 	TRzToolButton *BtnRefresh;
@@ -43,7 +44,24 @@ __published: // IDE-managed Components
 	TRzClockStatus *RzClockStatus1;
 	TRzFieldStatus *RzMapInfo;
 	TColorDialog *ColorDialog1;
+	TRzPanel *RzPanel2;
+	TRzGroupBox *RzGroupBox1;
+	TLabeledEdit *lbl_epr;
+	TRzToolButton *BtnExecute;
+	TRzGroupBox *rzgrpbx_coord3;
+	TLabeledEdit *lbl_beta3;
+	TLabeledEdit *lbl_D3;
+	TRzGroupBox *rzgrpbx_coord0;
+	TLabeledEdit *lbl_beta0;
+	TLabeledEdit *lbl_D0;
+	TRzGroupBox *rzgrpbx_coord1;
+	TLabeledEdit *lbl_beta1;
+	TLabeledEdit *lbl_D1;
+	TRzGroupBox *rzgrpbx_coord2;
+	TLabeledEdit *lbl_beta2;
+	TLabeledEdit *lbl_D2;
 	TTimer *Timer1;
+	TLabeledEdit *lbl_speed;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
@@ -67,7 +85,6 @@ private: // User declarations
 	void PaintCurrentCircle();
 	void DrawAxis();
 
-
 	HWND hwnd1;
 	HGLRC hrc1;
 	HDC dc1;
@@ -80,7 +97,8 @@ private: // User declarations
 public: // User declarations
 
 	float PosZoomX1, PosZoomY1, PosZoomX2, PosZoomY2, Diagonal, Zoom;
-    void __fastcall TForm1::Textout(char* str,int x, int y, GLfloat red,GLfloat green,GLfloat blue);
+
+	void __fastcall TForm1::Textout(char* str, GLfloat x, GLfloat y, GLfloat *color);
 
 	void __fastcall WMEraseBkgnd(TWMEraseBkgnd &Message);
 	BEGIN_MESSAGE_MAP MESSAGE_HANDLER(WM_ERASEBKGND, TWMEraseBkgnd, WMEraseBkgnd) END_MESSAGE_MAP(TForm)
