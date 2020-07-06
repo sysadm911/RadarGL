@@ -131,7 +131,6 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 0
       VisualStyle = vsGradient
-      ExplicitTop = -5
       object lbl_epr: TRzLabel
         Left = 27
         Top = 32
@@ -302,7 +301,7 @@ object Form1: TForm1
       object lbl_D0: TRzLabel
         Left = 27
         Top = 58
-        Width = 111
+        Width = 109
         Height = 13
         Caption = #1044#1080#1089#1090#1072#1085#1094#1080#1103' (0-450) '#1082#1084
         BlinkIntervalOff = 1000
@@ -564,7 +563,7 @@ object Form1: TForm1
     Left = 883
     Top = 544
     Bitmap = {
-      494C01010E001800200010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010E001800280010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

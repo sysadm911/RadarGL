@@ -123,6 +123,7 @@ void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 	if (bezier_ready) {
 		PaintBezier();
 	}
+	bezier_ready =false;
 
 	SwapBuffers(dc1);
 
@@ -130,7 +131,26 @@ void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 void TForm1::PaintBezier() {
+	if (edt_beta0 != "" && edt_beta1 != "" && edt_beta2 != "" && edt_beta3 != "" && edt_D0 != "" && edt_D1 != "" && edt_D2 != "" &&
+		edt_D3 != "") {
 
+		OGLpoints[0][0] = StrToFloat(edt_D0->Text) * cos(180 * StrToFloat(edt_beta0->Text) / Pi);
+		RzMemo1->Lines->Add(edt_D0->Text +"   "+		edt_beta0->Text);
+		OGLpoints[0][1] = StrToFloat(edt_D0->Text) * sin(180 * StrToFloat(edt_beta0->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[1][0] = StrToFloat(edt_D1->Text) * cos(180 * StrToFloat(edt_beta1->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[1][1] = StrToFloat(edt_D1->Text) * sin(180 * StrToFloat(edt_beta1->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[2][0] = StrToFloat(edt_D2->Text) * cos(180 * StrToFloat(edt_beta2->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[2][1] = StrToFloat(edt_D2->Text) * sin(180 * StrToFloat(edt_beta2->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[3][0] = StrToFloat(edt_D3->Text) * cos(180 * StrToFloat(edt_beta3->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[3][1] = StrToFloat(edt_D3->Text) * sin(180 * StrToFloat(edt_beta3->Text) / Pi);
+		RzMemo1->Lines->Add(OGLpoints[0][0]);
+	}
 	glShadeModel(GL_FLAT);
 	glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4, &OGLpoints[0][0]);
 	glEnable(GL_MAP1_VERTEX_3);
@@ -301,10 +321,8 @@ void __fastcall TForm1::BtnUtilitiesClick(TObject *Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm1::RzPanel1Click(TObject *Sender) {
-	if (IndexPoint > 3) {
+	if (IndexPoint > 4)
 		IndexPoint = 0;
-
-	}
 	AddPoint();
 }
 // ---------------------------------------------------------------------------
@@ -332,6 +350,12 @@ void TForm1::AddPoint() {
 		edt_beta3->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[3][0])));
 		edt_D3->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[3][1])));
 	}
+	else {
+
+		BtnRefreshClick(this);
+
+	}
+
 	IndexPoint++;
 
 }
@@ -385,12 +409,12 @@ void __fastcall TForm1::Textout(char* str, GLfloat x, GLfloat y, GLfloat *color)
 }
 
 void __fastcall TForm1::BtnExecuteClick(TObject *Sender) {
-	if (edt_beta0 != "" && edt_beta1 != "" && edt_beta2 != "" && edt_beta3 != "" && edt_D0 != "" && edt_D1 != "" && edt_D2 != "" &&
-		edt_D3 != "") {
+	 if (edt_beta0 != "" && edt_beta1 != "" && edt_beta2 != "" && edt_beta3 != "" && edt_D0 != "" && edt_D1 != "" && edt_D2 != "" &&
+	 edt_D3 != "") {
 
-		bezier_ready = true;
-		InvalidateRect(hwnd1, NULL, false);
-	}
+	bezier_ready = true;
+	InvalidateRect(hwnd1, NULL, false);
+	 }
 
 }
 // ---------------------------------------------------------------------------
@@ -422,10 +446,6 @@ void __fastcall TForm1::lbl_beta0KeyPress(TObject *Sender, wchar_t &Key) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm1::BtnRefreshClick(TObject *Sender) {
-	OGLpoints[0][0] = -1;
-	OGLpoints[1][0] = -1;
-	OGLpoints[2][0] = -1;
-	OGLpoints[3][0] = -1;
 
 	edt_beta0->Clear();
 	edt_D0->Clear();

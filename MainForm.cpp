@@ -83,7 +83,7 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	glEnable(GL_LIGHT0); // включаем источник света 0
 
 	Zoom = 1;
-	DecimalSeparator = 0x2e;
+	// DecimalSeparator = 0x2e;
 	edt_epr->ClearSelection();
 
 }
@@ -115,7 +115,7 @@ void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 	glEnable(GL_BLEND);
 
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, TargetColor);
-	PaintTarget();
+	// PaintTarget();
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, PointColor);
 	PaintPoint();
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, BezierColor);
@@ -125,7 +125,6 @@ void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 	}
 
 	SwapBuffers(dc1);
-
 }
 
 // ---------------------------------------------------------------------------
@@ -133,22 +132,18 @@ void TForm1::PaintBezier() {
 	if (edt_beta0 != "" && edt_beta1 != "" && edt_beta2 != "" && edt_beta3 != "" && edt_D0 != "" && edt_D1 != "" && edt_D2 != "" &&
 		edt_D3 != "") {
 
-		OGLpoints[0][0] = StrToFloat(edt_D0->Text) * cos(180 * StrToFloat(edt_beta0->Text) / Pi);
-		RzMemo1->Lines->Add(OGLpoints[0][0]);
-		OGLpoints[0][1] = StrToFloat(edt_D0->Text) * sin(180 * StrToFloat(edt_beta0->Text) / Pi);
-		RzMemo1->Lines->Add(OGLpoints[0][0]);
-		OGLpoints[1][0] = StrToFloat(edt_D1->Text) * cos(180 * StrToFloat(edt_beta1->Text) / Pi);
-		RzMemo1->Lines->Add(OGLpoints[0][0]);
-		OGLpoints[1][1] = StrToFloat(edt_D1->Text) * sin(180 * StrToFloat(edt_beta1->Text) / Pi);
-		RzMemo1->Lines->Add(OGLpoints[0][0]);
-		OGLpoints[2][0] = StrToFloat(edt_D2->Text) * cos(180 * StrToFloat(edt_beta2->Text) / Pi);
-		RzMemo1->Lines->Add(OGLpoints[0][0]);
-		OGLpoints[2][1] = StrToFloat(edt_D2->Text) * sin(180 * StrToFloat(edt_beta2->Text) / Pi);
-		RzMemo1->Lines->Add(OGLpoints[0][0]);
-		OGLpoints[3][0] = StrToFloat(edt_D3->Text) * cos(180 * StrToFloat(edt_beta3->Text) / Pi);
-		RzMemo1->Lines->Add(OGLpoints[0][0]);
-		OGLpoints[3][1] = StrToFloat(edt_D3->Text) * sin(180 * StrToFloat(edt_beta3->Text) / Pi);
-		RzMemo1->Lines->Add(OGLpoints[0][0]);
+		OGLpoints[0][0] = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+		OGLpoints[0][1] = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+
+		OGLpoints[1][0] = (StrToFloat(edt_D1->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta1->Text) / 180.0);
+		OGLpoints[1][1] = (StrToFloat(edt_D1->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta1->Text) / 180.0);
+
+		OGLpoints[2][0] = (StrToFloat(edt_D2->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta2->Text) / 180.0);
+		OGLpoints[2][1] = (StrToFloat(edt_D2->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta2->Text) / 180.0);
+
+		OGLpoints[3][0] = (StrToFloat(edt_D3->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta3->Text) / 180.0);
+		OGLpoints[3][1] = (StrToFloat(edt_D3->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta3->Text) / 180.0);
+
 	}
 	glShadeModel(GL_FLAT);
 	glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4, &OGLpoints[0][0]);
@@ -241,7 +236,6 @@ void TForm1::PaintTarget() {
 	tX = tY = 0.5;
 	glVertex2f(tX, tY);
 	glEnd();
-
 }
 
 void TForm1::InitViewProection(float x, float y, float dXX, float dYY) {
@@ -369,6 +363,8 @@ void TForm1::PaintPoint() {
 		}
 		glEnd();
 	}
+	else
+		bezier_ready = false;
 }
 
 // ---------------------------------------------------------------------------
@@ -385,7 +381,6 @@ void TForm1::DrawSweep() {
 	if (sweep_az > 360) {
 		sweep_az = 0;
 	}
-
 }
 
 // ---------------------------------------------------------------------------
@@ -408,12 +403,12 @@ void __fastcall TForm1::Textout(char* str, GLfloat x, GLfloat y, GLfloat *color)
 }
 
 void __fastcall TForm1::BtnExecuteClick(TObject *Sender) {
-	// if (edt_beta0 != "" && edt_beta1 != "" && edt_beta2 != "" && edt_beta3 != "" && edt_D0 != "" && edt_D1 != "" && edt_D2 != "" &&
-	// edt_D3 != "") {
+	if (edt_beta0 != "" && edt_beta1 != "" && edt_beta2 != "" && edt_beta3 != "" && edt_D0 != "" && edt_D1 != "" && edt_D2 != "" &&
+		edt_D3 != "") {
 
-	bezier_ready = true;
-	InvalidateRect(hwnd1, NULL, false);
-	// }
+		bezier_ready = true;
+		InvalidateRect(hwnd1, NULL, false);
+	}
 
 }
 // ---------------------------------------------------------------------------
@@ -445,7 +440,7 @@ void __fastcall TForm1::lbl_beta0KeyPress(TObject *Sender, wchar_t &Key) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm1::BtnRefreshClick(TObject *Sender) {
-
+	bezier_ready = false;
 	edt_beta0->Clear();
 	edt_D0->Clear();
 	edt_beta1->Clear();
@@ -454,6 +449,5 @@ void __fastcall TForm1::BtnRefreshClick(TObject *Sender) {
 	edt_D2->Clear();
 	edt_beta3->Clear();
 	edt_D3->Clear();
-
 }
 // ---------------------------------------------------------------------------
