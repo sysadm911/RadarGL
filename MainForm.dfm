@@ -38,7 +38,6 @@ object Form1: TForm1
     OnClick = RzPanel1Click
     OnMouseMove = RzPanel1MouseMove
     OnPaint = RzPanel1Paint
-    ExplicitTop = 25
   end
   object RzStatusBar1: TRzStatusBar
     Left = 0
@@ -58,7 +57,6 @@ object Form1: TForm1
     GradientColorStop = clActiveCaption
     ParentDoubleBuffered = False
     TabOrder = 1
-    ExplicitWidth = 1175
     object RzClockStatus1: TRzClockStatus
       Left = 1241
       Top = 0
@@ -134,8 +132,6 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 0
       VisualStyle = vsGradient
-      ExplicitTop = 6
-      ExplicitHeight = 978
       object lbl_epr: TRzLabel
         Left = 33
         Top = 32
@@ -576,7 +572,7 @@ object Form1: TForm1
     Left = 835
     Top = 224
     Bitmap = {
-      494C010110001800300010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010110001800340010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000005000000001002000000000000050
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

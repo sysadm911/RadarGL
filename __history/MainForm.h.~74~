@@ -20,49 +20,91 @@
 #include "RzLstBox.hpp"
 #include "RzEdit.hpp"
 #include <Mask.hpp>
+#include "RzLabel.hpp"
+#include <ComCtrls.hpp>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
 #define Pi M_PI
+
+typedef struct Target {
+	String Name;
+	float S;
+	float Velocity;
+	float Distance;
+	float Beta;
+	float Length;
+	float Height;
+	float X, Y;
+	float Ampl;
+} Target;
+
+typedef struct TRecFreqPackage {
+	int Period, CntIZ, CntDskr, EnumKpp;
+} TRecFreqPackage;
+
+struct TRecRadar {
+	int WaveLength;
+	int PulseLength;
+	int Deviation;
+	int I_F;
+	float wDN;
+	int ADCClock;
+	int ADCWidth;
+	int LFMlength;
+	TRecFreqPackage PackRec[4];
+};
+
+struct TtmpItemRec {
+	double Beta, Time, Ampl, TimeBack;
+	int ZapID, PackID, PckgID;
+	void* BackItem, *Parent, *ArrData;
+};
 
 // ---------------------------------------------------------------------------
 class TForm1 : public TForm {
 __published: // IDE-managed Components
 
 	TRzStatusBar *RzStatusBar1;
-	TRzToolbar *RzToolbar1;
 	TImageList *ImageList1;
-	TRzToolButton *BtnUtilities;
-	TRzToolButton *BtnPost;
-	TRzToolButton *BtnRefresh;
-	TRzToolButton *BtnCancel;
-	TRzSpacer *RzSpacer1;
-	TRzSpacer *RzSpacer2;
-	TRzSpacer *RzSpacer3;
-	TRzSpacer *RzSpacer4;
 	TRzPanel *RzPanel1;
 	TRzClockStatus *RzClockStatus1;
 	TRzFieldStatus *RzMapInfo;
 	TColorDialog *ColorDialog1;
+	TTimer *Timer1;
 	TRzPanel *RzPanel2;
 	TRzGroupBox *RzGroupBox1;
-	TLabeledEdit *lbl_epr;
-	TRzToolButton *BtnExecute;
+	TRzLabel *lbl_epr;
+	TRzLabel *lbl_speed;
+	TRzMaskEdit *edt_epr;
+	TRzMaskEdit *edt_speed;
 	TRzGroupBox *rzgrpbx_coord3;
-	TLabeledEdit *lbl_beta3;
-	TLabeledEdit *lbl_D3;
+	TRzLabel *lbl_beta3;
+	TRzLabel *lbl_D3;
+	TRzMaskEdit *edt_beta3;
+	TRzMaskEdit *edt_D3;
 	TRzGroupBox *rzgrpbx_coord0;
-	TLabeledEdit *lbl_beta0;
-	TLabeledEdit *lbl_D0;
+	TRzLabel *lbl_beta0;
+	TRzLabel *lbl_D0;
+	TRzMaskEdit *edt_beta0;
+	TRzMaskEdit *edt_D0;
 	TRzGroupBox *rzgrpbx_coord1;
-	TLabeledEdit *lbl_beta1;
-	TLabeledEdit *lbl_D1;
+	TRzLabel *lbl_beta1;
+	TRzLabel *lbl_D1;
+	TRzMaskEdit *edt_beta1;
+	TRzMaskEdit *edt_D1;
 	TRzGroupBox *rzgrpbx_coord2;
-	TLabeledEdit *lbl_beta2;
-	TLabeledEdit *lbl_D2;
-	TTimer *Timer1;
-	TLabeledEdit *lbl_speed;
-	TRzMaskEdit *RzMaskEdit1;
+	TRzLabel *lbl_beta2;
+	TRzLabel *lbl_D2;
+	TRzMaskEdit *edt_beta2;
+	TRzMaskEdit *edt_D2;
+	TRzToolbar *RzToolbar1;
+	TRzToolButton *BtnUtilities;
+	TRzToolButton *BtnExecute;
+	TRzToolButton *BtnRefresh;
+	TRzToolButton *BtnOK;
+	TMemo *Memo1;
+	TTreeView *TV;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
@@ -75,6 +117,9 @@ __published: // IDE-managed Components
 	void __fastcall BtnExecuteClick(TObject *Sender);
 	void __fastcall lbl_beta0Change(TObject *Sender);
 	void __fastcall lbl_beta0KeyPress(TObject *Sender, wchar_t &Key);
+	void __fastcall BtnRefreshClick(TObject *Sender);
+	void __fastcall TVClick(TObject *Sender);
+	void __fastcall BtnOKClick(TObject *Sender);
 
 private: // User declarations
 
@@ -104,7 +149,20 @@ public: // User declarations
 
 	void __fastcall TForm1::Textout(char* str, GLfloat x, GLfloat y, GLfloat *color);
 
-		__fastcall TForm1(TComponent* Owner);
+	TRecRadar Radar;
+	Target currentTarget;
+	TtmpItemRec *tmpItem;
+	int *TimeArr;
+	float *BetaArr;
+	int TimeOfPacket;
+	float BetaOfPacket;
+
+	int GetCountPulsesOfPacket(void);
+	TTreeNode* AddNodeRoot(void);
+	TTreeNode* AddNodePackage(TTreeNode *Parent, int i);
+	TTreeNode* AddNodePulses(TTreeNode *Parent, int i);
+
+	__fastcall TForm1(TComponent* Owner);
 };
 
 // ---------------------------------------------------------------------------

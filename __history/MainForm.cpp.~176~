@@ -48,7 +48,6 @@ __fastcall TForm1::TForm1(TComponent* Owner) : TForm(Owner) {
 	targetArr[2].Y = 100;
 	targetArr[3].X = 300;
 	targetArr[3].Y = 200;
-
 }
 
 // ---------------------------------------------------------------------------
@@ -84,8 +83,7 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	glEnable(GL_LIGHT0); // включаем источник света 0
 
 	Zoom = 1;
-	// DecimalSeparator = 0x2e;
-	// edt_epr->ClearSelection();
+	DecimalSeparator = 0x2e;
 
 	Radar.WaveLength = 100;
 	Radar.I_F = 24000000;
@@ -394,7 +392,7 @@ void TForm1::AddPoint() {
 // ---------------------------------------------------------------------------
 void TForm1::PaintPoint() {
 	if (point_ready) {
-		glPointSize(5);
+		glPointSize(7);
 		glEnable(GL_POINT_SMOOTH);
 		glBegin(GL_POINTS);
 		for (int i = 0; i < IndexPoint; i++) {
@@ -480,6 +478,7 @@ void __fastcall TForm1::lbl_beta0KeyPress(TObject *Sender, wchar_t &Key) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm1::BtnRefreshClick(TObject *Sender) {
+	Memo1->Clear();
 	bezier_ready = false;
 	point_ready = false;
 	IndexPoint = 4;
@@ -530,7 +529,7 @@ TTreeNode * TForm1::AddNodePulses(TTreeNode * Parent, int i) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm1::TVClick(TObject *Sender) {
-	TtmpItemRec *tmpR;
+	// TtmpItemRec *tmpR;
 	// for (int i = 0; i < TV->Items->Count; i++) {
 	// Memo2->Lines->Clear();
 	// if (TV->Items->Item[i]->Level == 2) {
@@ -547,20 +546,21 @@ void __fastcall TForm1::TVClick(TObject *Sender) {
 	// Memo2->Lines->Add("tmpItem->TimeBack =  " + FloatToStr(tmpItem->TimeBack));
 	// Memo2->Lines->EndUpdate();
 }
+
 // ---------------------------------------------------------------------------
-void __fastcall TForm1::BtnOKClick(TObject *Sender)
-{
-    	int i, j, ii;
+void __fastcall TForm1::BtnOKClick(TObject *Sender) {
+	int i, j, ii;
 	TTreeNode * Root, *NodePackage, *NodePulses, *PulsesData;
 	TV->Items->Clear();
 
 	int PulsesOfPacket = GetCountPulsesOfPacket();
-	TimeArr = new int(PulsesOfPacket);
-	BetaArr = new float(PulsesOfPacket);
+	TimeArr = new int[PulsesOfPacket];
+
 	int step = 0, currentPulse = 0;
 
 	Root = AddNodeRoot();
 	// проход по пачкам
+	Memo1->Clear();
 	Memo1->Lines->BeginUpdate();
 	for (j = 0; j < 4; j++) {
 
@@ -571,7 +571,6 @@ void __fastcall TForm1::BtnOKClick(TObject *Sender)
 		for (ii = 0; ii < Radar.PackRec[j].CntIZ; ii++) {
 			NodePulses = AddNodePulses(NodePackage, ii);
 			TimeArr[currentPulse] = step;
-			BetaArr[currentPulse] = TimeArr[currentPulse] * 1.0e-9 * 360.0 / 10.0;
 			// PulsesData = AddChild( NodePulses, ii);
 			tmpItem = new TtmpItemRec;
 			tmpItem->ZapID = ii;
@@ -589,18 +588,20 @@ void __fastcall TForm1::BtnOKClick(TObject *Sender)
 			currentPulse++;
 
 		}
-		// step = 0;
+
 		Memo1->Lines->Add("");
 	}
 	Memo1->Lines->EndUpdate();
-	TV->FullExpand();
+
 	TimeOfPacket = TimeArr[PulsesOfPacket - 1];
 	BetaOfPacket = TimeOfPacket * 1.0e-9 * 360.0 / 10.0;
 
 	Memo1->Lines->Add(" Кол-во запусков для режима 6 об. = " + IntToStr(GetCountPulsesOfPacket()));
 	Memo1->Lines->Add(" Время пакета = " + IntToStr(TimeOfPacket) + " ns");
 	Memo1->Lines->Add(" Поворот антенны за время пакета = " + FloatToStr(BetaOfPacket) + " градусов");
-
+	Memo1->Lines->Delete(Memo1->Lines->Count);
+	// TV->FullExpand();
+	delete[]TimeArr;
+	delete[]BetaArr;
 }
-//---------------------------------------------------------------------------
-
+// ---------------------------------------------------------------------------
