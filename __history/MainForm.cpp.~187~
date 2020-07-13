@@ -16,6 +16,11 @@
 #pragma link "RzLstBox"
 #pragma link "RzEdit"
 #pragma link "RzLabel"
+#pragma link "RzTabs"
+#pragma link "Chart"
+#pragma link "Series"
+#pragma link "TeEngine"
+#pragma link "TeeProcs"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 
@@ -37,6 +42,7 @@ GLfloat OGLpoints[4][3];
 GLfloat TrCoords[4][3];
 bool bezier_ready = false;
 bool point_ready = false;
+int Dmax = 450000;
 
 // ---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner) : TForm(Owner) {
@@ -579,6 +585,8 @@ void __fastcall TForm1::BtnOKClick(TObject *Sender) {
 			tmpItem->PckgID = j;
 
 			tmpItem->Time = TimeArr[currentPulse];
+			 Chart1->Series[0]->AddY(TimeArr[currentPulse]);
+			 Chart1->Series[0]->AddX(currentPulse);
 			tmpItem->Beta = BetaArr[currentPulse] + currentTarget.Beta;
 			tmpItem->TimeBack = tmpItem->Time + 2 * currentTarget.Distance / 3.0e8;
 			NodePulses->Data = tmpItem;
@@ -604,5 +612,43 @@ void __fastcall TForm1::BtnOKClick(TObject *Sender) {
 	// TV->FullExpand();
 	delete[]TimeArr;
 	delete[]BetaArr;
+}
+
+// ---------------------------------------------------------------------------
+void __fastcall TForm1::BtnAttachClick(TObject *Sender) {
+   	Memo1->Lines->Add(IntToStr(AddTarget())->Time));
+}
+
+// ---------------------------------------------------------------------------
+Target* TForm1::AddTarget() {
+
+	if (edt_beta0 != "" && edt_D0 != "" && edt_epr != "" && edt_speed != "") {
+		Target *Tr = (Target*) malloc(sizeof(Target));
+
+		Tr->Beta = StrToFloat(edt_beta0->Text); // (int) (frac(GetTickCount() * 1.0 / 10000) * 360);
+		Tr->Distance = 50000;
+		Tr->Height = 1000;
+		Tr->Length = 10;
+		Tr->S = StrToFloat(edt_epr->Text);
+		Tr->Velocity = StrToFloat(edt_speed->Text); // 100;
+		Tr->Ampl = -21;
+		Tr->Time = GetTickCount();
+		// Tr->Y = Tr->D * 1.0 / DMax * cos(Tr->b * 1.0 / 180 * pi);
+		// Tr->X = Tr->D * 1.0 / DMax * sin(Tr->b * 1.0 / 180 * pi);
+
+		Tr->X = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+		Tr->Y = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+
+		return Tr;
+	}
+	return NULL;
+}
+
+void __fastcall TForm1::RzPageControl1PageChange(TObject *Sender) {
+	if (RzPageControl1->ActivePage == TabSheet2)
+		Chart1->Visible = True;
+	else
+		Chart1->Visible = False;
+
 }
 // ---------------------------------------------------------------------------

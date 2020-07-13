@@ -16,6 +16,7 @@
 #pragma link "RzLstBox"
 #pragma link "RzEdit"
 #pragma link "RzLabel"
+#pragma link "RzTabs"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 
@@ -37,6 +38,7 @@ GLfloat OGLpoints[4][3];
 GLfloat TrCoords[4][3];
 bool bezier_ready = false;
 bool point_ready = false;
+int Dmax = 450000;
 
 // ---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner) : TForm(Owner) {
@@ -48,7 +50,6 @@ __fastcall TForm1::TForm1(TComponent* Owner) : TForm(Owner) {
 	targetArr[2].Y = 100;
 	targetArr[3].X = 300;
 	targetArr[3].Y = 200;
-
 }
 
 // ---------------------------------------------------------------------------
@@ -85,7 +86,6 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 
 	Zoom = 1;
 	DecimalSeparator = 0x2e;
-
 
 	Radar.WaveLength = 100;
 	Radar.I_F = 24000000;
@@ -394,7 +394,7 @@ void TForm1::AddPoint() {
 // ---------------------------------------------------------------------------
 void TForm1::PaintPoint() {
 	if (point_ready) {
-		glPointSize(5);
+		glPointSize(7);
 		glEnable(GL_POINT_SMOOTH);
 		glBegin(GL_POINTS);
 		for (int i = 0; i < IndexPoint; i++) {
@@ -603,7 +603,37 @@ void __fastcall TForm1::BtnOKClick(TObject *Sender) {
 	Memo1->Lines->Add(" Время пакета = " + IntToStr(TimeOfPacket) + " ns");
 	Memo1->Lines->Add(" Поворот антенны за время пакета = " + FloatToStr(BetaOfPacket) + " градусов");
 	Memo1->Lines->Delete(Memo1->Lines->Count);
+	// TV->FullExpand();
 	delete[]TimeArr;
 	delete[]BetaArr;
 }
+
 // ---------------------------------------------------------------------------
+void __fastcall TForm1::BtnAttachClick(TObject *Sender) {
+	Memo2->Lines->Add((AddTarget())->Time);
+}
+
+// ---------------------------------------------------------------------------
+Target* TForm1::AddTarget() {
+
+	if (edt_beta0 != "" && edt_D0 != "" && edt_epr !="" && edt_speed != "") {
+		Target *Tr = (Target*) malloc(sizeof(Target));
+
+		Tr->Beta = StrToFloat(edt_beta0->Text); // (int) (frac(GetTickCount() * 1.0 / 10000) * 360);
+		Tr->Distance = 50000;
+		Tr->Height = 1000;
+		Tr->Length = 10;
+		Tr->S = StrToFloat(edt_epr->Text);
+		Tr->Velocity = StrToFloat(edt_speed->Text); // 100;
+		Tr->Ampl = -21;
+		Tr->Time = GetTickCount();
+		// Tr->Y = Tr->D * 1.0 / DMax * cos(Tr->b * 1.0 / 180 * pi);
+		// Tr->X = Tr->D * 1.0 / DMax * sin(Tr->b * 1.0 / 180 * pi);
+
+		Tr->X = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+		Tr->Y = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+
+		return Tr;
+	}
+	return NULL;
+}

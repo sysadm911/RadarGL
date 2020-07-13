@@ -37,6 +37,8 @@ GLfloat OGLpoints[4][3];
 GLfloat TrCoords[4][3];
 bool bezier_ready = false;
 bool point_ready = false;
+int Dmax = 450000;
+
 
 // ---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner) : TForm(Owner) {
@@ -48,7 +50,6 @@ __fastcall TForm1::TForm1(TComponent* Owner) : TForm(Owner) {
 	targetArr[2].Y = 100;
 	targetArr[3].X = 300;
 	targetArr[3].Y = 200;
-
 }
 
 // ---------------------------------------------------------------------------
@@ -84,8 +85,7 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	glEnable(GL_LIGHT0); // включаем источник света 0
 
 	Zoom = 1;
-	// DecimalSeparator = 0x2e;
-	// edt_epr->ClearSelection();
+	DecimalSeparator = 0x2e;
 
 	Radar.WaveLength = 100;
 	Radar.I_F = 24000000;
@@ -121,8 +121,8 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 void __fastcall TForm1::FormDestroy(TObject *Sender) {
-  //	wglMakeCurrent(NULL, NULL);
-  //	wglDeleteContext(hrc1);
+	wglMakeCurrent(NULL, NULL);
+	wglDeleteContext(hrc1);
 }
 
 // ---------------------------------------------------------------------------
@@ -394,7 +394,7 @@ void TForm1::AddPoint() {
 // ---------------------------------------------------------------------------
 void TForm1::PaintPoint() {
 	if (point_ready) {
-		glPointSize(5);
+		glPointSize(7);
 		glEnable(GL_POINT_SMOOTH);
 		glBegin(GL_POINTS);
 		for (int i = 0; i < IndexPoint; i++) {
@@ -481,7 +481,6 @@ void __fastcall TForm1::lbl_beta0KeyPress(TObject *Sender, wchar_t &Key) {
 
 void __fastcall TForm1::BtnRefreshClick(TObject *Sender) {
 	Memo1->Clear();
-	TV->DestroyComponents();
 	bezier_ready = false;
 	point_ready = false;
 	IndexPoint = 4;
@@ -604,7 +603,39 @@ void __fastcall TForm1::BtnOKClick(TObject *Sender) {
 	Memo1->Lines->Add(" Время пакета = " + IntToStr(TimeOfPacket) + " ns");
 	Memo1->Lines->Add(" Поворот антенны за время пакета = " + FloatToStr(BetaOfPacket) + " градусов");
 	Memo1->Lines->Delete(Memo1->Lines->Count);
+	// TV->FullExpand();
 	delete[]TimeArr;
 	delete[]BetaArr;
 }
+
 // ---------------------------------------------------------------------------
+void __fastcall TForm1::BtnAttachClick(TObject *Sender) {
+	AddTarget();
+}
+
+// ---------------------------------------------------------------------------
+TRecTarget* TForm1::AddTarget() {
+	Target *Tr = (Target*) malloc(sizeof(Target));
+
+	Tr->b = 90; // (int) (frac(GetTickCount() * 1.0 / 10000) * 360);
+	Tr->D = 50000;
+	Tr->H = 1000;
+	Tr->L = 10;
+	Tr->S = 10;
+	Tr->V = 0; // 100;
+	// Tr->Selected = true;
+	Tr->Name = name;
+	Tr->CntPck = -1;
+	Tr->Ampl = -21;
+	Tr->Time = GetTickCount();
+//	Tr->Y = Tr->D * 1.0 / DMax * cos(Tr->b * 1.0 / 180 * pi);
+//	Tr->X = Tr->D * 1.0 / DMax * sin(Tr->b * 1.0 / 180 * pi);
+
+if (edt_beta0 != ""  && edt_D0 != "") {
+
+		Tr->X = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+		Tr->Y = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+   }
+
+	return Tr;
+}
