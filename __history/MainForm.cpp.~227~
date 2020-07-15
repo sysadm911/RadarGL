@@ -44,6 +44,9 @@ bool bezier_ready = false;
 bool point_ready = false;
 int Dmax = 450000;
 
+float SArr[8192] = {0};
+#define frac(X) (X)-int(X)
+
 // ---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner) : TForm(Owner) {
 	targetArr[0].X = 0;
@@ -92,9 +95,9 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	DecimalSeparator = 0x2e;
 
 	Radar.WaveLength = 100;
-	Radar.I_F = 24000000;
-	Radar.ADCClock = 32000000;
-	Radar.PulseLength = 1500;
+	Radar.I_F = 4794680;
+	Radar.ADCClock = 19178720;
+	Radar.PulseLength = 1668;
 	Radar.wDN = 2;
 	Radar.ADCWidth = 8;
 	Radar.PackRec[0].Period = 890987;
@@ -342,6 +345,19 @@ void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, in
 	RzMapInfo->Caption = Format("%3.3f κμ,  %3.0f", ARRAYOFCONST((D, Az))) + " \xB0";
 	Caption = Format("OpenGL X_coord = %3.3f,  Y_coord = %3.3f,  Z_coord = %3.3f", ARRAYOFCONST((objx, objy, objz)));
 
+
+
+//  glpointsize(1.8);
+if ( objx == 	OGLpoints[0][0] && objy == 	OGLpoints[0][1]) {
+
+  glEnable(GL_POINT_SMOOTH);
+  glColor3f(1.0, 1.0, 1.0);
+  //glColor3f(Color2RGB(clyellow).R,Color2RGB(clyellow).g,Color2RGB(clyellow).b);
+  glBegin(GL_POINTS);
+   glVertex2f(objx,objy);
+  glEnd();
+  SwapBuffers(dc1);
+}
 }
 
 // ---------------------------------------------------------------------------
@@ -430,7 +446,7 @@ void TForm1::DrawSweep() {
 // ---------------------------------------------------------------------------
 void __fastcall TForm1::Timer1Timer(TObject *Sender) {
 
-	InvalidateRect(hwnd1, 0, false);
+  InvalidateRect(hwnd1, 0, false);
 
 }
 
@@ -585,8 +601,7 @@ void __fastcall TForm1::BtnOKClick(TObject *Sender) {
 			tmpItem->PckgID = j;
 
 			tmpItem->Time = TimeArr[currentPulse];
-			 Chart1->Series[0]->AddY(TimeArr[currentPulse]);
-			 Chart1->Series[0]->AddX(currentPulse);
+
 			tmpItem->Beta = BetaArr[currentPulse] + currentTarget.Beta;
 			tmpItem->TimeBack = tmpItem->Time + 2 * currentTarget.Distance / 3.0e8;
 			NodePulses->Data = tmpItem;
@@ -616,39 +631,98 @@ void __fastcall TForm1::BtnOKClick(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 void __fastcall TForm1::BtnAttachClick(TObject *Sender) {
-   	Memo1->Lines->Add(IntToStr(AddTarget())->Time));
+
+	if (edt_beta0 != "" && edt_D0 != "" && edt_epr != "" && edt_speed != "")
+		Memo1->Lines->Add((AddTarget())->Time);
 }
 
 // ---------------------------------------------------------------------------
 Target* TForm1::AddTarget() {
 
-	if (edt_beta0 != "" && edt_D0 != "" && edt_epr != "" && edt_speed != "") {
-		Target *Tr = (Target*) malloc(sizeof(Target));
+	Target *Tr = (Target*) malloc(sizeof(Target));
 
-		Tr->Beta = StrToFloat(edt_beta0->Text); // (int) (frac(GetTickCount() * 1.0 / 10000) * 360);
-		Tr->Distance = 50000;
-		Tr->Height = 1000;
-		Tr->Length = 10;
-		Tr->S = StrToFloat(edt_epr->Text);
-		Tr->Velocity = StrToFloat(edt_speed->Text); // 100;
-		Tr->Ampl = -21;
-		Tr->Time = GetTickCount();
-		// Tr->Y = Tr->D * 1.0 / DMax * cos(Tr->b * 1.0 / 180 * pi);
-		// Tr->X = Tr->D * 1.0 / DMax * sin(Tr->b * 1.0 / 180 * pi);
+	Tr->Beta = StrToFloat(edt_beta0->Text); // (int) (frac(GetTickCount() * 1.0 / 10000) * 360);
+	Tr->Distance = 50000;
+	Tr->Height = 1000;
+	Tr->Length = 10;
+	Tr->S = StrToFloat(edt_epr->Text);
+	Tr->Velocity = StrToFloat(edt_speed->Text); // 100;
+	Tr->Ampl = -21;
+	Tr->Time = GetTickCount();
 
-		Tr->X = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
-		Tr->Y = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+	Tr->X = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+	Tr->Y = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
 
-		return Tr;
-	}
-	return NULL;
+	return Tr;
+
 }
 
 void __fastcall TForm1::RzPageControl1PageChange(TObject *Sender) {
-	if (RzPageControl1->ActivePage == TabSheet2)
-		Chart1->Visible = True;
-	else
-		Chart1->Visible = False;
+	// if (RzPageControl1->ActivePage == TabSheet2)
+	// Chart1->Visible = True;
+	// else
+	// Chart1->Visible = False;
 
+}
+
+// ---------------------------------------------------------------------------
+void __fastcall TForm1::BtnEditClick(TObject *Sender) {
+	double intpart;
+	float a, dfd, dskr, V;
+	V = 100.0;
+	a = 2 * V * GetTickCount() / 0.1;
+	a = modf(a, &intpart);
+	a = a * 2 * Pi;
+	float Deviation = 200000;
+	dfd = Deviation / GetCountSamplesOfPulseLFM();
+
+	for (int i = 0; i < GetCountSamplesOfPulseLFM(); i++) {
+		dskr = Radar.ADCClock / ((Radar.I_F - Deviation) + dfd * i);
+		SArr[i] = sin(2 * Pi * i / dskr + a);
+		Chart1->Series[0]->AddXY(i, SArr[i]);
+	}
+	for (int i = 0; i < GetCountSamplesOfPulseLFM(); i++) {
+		dskr = Radar.ADCClock / ((Radar.I_F + Deviation) - dfd * i);
+		SArr[i] = sin(2 * Pi * i / dskr + a);
+		Chart2->Series[0]->AddXY(i, SArr[i]);
+	}
+
+	for (int i = 0; i < 1400; i++) {
+		// SArr[i] = sin((2 * Pi * i * (Radar.ADCClock + dfd) + 0.01 * i * i) / 180);
+		SArr[i] = sin(0.01 * 2 * Pi * Radar.ADCClock * 0.01 * i + 0.01 * 2 * Pi * Radar.ADCClock * i * i / 2 * Pi * dfd);
+		Chart3->Series[0]->AddXY(i, SArr[i]);
+
+	}
+
+	// float x = 0;
+	// float step = 0.05;
+	// do {
+	// Chart1->Series[0]->AddXY(x, sin(x));
+	// x = x + step;
+	// }
+	// while ( x < 20);
+}
+
+// ---------------------------------------------------------------------------
+int TForm1::GetCountSamplesOfPulse() {
+	int result = 0;
+	result = ceil((32.0 / Radar.ADCClock) * Radar.ADCClock);
+	return result;
+}
+
+int TForm1::GetCountSamplesOfPulseLFM() {
+	int result = 0;
+	result = GetCountSamplesOfPulse() * 52; // Radar.LFMlength;
+	return result;
+}
+
+void __fastcall TForm1::Chart2MouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos, bool &Handled) {
+	Chart2->ZoomPercent(100 + MousePos.x);
+	Chart2->Repaint();
+}
+
+// ---------------------------------------------------------------------------
+void __fastcall TForm1::BtnReplaceClick(TObject *Sender) {
+	ShowMessage(FloatToStr(frac(-2.2)));
 }
 // ---------------------------------------------------------------------------

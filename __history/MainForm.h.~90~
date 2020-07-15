@@ -22,6 +22,11 @@
 #include <Mask.hpp>
 #include "RzLabel.hpp"
 #include <ComCtrls.hpp>
+#include "RzTabs.hpp"
+#include "Chart.hpp"
+#include "Series.hpp"
+#include "TeEngine.hpp"
+#include "TeeProcs.hpp"
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -37,6 +42,7 @@ typedef struct Target {
 	float Height;
 	float X, Y;
 	float Ampl;
+	int Time;
 } Target;
 
 typedef struct TRecFreqPackage {
@@ -100,13 +106,22 @@ __published: // IDE-managed Components
 	TRzMaskEdit *edt_D2;
 	TRzToolbar *RzToolbar1;
 	TRzToolButton *BtnUtilities;
-	TRzSpacer *RzSpacer1;
 	TRzToolButton *BtnExecute;
-	TRzSpacer *RzSpacer2;
 	TRzToolButton *BtnRefresh;
-	TTreeView *TV;
 	TRzToolButton *BtnOK;
 	TMemo *Memo1;
+	TTreeView *TV;
+	TRzToolButton *BtnAttach;
+	TRzPageControl *RzPageControl1;
+	TRzTabSheet *TabSheet1;
+	TRzTabSheet *TabSheet2;
+	TRzToolButton *BtnEdit;
+	TChart *Chart1;
+	TChart *Chart2;
+	TChart *Chart3;
+	TLineSeries *Series1;
+	TLineSeries *Series2;
+	TLineSeries *Series3;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
@@ -122,6 +137,10 @@ __published: // IDE-managed Components
 	void __fastcall BtnRefreshClick(TObject *Sender);
 	void __fastcall TVClick(TObject *Sender);
 	void __fastcall BtnOKClick(TObject *Sender);
+	void __fastcall BtnAttachClick(TObject *Sender);
+	void __fastcall RzPageControl1PageChange(TObject *Sender);
+	void __fastcall BtnEditClick(TObject *Sender);
+	void __fastcall Chart2MouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos, bool &Handled);
 
 private: // User declarations
 
@@ -160,11 +179,17 @@ public: // User declarations
 	float BetaOfPacket;
 
 	int GetCountPulsesOfPacket(void);
-	TTreeNode* AddNodeRoot(void);
-	TTreeNode* AddNodePackage(TTreeNode *Parent, int i);
-	TTreeNode* AddNodePulses(TTreeNode *Parent, int i);
 
-	__fastcall TForm1(TComponent* Owner);
+	int GetCountSamplesOfPulse();
+
+	int GetCountSamplesOfPulseLFM();
+
+	TTreeNode* AddNodeRoot(void);
+	TTreeNode* AddNodePackage(TTreeNode * Parent, int i);
+	TTreeNode* AddNodePulses(TTreeNode * Parent, int i);
+	Target* AddTarget();
+
+	__fastcall TForm1(TComponent * Owner);
 };
 
 // ---------------------------------------------------------------------------
