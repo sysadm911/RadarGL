@@ -139,10 +139,9 @@ __published: // IDE-managed Components
 	void __fastcall TVClick(TObject *Sender);
 	void __fastcall BtnOKClick(TObject *Sender);
 	void __fastcall BtnAttachClick(TObject *Sender);
-	void __fastcall RzPageControl1PageChange(TObject *Sender);
 	void __fastcall BtnEditClick(TObject *Sender);
-	void __fastcall Chart2MouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos, bool &Handled);
 	void __fastcall BtnReplaceClick(TObject *Sender);
+	void __fastcall edt_beta1Enter(TObject *Sender);
 
 private: // User declarations
 

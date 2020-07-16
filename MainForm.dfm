@@ -89,7 +89,6 @@ object Form1: TForm1
     ParentColor = False
     TabIndex = 0
     TabOrder = 1
-    OnPageChange = RzPageControl1PageChange
     FixedDimension = 19
     object TabSheet1: TRzTabSheet
       Caption = #1056#1072#1076#1072#1088
@@ -126,7 +125,7 @@ object Form1: TForm1
         object RzGroupBox1: TRzGroupBox
           Left = 0
           Top = 0
-          Width = 250
+          Width = 244
           Height = 961
           Align = alLeft
           Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1094#1077#1083#1080':'
@@ -284,7 +283,7 @@ object Form1: TForm1
           end
         end
         object rzgrpbx_coord0: TRzGroupBox
-          Left = 6
+          Left = 4
           Top = 79
           Width = 244
           Height = 82
@@ -406,6 +405,7 @@ object Form1: TForm1
             MaxLength = 5
             ParentFont = False
             TabOrder = 0
+            OnEnter = edt_beta1Enter
           end
           object edt_D1: TRzMaskEdit
             Left = 136
@@ -601,9 +601,9 @@ object Form1: TForm1
           end
         end
         object Memo1: TMemo
-          Left = 252
+          Left = 250
           Top = 0
-          Width = 240
+          Width = 242
           Height = 961
           Align = alRight
           ScrollBars = ssVertical
@@ -622,10 +622,6 @@ object Form1: TForm1
     end
     object TabSheet2: TRzTabSheet
       Caption = #1043#1088#1072#1092#1080#1082
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Chart1: TChart
         Left = 0
         Top = 0
@@ -683,8 +679,11 @@ object Form1: TForm1
         Top = 600
         Width = 1452
         Height = 300
+        Legend.Visible = False
         Title.Text.Strings = (
           'TChart')
+        Pages.AutoScale = True
+        Pages.MaxPointsPerPage = 3000
         View3D = False
         Align = alTop
         TabOrder = 2
@@ -695,6 +694,8 @@ object Form1: TForm1
           Marks.Callout.Arrow.Visible = True
           Marks.Visible = False
           LinePen.Color = 10708548
+          Pointer.Brush.Gradient.EndColor = 10708548
+          Pointer.Gradient.EndColor = 10708548
           Pointer.InflateMargins = True
           Pointer.Style = psRectangle
           Pointer.Visible = False
@@ -710,7 +711,7 @@ object Form1: TForm1
     Left = 835
     Top = 224
     Bitmap = {
-      494C010116001800400010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010116001800500010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000006000000001002000000000000060
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000099330000993300009933

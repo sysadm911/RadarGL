@@ -345,19 +345,6 @@ void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, in
 	RzMapInfo->Caption = Format("%3.3f κμ,  %3.0f", ARRAYOFCONST((D, Az))) + " \xB0";
 	Caption = Format("OpenGL X_coord = %3.3f,  Y_coord = %3.3f,  Z_coord = %3.3f", ARRAYOFCONST((objx, objy, objz)));
 
-
-//	if (objx == OGLpoints[0][0] && objy == OGLpoints[0][1]) {
-if (true) {
-		glPointSize(7);
-		glEnable(GL_POINT_SMOOTH);
-		glColor3f(1.0, 1.0, 1.0);
-		// glColor3f(Color2RGB(clyellow).R,Color2RGB(clyellow).g,Color2RGB(clyellow).b);
-		glBegin(GL_POINTS);
-		glVertex2f(objx, objy);
-		glEnd();
-		SwapBuffers(dc1);
-		InvalidateRect(hwnd1, NULL, true);
-	}
 }
 
 // ---------------------------------------------------------------------------
@@ -373,7 +360,8 @@ void __fastcall TForm1::RzPanel1Click(TObject *Sender) {
 	if (IndexPoint > 4) {
 		IndexPoint = 0;
 	}
-	AddPoint();
+	if (D < 451)
+		AddPoint();
 }
 // ---------------------------------------------------------------------------
 
@@ -424,6 +412,17 @@ void TForm1::PaintPoint() {
 	}
 	else {
 		bezier_ready = false;
+	}
+
+	// if (objx == OGLpoints[0][0] && objy == OGLpoints[0][1]) {
+	if (D < 451) {
+		glPointSize(7);
+		glEnable(GL_POINT_SMOOTH);
+		glColor3f(1.0, 1.0, 1.0);
+		// glColor3f(Color2RGB(clyellow).R,Color2RGB(clyellow).g,Color2RGB(clyellow).b);
+		glBegin(GL_POINTS);
+		glVertex2f(objx, objy);
+		glEnd();
 	}
 }
 
@@ -687,12 +686,15 @@ void __fastcall TForm1::BtnEditClick(TObject *Sender) {
 		Chart2->Series[0]->AddXY(i, SArr[i]);
 	}
 
-	for (int i = 0; i < 1400; i++) {
-		// SArr[i] = sin((2 * Pi * i * (Radar.ADCClock + dfd) + 0.01 * i * i) / 180);
-		SArr[i] = sin(0.01 * 2 * Pi * Radar.ADCClock * 0.01 * i + 0.01 * 2 * Pi * Radar.ADCClock * i * i / 2 * Pi * dfd);
-		Chart3->Series[0]->AddXY(i, SArr[i]);
+
+	float signal;
+	for (int i = 0; i < 26*580; i++) {
+		signal = sin(2 * Pi * ((Radar.ADCClock + 200000) * i * 1.667e-6) - (400000 / 43) * ((i * 1.667e-6) / 2) * ((i * 1.667e-6) / 2));
+		Chart3->Series[0]->AddXY(i, signal);
 
 	}
+
+	RzPageControl1->ActivePage = TabSheet2;
 
 	// float x = 0;
 	// float step = 0.05;
@@ -716,12 +718,6 @@ int TForm1::GetCountSamplesOfPulseLFM() {
 	return result;
 }
 
-void __fastcall TForm1::Chart2MouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos, bool &Handled) {
-	Chart2->ZoomPercent(100 + MousePos.x);
-	Chart2->Repaint();
-}
-
-// ---------------------------------------------------------------------------
 void __fastcall TForm1::BtnReplaceClick(TObject *Sender) {
 	ShowMessage(FloatToStr(frac(-2.2)));
 }

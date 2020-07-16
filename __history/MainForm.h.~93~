@@ -115,9 +115,14 @@ __published: // IDE-managed Components
 	TRzPageControl *RzPageControl1;
 	TRzTabSheet *TabSheet1;
 	TRzTabSheet *TabSheet2;
-	TChart *Chart1;
-	TLineSeries *Series1;
 	TRzToolButton *BtnEdit;
+	TChart *Chart1;
+	TChart *Chart2;
+	TChart *Chart3;
+	TLineSeries *Series1;
+	TLineSeries *Series2;
+	TLineSeries *Series3;
+	TRzToolButton *BtnReplace;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
@@ -134,8 +139,8 @@ __published: // IDE-managed Components
 	void __fastcall TVClick(TObject *Sender);
 	void __fastcall BtnOKClick(TObject *Sender);
 	void __fastcall BtnAttachClick(TObject *Sender);
-	void __fastcall RzPageControl1PageChange(TObject *Sender);
 	void __fastcall BtnEditClick(TObject *Sender);
+	void __fastcall BtnReplaceClick(TObject *Sender);
 
 private: // User declarations
 
@@ -174,26 +179,17 @@ public: // User declarations
 	float BetaOfPacket;
 
 	int GetCountPulsesOfPacket(void);
-    int GetCountSamplesOfPulse()
-{
-	int result = 0;
-	result = ceil(32.0 / Radar.ADCClock * 19178720);//Radar.ADCClock);
-	return result;
-}
 
-int GetCountSamplesOfPulseLFM()
-{
-	int result = 0;
-	result = GetCountSamplesOfPulse() * 52);//Radar.LFMlength;
-	return result;
-}
+	int GetCountSamplesOfPulse();
+
+	int GetCountSamplesOfPulseLFM();
 
 	TTreeNode* AddNodeRoot(void);
-	TTreeNode* AddNodePackage(TTreeNode *Parent, int i);
-	TTreeNode* AddNodePulses(TTreeNode *Parent, int i);
+	TTreeNode* AddNodePackage(TTreeNode * Parent, int i);
+	TTreeNode* AddNodePulses(TTreeNode * Parent, int i);
 	Target* AddTarget();
 
-	__fastcall TForm1(TComponent* Owner);
+	__fastcall TForm1(TComponent * Owner);
 };
 
 // ---------------------------------------------------------------------------
