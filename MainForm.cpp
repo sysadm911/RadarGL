@@ -282,6 +282,16 @@ void TForm1::PaintGrid() {
 	}
 	glEndList();
 
+	if (D < 451) {
+		glPointSize(7);
+		glEnable(GL_POINT_SMOOTH);
+		glColor3f(1.0, 1.0, 1.0);
+		// glColor3f(Color2RGB(clyellow).R,Color2RGB(clyellow).g,Color2RGB(clyellow).b);
+		glBegin(GL_POINTS);
+		glVertex2f(objx, objy);
+		glEnd();
+	}
+
 }
 
 // ---------------------------------------------------------------------------
@@ -412,7 +422,6 @@ void TForm1::AddPoint() {
 	}
 
 	IndexPoint++;
-
 }
 
 // ---------------------------------------------------------------------------
@@ -428,17 +437,6 @@ void TForm1::PaintPoint() {
 	}
 	else {
 		bezier_ready = false;
-	}
-
-	// if (objx == OGLpoints[0][0] && objy == OGLpoints[0][1]) {
-	if (D < 451) {
-		glPointSize(7);
-		glEnable(GL_POINT_SMOOTH);
-		glColor3f(1.0, 1.0, 1.0);
-		// glColor3f(Color2RGB(clyellow).R,Color2RGB(clyellow).g,Color2RGB(clyellow).b);
-		glBegin(GL_POINTS);
-		glVertex2f(objx, objy);
-		glEnd();
 	}
 }
 
@@ -484,7 +482,6 @@ void __fastcall TForm1::BtnExecuteClick(TObject *Sender) {
 		bezier_ready = true;
 		InvalidateRect(hwnd1, NULL, false);
 	}
-
 }
 // ---------------------------------------------------------------------------
 
@@ -669,7 +666,6 @@ Target* TForm1::AddTarget() {
 	Tr->Y = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
 
 	return Tr;
-
 }
 
 void __fastcall TForm1::BtnEditClick(TObject *Sender) {
@@ -695,20 +691,20 @@ void __fastcall TForm1::BtnEditClick(TObject *Sender) {
 
 	float signal;
 	for (int i = 0; i < 26 * 580; i++) {
-		signal = sin(2 * Pi * ((Radar.I_F + 200000) * i * 1.667e-6) - (400000 / 43) * (((i * 1.667e-6) / 2) * ((i * 1.667e-6) / 2)));
+		signal = sin(2 * Pi * ((Radar.I_F + 220000) * i * 1.667e-6) - (440000 / 43) * (((i * 1.667e-6) / 2) * ((i * 1.667e-6) / 2)));
 		Chart3->Series[0]->AddXY(i, signal);
 
 	}
 
 	RzPageControl1->ActivePage = TabSheet2;
 
-	// float x = 0;
-	// float step = 0.05;
-	// do {
-	// Chart1->Series[0]->AddXY(x, sin(x));
-	// x = x + step;
-	// }
-	// while ( x < 20);
+	 float x = 0;
+	 float step = 0.05;
+	 do {
+	 Chart3->Series[1]->AddXY(x, sin(x));
+	 x = x + step;
+	 }
+	 while ( x < 20);
 }
 
 // ---------------------------------------------------------------------------
