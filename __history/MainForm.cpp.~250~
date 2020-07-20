@@ -86,6 +86,7 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	SetDCPixelFormat(dc1);
 	hrc1 = wglCreateContext(dc1);
 	wglMakeCurrent(dc1, hrc1);
+	// glRotatef (90, 0.0, 0.0, 1.0);
 
 	glEnable(GL_DEPTH_TEST); // разрешаем тест глубины
 	glEnable(GL_LIGHTING); // разрешаем работу с освещенностью
@@ -123,6 +124,9 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	currentTarget.Beta = 90;
 	currentTarget.Length = 10;
 	currentTarget.Height = 1000;
+
+	RzPageControl1->ActivePage = TabSheet1;
+	BtnOKClick(this);
 
 }
 
@@ -172,17 +176,29 @@ void TForm1::PaintBezier() {
 	if (edt_beta0 != "" && edt_beta1 != "" && edt_beta2 != "" && edt_beta3 != "" && edt_D0 != "" && edt_D1 != "" && edt_D2 != "" &&
 		edt_D3 != "") {
 
-		OGLpoints[0][0] = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
-		OGLpoints[0][1] = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+		// OGLpoints[0][0] = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+		// OGLpoints[0][1] = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+		//
+		// OGLpoints[1][0] = (StrToFloat(edt_D1->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta1->Text) / 180.0);
+		// OGLpoints[1][1] = (StrToFloat(edt_D1->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta1->Text) / 180.0);
+		//
+		// OGLpoints[2][0] = (StrToFloat(edt_D2->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta2->Text) / 180.0);
+		// OGLpoints[2][1] = (StrToFloat(edt_D2->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta2->Text) / 180.0);
+		//
+		// OGLpoints[3][0] = (StrToFloat(edt_D3->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta3->Text) / 180.0);
+		// OGLpoints[3][1] = (StrToFloat(edt_D3->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta3->Text) / 180.0);
 
-		OGLpoints[1][0] = (StrToFloat(edt_D1->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta1->Text) / 180.0);
-		OGLpoints[1][1] = (StrToFloat(edt_D1->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta1->Text) / 180.0);
+		OGLpoints[0][0] = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+		OGLpoints[0][1] = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
 
-		OGLpoints[2][0] = (StrToFloat(edt_D2->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta2->Text) / 180.0);
-		OGLpoints[2][1] = (StrToFloat(edt_D2->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta2->Text) / 180.0);
+		OGLpoints[1][0] = (StrToFloat(edt_D1->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta1->Text) / 180.0);
+		OGLpoints[1][1] = (StrToFloat(edt_D1->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta1->Text) / 180.0);
 
-		OGLpoints[3][0] = (StrToFloat(edt_D3->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta3->Text) / 180.0);
-		OGLpoints[3][1] = (StrToFloat(edt_D3->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta3->Text) / 180.0);
+		OGLpoints[2][0] = (StrToFloat(edt_D2->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta2->Text) / 180.0);
+		OGLpoints[2][1] = (StrToFloat(edt_D2->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta2->Text) / 180.0);
+
+		OGLpoints[3][0] = (StrToFloat(edt_D3->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta3->Text) / 180.0);
+		OGLpoints[3][1] = (StrToFloat(edt_D3->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta3->Text) / 180.0);
 
 	}
 	glShadeModel(GL_FLAT);
@@ -239,7 +255,7 @@ void TForm1::PaintGrid() {
 			y = j * cos(a) / nSec;
 			glVertex3f(x, y, 0.01);
 		}
-		a = 0 * 2 * Pi / n;
+		a = 1 * 2 * Pi / n;
 		x = j * sin(a) / nSec;
 		y = j * cos(a) / nSec;
 		glVertex3f(x, y, 0.01);
@@ -265,6 +281,16 @@ void TForm1::PaintGrid() {
 
 	}
 	glEndList();
+
+	if (D < 451) {
+		glPointSize(7);
+		glEnable(GL_POINT_SMOOTH);
+		glColor3f(1.0, 1.0, 1.0);
+		// glColor3f(Color2RGB(clyellow).R,Color2RGB(clyellow).g,Color2RGB(clyellow).b);
+		glBegin(GL_POINTS);
+		glVertex2f(objx, objy);
+		glEnd();
+	}
 
 }
 
@@ -335,7 +361,8 @@ void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, in
 	gluUnProject(X, (float)viewport[3] - Y, 0, modelMatrix, projMatrix, viewport, &objx, &objy, &objz);
 
 	D = sqrt(objy * objy + objx * objx) * 450;
-	Az = ArcTan2(objy, objx);
+	// Az = ArcTan2(objy, objx);
+	Az = ArcTan2(objx, objy);
 
 	if (Az > 0)
 		Az = 180 / Pi * Az;
@@ -360,7 +387,8 @@ void __fastcall TForm1::RzPanel1Click(TObject *Sender) {
 	if (IndexPoint > 4) {
 		IndexPoint = 0;
 	}
-	AddPoint();
+	if (D < 451)
+		AddPoint();
 }
 // ---------------------------------------------------------------------------
 
@@ -389,13 +417,11 @@ void TForm1::AddPoint() {
 	}
 	else {
 
-		// IndexPoint = 0;
 		BtnRefreshClick(this);
 
 	}
 
 	IndexPoint++;
-
 }
 
 // ---------------------------------------------------------------------------
@@ -411,17 +437,6 @@ void TForm1::PaintPoint() {
 	}
 	else {
 		bezier_ready = false;
-	}
-
-	// if (objx == OGLpoints[0][0] && objy == OGLpoints[0][1]) {
-	if (true) {
-		glPointSize(7);
-		glEnable(GL_POINT_SMOOTH);
-		glColor3f(1.0, 1.0, 1.0);
-		// glColor3f(Color2RGB(clyellow).R,Color2RGB(clyellow).g,Color2RGB(clyellow).b);
-		glBegin(GL_POINTS);
-		glVertex2f(objx, objy);
-		glEnd();
 	}
 }
 
@@ -467,7 +482,6 @@ void __fastcall TForm1::BtnExecuteClick(TObject *Sender) {
 		bezier_ready = true;
 		InvalidateRect(hwnd1, NULL, false);
 	}
-
 }
 // ---------------------------------------------------------------------------
 
@@ -652,18 +666,8 @@ Target* TForm1::AddTarget() {
 	Tr->Y = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
 
 	return Tr;
-
 }
 
-void __fastcall TForm1::RzPageControl1PageChange(TObject *Sender) {
-	// if (RzPageControl1->ActivePage == TabSheet2)
-	// Chart1->Visible = True;
-	// else
-	// Chart1->Visible = False;
-
-}
-
-// ---------------------------------------------------------------------------
 void __fastcall TForm1::BtnEditClick(TObject *Sender) {
 	double intpart;
 	float a, dfd, dskr, V;
@@ -685,39 +689,45 @@ void __fastcall TForm1::BtnEditClick(TObject *Sender) {
 		Chart2->Series[0]->AddXY(i, SArr[i]);
 	}
 
-	for (int i = 0; i < 8192/2; i++) {
-		// SArr[i] = sin((2 * Pi * i * (Radar.ADCClock + dfd) + 0.01 * i * i) / 180);
-		SArr[i] = sin(2 * Pi * ((Radar.ADCClock + 200000) * i  * 1.667e-6 ) - (400000/43)*((i*1.667e-6)/2)*((i*1.667e-6)/2));
-		Chart3->Series[0]->AddXY(i, SArr[i]);
+	float signal, delta = 0;
+	for (int i = 0; i < GetCountSamplesOfPulseLFM(); i++) {
+//		signal = sin(2 * Pi * ((Radar.I_F + 220000) * i * 1.667e-6) - (440000 / 43) * (((i * 1.667e-6) / 2) * ((i * 1.667e-6) / 2)));
+signal = sin(2 * Pi * ((Radar.I_F + 220000) * i * 1.667e-6) - (delta / 43) * (((i * 1.667e-6) / 2) * ((i * 1.667e-6) / 2)));
+		Chart3->Series[0]->AddXY(i, signal);
+		delta+=dfd;
 
 	}
 
 	RzPageControl1->ActivePage = TabSheet2;
 
-
-	// float x = 0;
-	// float step = 0.05;
-	// do {
-	// Chart1->Series[0]->AddXY(x, sin(x));
-	// x = x + step;
-	// }
-	// while ( x < 20);
+//	 float x = 0;
+//	 float step = 0.05;
+//	 do {
+//	 Chart3->Series[1]->AddXY(x, sin(x));
+//	 x = x + step;
+//	 }
+//	 while ( x < 20);
 }
 
 // ---------------------------------------------------------------------------
 int TForm1::GetCountSamplesOfPulse() {
-	int result = 0;
-	result = ceil((32.0 / Radar.ADCClock) * Radar.ADCClock);
-	return result;
+
+	return ceil((32.0 / Radar.ADCClock) * Radar.ADCClock);
+
 }
 
 int TForm1::GetCountSamplesOfPulseLFM() {
-	int result = 0;
-	result = GetCountSamplesOfPulse() * 52; // Radar.LFMlength;
-	return result;
+
+	return GetCountSamplesOfPulse() * 52; // Radar.LFMlength;
+
 }
 
 void __fastcall TForm1::BtnReplaceClick(TObject *Sender) {
 	ShowMessage(FloatToStr(frac(-2.2)));
+}
+// ---------------------------------------------------------------------------
+
+void __fastcall TForm1::edt_beta1Enter(TObject *Sender) {
+	PaintBezier();
 }
 // ---------------------------------------------------------------------------

@@ -115,9 +115,15 @@ __published: // IDE-managed Components
 	TRzPageControl *RzPageControl1;
 	TRzTabSheet *TabSheet1;
 	TRzTabSheet *TabSheet2;
-	TChart *Chart1;
-	TLineSeries *Series1;
 	TRzToolButton *BtnEdit;
+	TChart *Chart1;
+	TChart *Chart2;
+	TChart *Chart3;
+	TLineSeries *Series1;
+	TLineSeries *Series2;
+	TLineSeries *Series3;
+	TRzToolButton *BtnReplace;
+	TLineSeries *Series4;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
@@ -134,8 +140,9 @@ __published: // IDE-managed Components
 	void __fastcall TVClick(TObject *Sender);
 	void __fastcall BtnOKClick(TObject *Sender);
 	void __fastcall BtnAttachClick(TObject *Sender);
-	void __fastcall RzPageControl1PageChange(TObject *Sender);
 	void __fastcall BtnEditClick(TObject *Sender);
+	void __fastcall BtnReplaceClick(TObject *Sender);
+	void __fastcall edt_beta1Enter(TObject *Sender);
 
 private: // User declarations
 

@@ -123,7 +123,6 @@ __published: // IDE-managed Components
 	TLineSeries *Series2;
 	TLineSeries *Series3;
 	TRzToolButton *BtnReplace;
-	TLineSeries *Series4;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);

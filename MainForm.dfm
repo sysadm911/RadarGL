@@ -92,6 +92,10 @@ object Form1: TForm1
     FixedDimension = 19
     object TabSheet1: TRzTabSheet
       Caption = #1056#1072#1076#1072#1088
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object RzPanel1: TRzPanel
         Left = 0
         Top = 0
@@ -704,22 +708,6 @@ object Form1: TForm1
           YValues.Name = 'Y'
           YValues.Order = loNone
         end
-        object Series4: TLineSeries
-          Marks.Arrow.Visible = True
-          Marks.Callout.Brush.Color = clBlack
-          Marks.Callout.Arrow.Visible = True
-          Marks.Visible = False
-          LinePen.Color = 3513587
-          Pointer.Brush.Gradient.EndColor = 3513587
-          Pointer.Gradient.EndColor = 3513587
-          Pointer.InflateMargins = True
-          Pointer.Style = psRectangle
-          Pointer.Visible = False
-          XValues.Name = 'X'
-          XValues.Order = loAscending
-          YValues.Name = 'Y'
-          YValues.Order = loNone
-        end
       end
     end
   end
@@ -727,7 +715,7 @@ object Form1: TForm1
     Left = 835
     Top = 224
     Bitmap = {
-      494C0101160018005C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010116001800640010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000006000000001002000000000000060
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000099330000993300009933

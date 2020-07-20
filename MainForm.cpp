@@ -689,22 +689,23 @@ void __fastcall TForm1::BtnEditClick(TObject *Sender) {
 		Chart2->Series[0]->AddXY(i, SArr[i]);
 	}
 
-	float signal;
-	for (int i = 0; i < 26 * 580; i++) {
-		signal = sin(2 * Pi * ((Radar.I_F + 220000) * i * 1.667e-6) - (440000 / 43) * (((i * 1.667e-6) / 2) * ((i * 1.667e-6) / 2)));
+	float signal, delta = 0;
+	for (int i = 0; i < GetCountSamplesOfPulseLFM(); i++) {
+		// signal = sin(2 * Pi * ((Radar.I_F + 220000) * i * 1.667e-6) - (440000 / 43) * (((i * 1.667e-6) / 2) * ((i * 1.667e-6) / 2)));
+		signal = sin(2 * Pi * ((Radar.I_F + 220000) * i * 1.667e-6) - (delta / 43) * (((i * 1.667e-6) / 2) * ((i * 1.667e-6) / 2)));
 		Chart3->Series[0]->AddXY(i, signal);
-
+		delta += dfd;
 	}
 
 	RzPageControl1->ActivePage = TabSheet2;
 
-	 float x = 0;
-	 float step = 0.05;
-	 do {
-	 Chart3->Series[1]->AddXY(x, sin(x));
-	 x = x + step;
-	 }
-	 while ( x < 20);
+	// float x = 0;
+	// float step = 0.05;
+	// do {
+	// Chart3->Series[1]->AddXY(x, sin(x));
+	// x = x + step;
+	// }
+	// while ( x < 20);
 }
 
 // ---------------------------------------------------------------------------

@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.807,C:\Users\user\Desktop\RadarGL\main_unit.dfm=C:\Users\user\Desktop\RadarGL\MainForm.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.807,C:\Users\user\Desktop\RadarGL\main_unit.cpp=C:\Users\user\Desktop\RadarGL\MainForm.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.807,C:\Users\user\Desktop\RadarGL\MainForm.h=C:\Users\user\Desktop\RadarGL\main_unit.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.807,C:\Users\user\Desktop\RadarGL\MainForm.cpp=C:\Users\user\Desktop\RadarGL\main_unit.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.883,=C:\Users\user\Documents\RAD Studio\Projects\Project1.res</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.981,C:\Users\user\Documents\RAD Studio\Projects\Project1.cbproj=C:\Users\user\Desktop\RadarGL\RadarGL.cbproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.807,C:\Users\user\Desktop\RadarGL\main_unit.h=C:\Users\user\Desktop\RadarGL\MainForm.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.328,C:\Users\user\Documents\RAD Studio\Projects\Unit1.cpp=C:\Users\user\Desktop\RadarGL\main_unit.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.328,C:\Users\user\Desktop\RadarGL\main_unit.dfm=C:\Users\user\Documents\RAD Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.981,C:\Users\user\Desktop\RadarGL\RadarGL.cbproj=C:\Users\user\Documents\RAD Studio\Projects\Project1.cbproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.807,C:\Users\user\Desktop\RadarGL\MainForm.dfm=C:\Users\user\Desktop\RadarGL\main_unit.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.894,=C:\Users\user\Documents\RAD Studio\Projects\Unit1.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.328,C:\Users\user\Documents\RAD Studio\Projects\Unit1.h=C:\Users\user\Desktop\RadarGL\main_unit.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.328,C:\Users\user\Documents\RAD Studio\Projects\Unit1.dfm=C:\Users\user\Desktop\RadarGL\main_unit.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.328,C:\Users\user\Desktop\RadarGL\main_unit.cpp=C:\Users\user\Documents\RAD Studio\Projects\Unit1.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.328,C:\Users\user\Desktop\RadarGL\main_unit.h=C:\Users\user\Documents\RAD Studio\Projects\Unit1.h</Transaction>
   </Transactions>
 </BorlandProject>
