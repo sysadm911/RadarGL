@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------
 
 #include <vcl.h>
+#include <tchar.h>
 #pragma hdrstop
 
 #include "MainForm.h"
@@ -44,7 +45,8 @@ bool bezier_ready = false;
 bool point_ready = false;
 int Dmax = 450000;
 
-float SArr[8192] = {0};
+float SArrLFMup[8192] = {0};
+float SArrLFMdown[8192] = {0};
 #define frac(X) (X)-int(X)
 
 // ---------------------------------------------------------------------------
@@ -93,7 +95,7 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	glEnable(GL_LIGHT0); // включаем источник света 0
 
 	Zoom = 1;
-	DecimalSeparator = 0x2e;
+	// DecimalSeparator = 0x2e;
 
 	Radar.WaveLength = 100;
 	Radar.I_F = 4794680;
@@ -125,8 +127,8 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	currentTarget.Length = 10;
 	currentTarget.Height = 1000;
 
+	BtnAddTVClick(this);
 	RzPageControl1->ActivePage = TabSheet1;
-	BtnOKClick(this);
 
 }
 
@@ -375,7 +377,7 @@ void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, in
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TForm1::BtnUtilitiesClick(TObject *Sender) {
+void __fastcall TForm1::BtnBackgroundClick(TObject *Sender) {
 	ColorDialog1->Execute();
 }
 // ---------------------------------------------------------------------------
@@ -417,7 +419,7 @@ void TForm1::AddPoint() {
 	}
 	else {
 
-		BtnRefreshClick(this);
+		BtnRestartClick(this);
 
 	}
 
@@ -475,7 +477,7 @@ void __fastcall TForm1::Textout(char* str, GLfloat x, GLfloat y, GLfloat *color)
 	}
 }
 
-void __fastcall TForm1::BtnExecuteClick(TObject *Sender) {
+void __fastcall TForm1::BtnRouteClick(TObject *Sender) {
 	if (edt_beta0->Text != "" && edt_beta1->Text != "" && edt_beta2->Text != "" && edt_beta3->Text != "" && edt_D0->Text != "" &&
 		edt_D1->Text != "" && edt_D2->Text != "" && edt_D3->Text != "") {
 
@@ -511,7 +513,7 @@ void __fastcall TForm1::lbl_beta0KeyPress(TObject *Sender, wchar_t &Key) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TForm1::BtnRefreshClick(TObject *Sender) {
+void __fastcall TForm1::BtnRestartClick(TObject *Sender) {
 	Memo1->Clear();
 	bezier_ready = false;
 	point_ready = false;
@@ -562,87 +564,7 @@ TTreeNode * TForm1::AddNodePulses(TTreeNode * Parent, int i) {
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TForm1::TVClick(TObject *Sender) {
-	// TtmpItemRec *tmpR;
-	// for (int i = 0; i < TV->Items->Count; i++) {
-	// Memo2->Lines->Clear();
-	// if (TV->Items->Item[i]->Level == 2) {
-	// Memo2->Lines->BeginUpdate();
-
-	// Memo2->Lines->Add("	TV->SelectionCount =  " + IntToStr((int)TV->SelectionCount));
-	// TV->
-	//
-	// Memo2->Lines->Add("tmpItem->ZapID =  " + IntToStr(tmpItem->ZapID));
-	// Memo2->Lines->Add("tmpItem->PackID =  " + IntToStr(tmpItem->PackID));
-	// Memo2->Lines->Add("tmpItem->PckgID =  " + IntToStr(tmpItem->PckgID));
-	// Memo2->Lines->Add("tmpItem->Time =  " + FloatToStr(tmpItem->Time));
-	// Memo2->Lines->Add("tmpItem->Beta =  " + FloatToStr(tmpItem->Beta));
-	// Memo2->Lines->Add("tmpItem->TimeBack =  " + FloatToStr(tmpItem->TimeBack));
-	// Memo2->Lines->EndUpdate();
-}
-
-// ---------------------------------------------------------------------------
-void __fastcall TForm1::BtnOKClick(TObject *Sender) {
-	int i, j, ii;
-	TTreeNode * Root, *NodePackage, *NodePulses, *PulsesData;
-	TV->Items->Clear();
-
-	int PulsesOfPacket = GetCountPulsesOfPacket();
-	TimeArr = new int[PulsesOfPacket];
-	BetaArr = new float[PulsesOfPacket];
-	int step = 0, currentPulse = 0;
-
-	Root = AddNodeRoot();
-	// проход по пачкам
-	Memo1->Clear();
-	Memo1->Lines->BeginUpdate();
-	for (j = 0; j < 4; j++) {
-
-		NodePackage = AddNodePackage(Root, j);
-		Memo1->Lines->Add("Пачка #" + IntToStr(j + 1));
-		Memo1->Lines->Add("");
-		// проход по запускам
-		for (ii = 0; ii < Radar.PackRec[j].CntIZ; ii++) {
-			NodePulses = AddNodePulses(NodePackage, ii);
-			TimeArr[currentPulse] = step;
-			BetaArr[currentPulse] = TimeArr[currentPulse] * 1.0e-9 * 360.0 / 10.0;
-			// PulsesData = AddChild( NodePulses, ii);
-			tmpItem = new TtmpItemRec;
-			tmpItem->ZapID = ii;
-			tmpItem->PackID = 1;
-			tmpItem->PckgID = j;
-
-			tmpItem->Time = TimeArr[currentPulse];
-
-			tmpItem->Beta = BetaArr[currentPulse] + currentTarget.Beta;
-			tmpItem->TimeBack = tmpItem->Time + 2 * currentTarget.Distance / 3.0e8;
-			NodePulses->Data = tmpItem;
-
-			// Memo2->Lines->Add("PckgID" + IntToStr(((TtmpItemRec*)NodePulses->Data)->PckgID));
-			Memo1->Lines->Add(" Запуск[" + IntToStr(ii + 1) + "] = " + IntToStr(step) + "  нс");
-			step = step + Radar.PackRec[j].Period;
-			currentPulse++;
-
-		}
-
-		Memo1->Lines->Add("");
-	}
-	Memo1->Lines->EndUpdate();
-
-	TimeOfPacket = TimeArr[PulsesOfPacket - 1];
-	BetaOfPacket = TimeOfPacket * 1.0e-9 * 360.0 / 10.0;
-
-	Memo1->Lines->Add(" Кол-во запусков для режима 6 об. = " + IntToStr(GetCountPulsesOfPacket()));
-	Memo1->Lines->Add(" Время пакета = " + IntToStr(TimeOfPacket) + " ns");
-	Memo1->Lines->Add(" Поворот антенны за время пакета = " + FloatToStr(BetaOfPacket) + " градусов");
-	Memo1->Lines->Delete(Memo1->Lines->Count);
-	// TV->FullExpand();
-	delete[]TimeArr;
-	delete[]BetaArr;
-}
-
-// ---------------------------------------------------------------------------
-void __fastcall TForm1::BtnAttachClick(TObject *Sender) {
+void __fastcall TForm1::BtnAddTargetClick(TObject *Sender) {
 
 	if (edt_beta0 != "" && edt_D0 != "" && edt_epr != "" && edt_speed != "")
 		Memo1->Lines->Add((AddTarget())->Time);
@@ -650,28 +572,27 @@ void __fastcall TForm1::BtnAttachClick(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 Target* TForm1::AddTarget() {
-
 	Target *Tr = (Target*) malloc(sizeof(Target));
-
-	Tr->Beta = StrToFloat(edt_beta0->Text); // (int) (frac(GetTickCount() * 1.0 / 10000) * 360);
+	FormatSettings.DecimalSeparator = 0x2e;
+	Tr->Beta = StrToFloat(Trim(edt_beta0->Text), FormatSettings);
 	Tr->Distance = 50000;
 	Tr->Height = 1000;
 	Tr->Length = 10;
 	Tr->S = StrToFloat(edt_epr->Text);
 	Tr->Velocity = StrToFloat(edt_speed->Text); // 100;
 	Tr->Ampl = -21;
-	Tr->Time = GetTickCount();
+	Tr->Time = GetTickCount() * 1e-3;
 
 	Tr->X = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
 	Tr->Y = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
 
 	return Tr;
-
 }
 
-void __fastcall TForm1::BtnEditClick(TObject *Sender) {
+void __fastcall TForm1::BtnPlotClick(TObject *Sender) {
 	double intpart;
 	float a, dfd, dskr, V;
+	TPoint Q;
 	V = 100.0;
 	a = 2 * V * GetTickCount() / 0.1;
 	a = modf(a, &intpart);
@@ -679,30 +600,53 @@ void __fastcall TForm1::BtnEditClick(TObject *Sender) {
 	float Deviation = 200000;
 	dfd = Deviation / GetCountSamplesOfPulseLFM();
 
+	Memo4->Lines->BeginUpdate();
 	for (int i = 0; i < GetCountSamplesOfPulseLFM(); i++) {
 		dskr = Radar.ADCClock / ((Radar.I_F - Deviation) + dfd * i);
-		SArr[i] = sin(2 * Pi * i / dskr + a);
-		Chart1->Series[0]->AddXY(i, SArr[i]);
+		SArrLFMup[i] = sin(2 * Pi * i / dskr + a);
+		Memo4->Lines->Add(Format("%2.d)     %8.15f", ARRAYOFCONST((i, SArrLFMup[i]))));
+
+		// Q = FQ(SArrLFMup, 1);
+		Chart1->Series[0]->AddXY(i, SArrLFMup[i]);
 	}
+	Memo4->Lines->EndUpdate();
+	Memo5->Lines->BeginUpdate();
 	for (int i = 0; i < GetCountSamplesOfPulseLFM(); i++) {
 		dskr = Radar.ADCClock / ((Radar.I_F + Deviation) - dfd * i);
-		SArr[i] = sin(2 * Pi * i / dskr + a);
-		Chart2->Series[0]->AddXY(i, SArr[i]);
+		SArrLFMdown[i] = sin(2 * Pi * i / dskr + a);
+		Memo5->Lines->Add(Format("%d)     %8.15f", ARRAYOFCONST((i, SArrLFMdown[i]))));
+		Chart2->Series[0]->AddXY(i, SArrLFMdown[i]);
 	}
-
-	float signal;
-	for (int i = 0; i < 26 * 580; i++) {
-		signal = sin(2 * Pi * ((Radar.I_F + 200000) * i * 1.667e-6) - (400000 / 43) * (((i * 1.667e-6) / 2) * ((i * 1.667e-6) / 2)));
+	Memo5->Lines->EndUpdate();
+	float signal, delta = 0;
+	for (int i = 0; i < GetCountSamplesOfPulseLFM(); i++) {
+		// signal = sin(2 * Pi * ((Radar.I_F + 220000) * i * 1.667e-6) - (440000 / 43) * (((i * 1.667e-6) / 2) * ((i * 1.667e-6) / 2)));
+		signal = sin(2 * Pi * ((Radar.I_F + 220000) * i * 1.667e-6) - (delta / 43) * (((i * 1.667e-6) / 2) * ((i * 1.667e-6) / 2)));
 		Chart3->Series[0]->AddXY(i, signal);
-
+		delta += dfd;
 	}
 
-	RzPageControl1->ActivePage = TabSheet2;
+	TtmpItemRec * tmpR;
+	for (int i = 0; i < TV->Items->Count; i++) {
+		if (TV->Items->Item[i]->Level == 2) {
+			tmpR = (TtmpItemRec*)TV->Items->Item[i]->Data;
+			Memo3->Lines->BeginUpdate();
+			Memo3->Lines->Add("ZapID =  " + IntToStr(tmpR->ZapID));
+			Memo3->Lines->Add("PckgID =  " + IntToStr(tmpR->PckgID));
+			Memo3->Lines->Add("PackID =  " + IntToStr(tmpR->PackID));
+			Memo3->Lines->Add("Beta =  " + FloatToStr(tmpR->Beta));
+			Memo3->Lines->Add("Time =  " + FloatToStr(tmpR->Time));
+			Memo3->Lines->Add("TimeBack =  " + FloatToStr(tmpR->TimeBack));
+			Memo3->Lines->Add(" ");
+			Memo3->Lines->EndUpdate();
+		}
+
+	}
 
 	// float x = 0;
 	// float step = 0.05;
 	// do {
-	// Chart1->Series[0]->AddXY(x, sin(x));
+	// Chart3->Series[1]->AddXY(x, sin(x));
 	// x = x + step;
 	// }
 	// while ( x < 20);
@@ -721,7 +665,7 @@ int TForm1::GetCountSamplesOfPulseLFM() {
 
 }
 
-void __fastcall TForm1::BtnReplaceClick(TObject *Sender) {
+void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 	ShowMessage(FloatToStr(frac(-2.2)));
 }
 // ---------------------------------------------------------------------------
@@ -729,4 +673,168 @@ void __fastcall TForm1::BtnReplaceClick(TObject *Sender) {
 void __fastcall TForm1::edt_beta1Enter(TObject *Sender) {
 	PaintBezier();
 }
+
 // ---------------------------------------------------------------------------
+TPoint TForm1::FQ(double Arr[], float Scale) {
+	TPoint result;
+	double a = 0.0, AA = 0.0, b = 0.0, BB = 0.0, C = 0.0, CC = 0.0, D = 0.0, DD = 0.0, Re = 0.0, Im = 0.0, F = 0.0;
+	int i = 0, Cnt = 0;
+	Cnt = GetCountSamplesOfPulse();
+	for (i = 0; i < Cnt / 8; i++) {
+		a = a + (Arr[i * 8]);
+		b = b + (Arr[i * 8 + 1]);
+		C = C + (Arr[i * 8 + 2]);
+		D = D + (Arr[i * 8 + 3]);
+		AA = AA + (Arr[i * 8 + 4]);
+		BB = BB + (Arr[i * 8 + 5]);
+		CC = CC + (Arr[i * 8 + 6]);
+		DD = DD + (Arr[i * 8 + 7]);
+	}
+	F = a - C + AA - CC;
+	Re = F - b + D - BB + DD;
+	Im = F + b - D + BB - DD;
+	Re = Re * Scale;
+	Im = Im * Scale;
+	result = Point(floor(Re), floor(Im));
+	return result;
+}
+
+void __fastcall TForm1::TVClick(TObject *Sender) {
+	TtmpItemRec *tmpR;
+
+	if (TV->Selected->Level == 1) {
+		Memo1->Lines->Clear();
+		for (int i = 0; i < TV->Selected->Count; i++) {
+			tmpR = (TtmpItemRec*)TV->Selected->Item[i]->Data;
+			Memo1->Lines->BeginUpdate();
+			Memo1->Lines->Add("ZapID =  " + IntToStr(tmpR->ZapID));
+			Memo1->Lines->Add("PckgID =  " + IntToStr(tmpR->PckgID));
+			Memo1->Lines->Add("PackID =  " + IntToStr(tmpR->PackID));
+			Memo1->Lines->Add("Beta =  " + FloatToStr(tmpR->Beta));
+			Memo1->Lines->Add("Time =  " + FloatToStr(tmpR->Time));
+			Memo1->Lines->Add("TimeBack =  " + FloatToStr(tmpR->TimeBack));
+			Memo1->Lines->Add(" ");
+			Memo1->Lines->EndUpdate();
+		}
+	}
+	else if (TV->Selected->Level == 2) {
+		Memo1->Lines->Clear();
+
+		tmpR = (TtmpItemRec*)TV->Selected->Data;
+		Memo1->Lines->BeginUpdate();
+		Memo1->Lines->Add("ZapID =  " + IntToStr(tmpR->ZapID));
+		Memo1->Lines->Add("PckgID =  " + IntToStr(tmpR->PckgID));
+		Memo1->Lines->Add("PackID =  " + IntToStr(tmpR->PackID));
+		Memo1->Lines->Add("Beta =  " + FloatToStr(tmpR->Beta));
+		Memo1->Lines->Add("Time =  " + FloatToStr(tmpR->Time));
+		Memo1->Lines->Add("TimeBack =  " + FloatToStr(tmpR->TimeBack));
+		Memo1->Lines->EndUpdate();
+	}
+}
+// ---------------------------------------------------------------------------
+
+float TForm1::PulseToTime(int PacketID, int PackageID, int PulseId) {
+	float result = 0.0;
+	int i = 0, Cnt = 0;
+	result = PacketID;
+	i = PackageID; // - 1;
+	while (i > 0) {
+		result = result + GetTimePackage(i);
+		i--;
+	}
+	result = result + PulseId * Radar.PackRec[PackageID].Period * 1E-9;
+	return result;
+}
+
+// ---------------------------------------------------------------------------
+
+float TForm1::GetTimePackage(int PackageID) {
+	float result = 0.0;
+	int i = 0;
+	result = Radar.PackRec[PackageID].Period * Radar.PackRec[PackageID].CntIZ * 1E-9;
+	return result;
+}
+
+void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
+	int i, j, ii;
+	TTreeNode * Root, *NodePackage, *NodePulses, *PulsesData;
+	TV->Items->Clear();
+
+	int PulsesOfPacket = GetCountPulsesOfPacket();
+	TimeArr = new int[PulsesOfPacket];
+	BetaArr = new float[PulsesOfPacket];
+	int step = 0, currentPulse = 0;
+
+	Root = AddNodeRoot();
+	// проход по пачкам
+	Memo1->Clear();
+
+	Memo1->Lines->BeginUpdate();
+	for (j = 0; j < 4; j++) {
+
+		NodePackage = AddNodePackage(Root, j);
+		Memo1->Lines->Add("Пачка #" + IntToStr(j + 1));
+		// проход по запускам
+		for (ii = 0; ii < Radar.PackRec[j].CntIZ; ii++) {
+			NodePulses = AddNodePulses(NodePackage, ii);
+			TimeArr[currentPulse] = step;
+			BetaArr[currentPulse] = TimeArr[currentPulse] * 1.0e-9 * 360.0 / 10.0;
+			// PulsesData = AddChild( NodePulses, ii);
+			tmpItem = new TtmpItemRec;
+			tmpItem->ZapID = ii;
+			tmpItem->PackID = 1;
+			tmpItem->PckgID = j;
+
+			tmpItem->Time = PulseToTime(1, j, ii);
+
+			tmpItem->Beta = BetaArr[currentPulse] + currentTarget.Beta;
+			tmpItem->TimeBack = tmpItem->Time + 2 * currentTarget.Distance / 3.0e8;
+			NodePulses->Data = tmpItem;
+
+			// Memo2->Lines->Add("PckgID" + IntToStr(((TtmpItemRec*)NodePulses->Data)->PckgID));
+			Memo1->Lines->Add(" Запуск[" + IntToStr(ii + 1) + "] = " + IntToStr(step) + "  нс");
+			step = step + Radar.PackRec[j].Period;
+			currentPulse++;
+
+		}
+		Memo1->Lines->Add("");
+	}
+	Memo1->Lines->EndUpdate();
+
+	TimeOfPacket = TimeArr[PulsesOfPacket - 1];
+	BetaOfPacket = TimeOfPacket * 1.0e-9 * 360.0 / 10.0;
+
+	Memo1->Lines->Add(" Кол-во запусков для режима 6 об. = " + IntToStr(GetCountPulsesOfPacket()));
+	Memo1->Lines->Add(" Время пакета = " + IntToStr(TimeOfPacket) + " ns");
+	Memo1->Lines->Add(" Поворот антенны за время пакета = " + FloatToStr(BetaOfPacket) + " градусов");
+	Memo1->Lines->Delete(Memo1->Lines->Count);
+
+	Memo2->Text = Memo1->Text;
+	delete[]TimeArr;
+	delete[]BetaArr;
+}
+
+// ---------------------------------------------------------------------------
+
+void __fastcall TForm1::BtnDataClick(TObject *Sender) {
+	TtmpItemRec *tmpR, *tmpPar;
+	double *NoiseBufferRe;
+
+	for (int i = 0; i < TV->Items->Count; i++) {
+		Memo6->Lines->BeginUpdate();
+		if (TV->Items->Item[i]->Level == 2) {
+			tmpR = (TtmpItemRec*)TV->Items->Item[i]->Data;
+			tmpPar = (TtmpItemRec*)tmpR->Parent;
+			NoiseBufferRe = new double[Radar.PackRec[tmpR->PckgID].CntDskr * GetCountSamplesOfPulse() + 32];
+			for (int k = 0; k < Radar.PackRec[tmpR->PckgID].CntDskr * GetCountSamplesOfPulse() + 32; k++) {
+				NoiseBufferRe[k] = 2 * (Random(65536) - 32768 / 65536);
+				Memo6->Lines->Add(Format("%2.d)     %8.15f", ARRAYOFCONST((k, NoiseBufferRe[k]))));
+			}
+			//Memo6->Lines->Add(Radar.PackRec[tmpR->PckgID].CntDskr);
+		}
+		Memo6->Lines->EndUpdate();
+		delete[]NoiseBufferRe;
+	}
+	BtnPlotClick(this);
+	RzPageControl1->ActivePage = TabSheet3;
+}
