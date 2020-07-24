@@ -22,6 +22,8 @@
 #pragma link "Series"
 #pragma link "TeEngine"
 #pragma link "TeeProcs"
+#pragma link "RzRadGrp"
+#pragma link "RzRadGrp"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 
@@ -44,7 +46,7 @@ GLfloat TrCoords[4][3];
 bool bezier_ready = false;
 bool point_ready = false;
 int Dmax = 450000;
-
+int CDOSWidth = 16384;
 float virezDD = 25;
 // deltaDD = 250.0;
 float deltaDD = 3E8 * 32 / 19178720 / 2;
@@ -54,6 +56,9 @@ bool IsPulse = false;
 float SArrLFMup[8192] = {0};
 float SArrLFMdown[8192] = {0};
 float ArrRe[32768] = {0};
+DynamicArray<int>ArrBig;
+
+TList *ListPulses = new TList;
 
 #define frac(X) (X)-int(X)
 
@@ -67,6 +72,8 @@ __fastcall TForm1::TForm1(TComponent* Owner) : TForm(Owner) {
 	targetArr[2].Y = 100;
 	targetArr[3].X = 300;
 	targetArr[3].Y = 200;
+
+	ArrBig.Length = 10;
 }
 
 // ---------------------------------------------------------------------------
@@ -111,6 +118,7 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	Radar.PulseLength = 1668;
 	Radar.wDN = 2;
 	Radar.ADCWidth = 8;
+	Radar.Noise = -60;
 	Radar.PackRec[0].Period = 890987;
 	Radar.PackRec[0].CntIZ = 16;
 	Radar.PackRec[0].CntDskr = 509;
@@ -134,7 +142,7 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	currentTarget.Beta = 90;
 	currentTarget.Length = 10;
 	currentTarget.Height = 1000;
-
+	ListTr = new TList;
 	BtnAddTVClick(this);
 	BtnPlotClick(this);
 	RzPageControl1->ActivePage = TabSheet1;
@@ -674,11 +682,6 @@ int TForm1::GetCountSamplesOfPulseLFM() {
 
 }
 
-void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
-	ShowMessage(FloatToStr(frac(-2.2)));
-}
-// ---------------------------------------------------------------------------
-
 void __fastcall TForm1::edt_beta1Enter(TObject *Sender) {
 	PaintBezier();
 }
@@ -782,7 +785,7 @@ void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
 	for (j = 0; j < 4; j++) {
 
 		NodePackage = AddNodePackage(Root, j);
-		Memo1->Lines->Add("Пачка #" + IntToStr(j + 1));
+		Memo1->Lines->Add("Пачка #" + IntToStr(j + 1) + " период пачки = " + IntToStr(Radar.PackRec[j].Period));
 		// проход по запускам
 		for (ii = 0; ii < Radar.PackRec[j].CntIZ; ii++) {
 			NodePulses = AddNodePulses(NodePackage, ii);
@@ -798,7 +801,7 @@ void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
 
 			tmpItem->Beta = BetaArr[currentPulse] + currentTarget.Beta;
 			tmpItem->TimeBack = tmpItem->Time + 2 * currentTarget.Distance / 3.0e8;
-			tmpItem->Parent= NULL;
+			tmpItem->Parent = NULL;
 			NodePulses->Data = tmpItem;
 
 			// Memo2->Lines->Add("PckgID" + IntToStr(((TtmpItemRec*)NodePulses->Data)->PckgID));
@@ -811,6 +814,8 @@ void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
 	}
 	Memo1->Lines->EndUpdate();
 
+	UpdateListPulses();
+
 	TimeOfPacket = TimeArr[PulsesOfPacket - 1];
 	BetaOfPacket = TimeOfPacket * 1.0e-9 * 360.0 / 10.0;
 
@@ -822,55 +827,6 @@ void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
 	Memo2->Text = Memo1->Text;
 	delete[]TimeArr;
 	delete[]BetaArr;
-}
-
-// ---------------------------------------------------------------------------
-
-void __fastcall TForm1::BtnDataClick(TObject *Sender) {
-	TtmpItemRec *tmpR, *tmpPar;
-	double *NoiseBufferRe;
-	int Dskr, CntDskr, HiddenDiskret, shft, x, pulsesID;
-
-	for (int i = 0; i < TV->Items->Count; i++) {
-		if (TV->Items->Item[i]->Level == 2) {
-
-			tmpR = (TtmpItemRec*)TV->Items->Item[i]->Data;
-			tmpPar = (TtmpItemRec*)tmpR->Parent;
-			Memo6->Lines->Add(tmpPar->PckgID);
-			CntDskr = Radar.PackRec[tmpR->PckgID].CntDskr;
-
-//			Dskr = DistanceToDiskret(3E8/2 * (tmpPar->TimeBack - tmpR->Time) - virezKm);
-			  }}
-//			shft = GetShiftADCClock(tmpPar->TimeBack - tmpR->Time);
-//
-//			// IsPulse = not(pulsesID+1/3 == 0)
-//
-//			NoiseBufferRe = new double[CntDskr * GetCountSamplesOfPulse() + 32];
-//			for (int k = 0; k < CntDskr * GetCountSamplesOfPulse() + 32; k++) {
-//				NoiseBufferRe[k] = 2 * (Random(65536) - 32768 / 65536);
-//			}
-//
-//			if (Dskr < 0) {
-//				HiddenDiskret = 0;
-//
-//			}
-
-			// for (int k = 0; k < CntDskr; k++) {
-			// if ((k >= HiddenDiskret) && (k < Dskr + Radar.LFMlength)) {
-			// for (int j = 0; j < GetCountSamplesOfPulse(); j++) {
-			// x = (k - Dskr) * GetCountSamplesOfPulse() + j;
-			// NoiseBufferRe[k * 32 + j] = NoiseBufferRe[k * 32 + j] + SArrLFMup[x];
-			// }
-			// }
-			// }
-
-			// Memo6->Lines->Add(Radar.PackRec[tmpR->PckgID].CntDskr);
-//		}
-//
-//		delete[]NoiseBufferRe;
-//	}
-	BtnPlotClick(this);
-	RzPageControl1->ActivePage = TabSheet3;
 }
 
 int TForm1::DistanceToDiskret(float Distance) {
@@ -897,15 +853,249 @@ int TForm1::GetShiftADCClock(float dT) {
 	return int(frac(test) * GetCountSamplesOfPulse());
 }
 
+void TForm1::FillListPulses(int &Index, TList * ListPulses) {
+	ListPulses->Clear();
+	Index = Index + 1;
+	while (Index < TV->Items->Count) {
+		if (TV->Items->Item[Index]->Level == 2) {
+			if (TV->Items->Item[Index]->Data != NULL) {
+				ListPulses->Add(TV->Items->Item[Index]->Data);
+			}
+		}
+		if (TV->Items->Item[Index]->Level == 1) {
+			return;
+		}
+		Index++;
+	}
+}
+
+void TForm1::UpdateListPulses() {
+	int i = 0, j = 0, ii = 0, itr = 0;
+
+	Target *Ptr;
+	TtmpItemRec *RN = NULL, *tmpRN = NULL, *tmp = NULL;
+	bool resdata = false;
+	if (TV->Items->Count == 0)
+		return;
+	while (i < TV->Items->Count)
+		if (true) {
+			// Ptr = (Target*) ListTr->Items[itr];
+
+			FillListPulses(i, ListPulses); // Заливка списками запусков для этой цели-itr
+
+			for (ii = 0; ii < ListPulses->Count; ii++) {
+				RN = (TtmpItemRec*)ListPulses->Items[ii];
+				j = ii + 1;
+				tmpRN = RN;
+				resdata = true;
+				while (RN->TimeBack > (tmpRN->Time + Radar.PackRec[tmpRN->PckgID].Period * 1e-9)) {
+					if (j > ListPulses->Count - 1) {
+						resdata = false;
+						break;
+					}
+					tmpRN = (TtmpItemRec*)ListPulses->Items[j];
+					j++;
+				}
+				if ((j <= ListPulses->Count) && resdata) {
+					tmp = (TtmpItemRec*)ListPulses->Items[j - 1];
+					RN->BackItem = tmp; // запись потомка с откликом
+					tmp->Parent = RN; // запись предка-излучателя в потомке
+				}
+			}
+			// itr++;
+			// }
+			// else {
+		}
+
+	i++;
+}
+
+void __fastcall TForm1::BtnDataClick(TObject *Sender) {
+	TtmpItemRec *tmpR, *tmpPar;
+//	double *NoiseBufferRe;
+	DynamicArray<double> NoiseBufferRe;
+	int Dskr, Cnt, CntDskr, HiddenDiskret, shft, x, pulsesID;
+	TPoint Q;
+	float LevN = Power(10, Radar.Noise / 20.0);
+	float LevADC = Power(2, double(Radar.ADCWidth - 1));
+	float noiseL = int(LevADC * LevN);
+	float LevTrAmp = Power(10, currentTarget.Ampl / 20.0);
+	float Scale = double(CDOSWidth) / (LevADC * GetCountSamplesOfPulse());
+	int ii = 0;
+	Cnt = 0;
+	for (int i = 0; i < 4; i++) {
+		Cnt = Cnt + Radar.PackRec[i].CntDskr * Radar.PackRec[i].CntIZ;
+	}
+	ArrBig.Length = Cnt;
+
+	for (int i = 0; i < TV->Items->Count; i++) {
+		if (TV->Items->Item[i]->Level == 2) {
+
+			tmpR = (TtmpItemRec*)TV->Items->Item[i]->Data;
+			tmpPar = (TtmpItemRec*)tmpR->Parent;
+			CntDskr = Radar.PackRec[tmpR->PckgID].CntDskr;
+			Dskr = DistanceToDiskret(3E8 / 2 * (tmpPar->TimeBack - tmpR->Time) - virezKm);
+		}
+	}
+	shft = GetShiftADCClock(tmpPar->TimeBack - tmpR->Time);
+
+	// IsPulse = not(pulsesID+1/3 == 0)
+
+	NoiseBufferRe.Length = CntDskr * GetCountSamplesOfPulse() + 32;
+	for (int k = 0; k < CntDskr * GetCountSamplesOfPulse() + 32; k++) {
+		NoiseBufferRe[k] = (1.0 * (Random(65536) - 32768.0) / 65536.0);
+//					Memo6->Lines->Add(NoiseBufferRe[k]);
+	}
+
+	tmpR->ArrData = &ArrBig[ii];
+
+	if (Dskr < 0) {
+		HiddenDiskret = 0;
+
+	}
+
+//	Memo6->Lines->BeginUpdate();
+	for (int k = 0; k < CntDskr; k++) {
+		if ((k >= HiddenDiskret) && (k < Dskr + Radar.LFMlength)) {
+			for (int j = 0; j < GetCountSamplesOfPulse(); j++) {
+				x = (k - Dskr) * GetCountSamplesOfPulse() + j;
+				NoiseBufferRe[k * 32 + j] = NoiseBufferRe[k * 32 + j] + SArrLFMup[x] * LevADC * LevTrAmp;
+			}
+		}
+		Q = FQ(&NoiseBufferRe[k * GetCountSamplesOfPulse()], Scale);
+		Memo7->Lines->Add(Q.X);
+//		Memo8->Lines->Add(Q.Y);
+		ArrBig[ii] = MAKELONG(Q.Y, Q.X);
+	   		Memo6->Lines->Add(ArrBig[ii]);
+		ii++;
+	}
+//		Memo6->Lines->EndUpdate();
+
+	// pulsesID++ ;
+
+	// Chart3->Series[0]->Clear();
+	// Chart3->LeftAxis->Maximum = 32000;
+	// Chart3->LeftAxis->Minimum = 0;
+	//
+	// unsigned char b0, b1, b2, b3 = 0;
+	// for (int i = 0; i < ArrBig.Length; i++) {
+	// b0 = LOBYTE(ArrBig[i]);
+	// b1 = HIBYTE(ArrBig[i]);
+	// b2 = LOBYTE(HIWORD(ArrBig[i]));
+	// b3 = HIBYTE(HIWORD(ArrBig[i]));
+	// ArrBig[i] = (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
+	//
+	// Chart3->Series[0]->Add(sqrt(abs(LOWORD(ArrBig[i])*LOWORD(ArrBig[i]) + HIWORD(ArrBig[i])*HIWORD(ArrBig[i]))));
+	//
+	// }
+	// WriteToBittware(ArrBig, Mode2Turn);
+
+
+	BtnPlotClick(this);
+	RzPageControl1->ActivePage = TabSheet3;
+}
+
+// ---------------------------------------------------------------------------
+void TForm1::DarwModuleDiskrets(TtmpItemRec *RN) {
+	int Arr[32768];
+	int i, Cnt;
+	int Re, Im;
+	unsigned char b0, b1, b2, b3;
+
+	{
+		Chart3->Series[0]->Clear();
+		Chart3->LeftAxis->Maximum = 32000;
+		Chart3->LeftAxis->Minimum = 0;
+	}
+
+	if (RN->ArrData == 0)
+		return;
+
+	Cnt = Radar.PackRec[RN->PckgID].CntDskr;
+	// MoveMemory(@ Arr[0], RN.ArrData, Cnt * 4);
+	memcpy(Arr, RN->ArrData, Cnt * 4);
+
+	for (int i = 0; i < Cnt; i++) {
+		b0 = LOBYTE(Arr[i]);
+		b1 = HIBYTE(Arr[i]);
+		b2 = LOBYTE(HIWORD(Arr[i]));
+		b3 = HIBYTE(HIWORD(Arr[i]));
+		Arr[i] = (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
+	}
+
+	for (int i = 0; i < Cnt; i++) {
+		Re = LOWORD(Arr[i]);
+		Im = HIWORD(Arr[i]);
+		Chart3->Series[0]->Add(sqrt(Re*Re + Im*Im));
+	}
+
+}
+
+// ---------------------------------------------------------------------------
+
+void TForm1::ADCGenerateTargetLFM(bool EnPulses, TLFMMode UpDown, double Arr[], float dbKu, float DeltaTimePulse, float Deviation,
+	float Phase, float dbNoise, int Shift) {
+	Target *Tr = NULL;
+	int i = 0, tlength = 0, wArr = 0, w = 0;
+	float a = 0.0, dskr = 0.0, df = 0.0, dFd = 0.0, Ku = 0.0, Knoise = 0.0, K = 0.0;
+	double tmp = 0.0;
+	DynamicArray<double>S2Arr, NoiseArr;
+	Tr = &currentTarget;
+	a = (2 * Tr->Velocity * DeltaTimePulse) / (Radar.WaveLength * 1E-3);
+	a = Frac(a);
+	a = a * 2 * M_PI + Phase;
+	Ku = pow(10, dbKu / 20);
+	Knoise = pow(10, dbNoise / 20);
+	K = pow(2, Radar.ADCWidth - 1) - 1;
+	Randomize();
+	S2Arr.Length = 8192;
+	NoiseArr.Length = 8192;
+	for (int i = 0; i < GetCountSamplesOfPulseLFM() + Shift + GetCountSamplesOfPulse(); i++) {
+		Arr[i] = 0;
+		S2Arr[i] = 0;
+	}
+	dFd = Deviation / GetCountSamplesOfPulseLFM();
+	if (EnPulses) {
+		if (UpDown == lfmUp) {
+
+			for (int i = 0; i < GetCountSamplesOfPulseLFM(); i++) {
+				dskr = double(Radar.ADCClock) / ((Radar.I_F - Deviation) + dFd * i);
+				tmp = sin(2 * M_PI * i / dskr + a);
+				S2Arr[i + Shift] = tmp;
+			}
+		}
+		if (UpDown == lfmDown) {
+			for (int i = 0; i < GetCountSamplesOfPulseLFM(); i++) {
+				dskr = double(Radar.ADCClock) / ((Radar.I_F + Deviation) - dFd * i);
+				tmp = (sin(2 * M_PI * i / dskr + a));
+				S2Arr[i + Shift] = tmp;
+			}
+		}
+	}
+	for (int i = 0; i < GetCountSamplesOfPulseLFM() + Shift + GetCountSamplesOfPulse(); i++) {
+		NoiseArr[i] = 0 * RandG(0, K * Knoise);
+		Arr[i] = S2Arr[i];
+	}
+}
+
 void TForm1::GetADCPulseLFM(bool EnPulses, TtmpItemRec RN, double IArr[], int Shift) {
-	// TLFMMode typeLFM;
-	// if (tbLFMUP->Down)
-	// {
-	// typeLFM = lfmUp;
-	// }
-	// else
-	// {
-	// typeLFM = lfmDown;
-	// }
-	// ADCGenerateTargetLFM(EnPulses, typeLFM, IArr, , RN.Ampl, RN.TimeBack, Radar.Deviation, 0, Radar.Noise, Shift);
+	TLFMMode typeLFM;
+	if (RzRadioGroup1->ItemIndex == 0) {
+		typeLFM = lfmUp;
+	}
+	else {
+		typeLFM = lfmDown;
+	}
+	ADCGenerateTargetLFM(EnPulses, typeLFM, IArr, RN.Ampl, RN.TimeBack, Radar.Deviation, 0, Radar.Noise, Shift);
+}
+
+void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
+
+	for (int i = 0; i < ArrBig.Length; i++) {
+
+		Memo6->Lines->BeginUpdate();
+		Memo6->Lines->Add(ArrBig[i]);
+		Memo6->Lines->EndUpdate();
+
+	}
 }

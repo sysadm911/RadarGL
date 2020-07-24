@@ -105,53 +105,51 @@ __published: // IDE-managed Components
 	TRzMaskEdit *edt_beta2;
 	TRzMaskEdit *edt_D2;
 	TRzToolbar *RzToolbar1;
-	TRzToolButton *BtnUtilities;
-	TRzToolButton *BtnExecute;
-	TRzToolButton *BtnRefresh;
-	TRzToolButton *BtnOK;
+	TRzToolButton *BtnBackground;
+	TRzToolButton *BtnRoute;
+	TRzToolButton *BtnRestart;
+	TRzToolButton *BtnAddTV;
 	TMemo *Memo1;
 	TTreeView *TV;
-	TRzToolButton *BtnAttach;
+	TRzToolButton *BtnAddTarget;
 	TRzPageControl *RzPageControl1;
 	TRzTabSheet *TabSheet1;
 	TRzTabSheet *TabSheet2;
-	TRzToolButton *BtnEdit;
+	TRzToolButton *BtnPlot;
 	TChart *Chart1;
 	TChart *Chart2;
 	TChart *Chart3;
 	TLineSeries *Series1;
 	TLineSeries *Series2;
 	TLineSeries *Series3;
-	TRzToolButton *BtnReplace;
+	TRzToolButton *BtnDebug;
 	TRzTabSheet *TabSheet3;
 	TMemo *Memo2;
 	TMemo *Memo3;
 	TMemo *Memo4;
 	TMemo *Memo5;
 	TMemo *Memo6;
-	TMemo *Memo7;
-	TMemo *Memo8;
-	TRzToolButton *BtnNote;
+	TRzToolButton *BtnData;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall FormMouseWheel(TObject *Sender, TShiftState Shift, int WheelDelta, TPoint &MousePos, bool &Handled);
 	void __fastcall RzPanel1Paint(TObject *Sender);
 	void __fastcall RzPanel1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
-	void __fastcall BtnUtilitiesClick(TObject *Sender);
+	void __fastcall BtnBackgroundClick(TObject *Sender);
 	void __fastcall RzPanel1Click(TObject *Sender);
 	void __fastcall Timer1Timer(TObject *Sender);
-	void __fastcall BtnExecuteClick(TObject *Sender);
+	void __fastcall BtnRouteClick(TObject *Sender);
 	void __fastcall lbl_beta0Change(TObject *Sender);
 	void __fastcall lbl_beta0KeyPress(TObject *Sender, wchar_t &Key);
-	void __fastcall BtnRefreshClick(TObject *Sender);
+	void __fastcall BtnRestartClick(TObject *Sender);
 	void __fastcall TVClick(TObject *Sender);
-	void __fastcall BtnOKClick(TObject *Sender);
-	void __fastcall BtnAttachClick(TObject *Sender);
-	void __fastcall BtnEditClick(TObject *Sender);
-	void __fastcall BtnReplaceClick(TObject *Sender);
+	void __fastcall BtnAddTVClick(TObject *Sender);
+	void __fastcall BtnAddTargetClick(TObject *Sender);
+	void __fastcall BtnPlotClick(TObject *Sender);
+	void __fastcall BtnDebugClick(TObject *Sender);
 	void __fastcall edt_beta1Enter(TObject *Sender);
-	void __fastcall BtnNoteClick(TObject *Sender);
+	void __fastcall BtnDataClick(TObject *Sender);
 
 private: // User declarations
 
@@ -194,6 +192,18 @@ public: // User declarations
 	int GetCountSamplesOfPulse();
 
 	int GetCountSamplesOfPulseLFM();
+
+	float GetTimePackage(int PackageID);
+
+	float PulseToTime(int PacketID, int PackageID, int PulseId);
+
+	int DistanceToDiskret(float Distance);
+	float DiskretToDistance(int Diskret);
+
+	int GetShiftADCClock(float dT);
+	void GetADCPulseLFM(bool EnPulses, TtmpItemRec RN, double IArr[], int Shift);
+
+	TPoint FQ(double Arr[], float Scale);
 
 	TTreeNode* AddNodeRoot(void);
 	TTreeNode* AddNodePackage(TTreeNode * Parent, int i);

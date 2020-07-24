@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   Caption = 'RadarGL'
   ClientHeight = 1003
-  ClientWidth = 1456
+  ClientWidth = 1469
   Color = clBtnFace
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
@@ -21,7 +21,7 @@ object Form1: TForm1
   object RzStatusBar1: TRzStatusBar
     Left = 0
     Top = 0
-    Width = 1456
+    Width = 1469
     Height = 19
     ShowSizeGrip = False
     Align = alTop
@@ -37,7 +37,7 @@ object Form1: TForm1
     ParentDoubleBuffered = False
     TabOrder = 0
     object RzClockStatus1: TRzClockStatus
-      Left = 856
+      Left = 869
       Top = 0
       Width = 600
       Height = 19
@@ -54,6 +54,7 @@ object Form1: TForm1
       BlinkColor = clGreen
       BlinkIntervalOff = 1000
       BlinkIntervalOn = 1000
+      ExplicitLeft = 856
     end
     object RzMapInfo: TRzFieldStatus
       Left = 355
@@ -79,15 +80,15 @@ object Form1: TForm1
   object RzPageControl1: TRzPageControl
     Left = 0
     Top = 19
-    Width = 1456
+    Width = 1469
     Height = 984
-    ActivePage = TabSheet1
+    ActivePage = TabSheet3
     Align = alClient
     BackgroundColor = clBtnFace
     UseColoredTabs = True
     ParentBackgroundColor = False
     ParentColor = False
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 1
     FixedDimension = 19
     object TabSheet1: TRzTabSheet
@@ -116,7 +117,7 @@ object Form1: TForm1
       object RzPanel2: TRzPanel
         Left = 960
         Top = 0
-        Width = 492
+        Width = 505
         Height = 961
         Align = alClient
         BorderOuter = fsNone
@@ -184,16 +185,14 @@ object Form1: TForm1
             Width = 83
             Height = 21
             AutoSelect = False
-            EditMask = '#####;0; '
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
             Font.Name = 'Tahoma'
             Font.Style = [fsBold]
-            MaxLength = 5
             ParentFont = False
             TabOrder = 0
-            Text = '100.00'
+            Text = '100'
           end
           object edt_speed: TRzMaskEdit
             Left = 142
@@ -612,9 +611,9 @@ object Form1: TForm1
           end
         end
         object Memo1: TMemo
-          Left = 256
+          Left = 263
           Top = 0
-          Width = 236
+          Width = 242
           Height = 961
           Align = alRight
           ScrollBars = ssVertical
@@ -623,11 +622,12 @@ object Form1: TForm1
         object TV: TTreeView
           Left = 6
           Top = 529
-          Width = 244
+          Width = 251
           Height = 432
           AutoExpand = True
           Indent = 19
           TabOrder = 7
+          OnClick = TVClick
         end
       end
     end
@@ -636,8 +636,9 @@ object Form1: TForm1
       object Chart1: TChart
         Left = 0
         Top = 0
-        Width = 1452
+        Width = 1465
         Height = 300
+        Legend.Visible = False
         Title.Text.Strings = (
           'TChart')
         View3D = False
@@ -662,8 +663,9 @@ object Form1: TForm1
       object Chart2: TChart
         Left = 0
         Top = 300
-        Width = 1452
+        Width = 1465
         Height = 300
+        Legend.Visible = False
         Title.Text.Strings = (
           'TChart')
         View3D = False
@@ -688,7 +690,7 @@ object Form1: TForm1
       object Chart3: TChart
         Left = 0
         Top = 600
-        Width = 1452
+        Width = 1465
         Height = 300
         Legend.Visible = False
         Title.Text.Strings = (
@@ -719,75 +721,66 @@ object Form1: TForm1
     end
     object TabSheet3: TRzTabSheet
       Caption = #1044#1072#1085#1085#1099#1077
+      ExplicitLeft = 0
       object Memo2: TMemo
-        Left = 3
-        Top = 48
+        Left = 0
+        Top = 3
         Width = 185
-        Height = 897
-        Lines.Strings = (
-          'LFMup'
-          '--------')
+        Height = 929
         ScrollBars = ssVertical
         TabOrder = 0
       end
       object Memo3: TMemo
-        Left = 194
-        Top = 48
+        Left = 191
+        Top = 3
         Width = 185
-        Height = 897
-        Lines.Strings = (
-          'LFMdown'
-          '-----------')
+        Height = 929
         ScrollBars = ssVertical
         TabOrder = 1
       end
       object Memo4: TMemo
-        Left = 385
-        Top = 48
+        Left = 382
+        Top = 3
         Width = 185
-        Height = 897
+        Height = 929
         Lines.Strings = (
-          'Memo2')
+          'LFMup'
+          '--------')
         ScrollBars = ssVertical
         TabOrder = 2
       end
       object Memo5: TMemo
-        Left = 576
-        Top = 48
+        Left = 573
+        Top = 3
         Width = 185
-        Height = 897
+        Height = 929
         Lines.Strings = (
-          'Memo2')
+          'LFMdown'
+          '-----------')
         ScrollBars = ssVertical
         TabOrder = 3
       end
       object Memo6: TMemo
-        Left = 767
-        Top = 48
+        Left = 764
+        Top = 3
         Width = 185
-        Height = 897
-        Lines.Strings = (
-          'Memo2')
+        Height = 929
         ScrollBars = ssVertical
         TabOrder = 4
       end
       object Memo7: TMemo
-        Left = 958
-        Top = 48
+        Left = 955
+        Top = 3
         Width = 185
-        Height = 897
-        Lines.Strings = (
-          'Memo2')
+        Height = 929
         ScrollBars = ssVertical
         TabOrder = 5
       end
       object Memo8: TMemo
-        Left = 1149
-        Top = 48
+        Left = 1146
+        Top = 3
         Width = 185
-        Height = 897
-        Lines.Strings = (
-          'Memo2')
+        Height = 929
         ScrollBars = ssVertical
         TabOrder = 6
       end
@@ -797,7 +790,7 @@ object Form1: TForm1
     Left = 835
     Top = 224
     Bitmap = {
-      494C01011800D0006C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800D000780010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

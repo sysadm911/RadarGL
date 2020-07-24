@@ -82,13 +82,13 @@ object Form1: TForm1
     Top = 19
     Width = 1469
     Height = 984
-    ActivePage = TabSheet1
+    ActivePage = TabSheet3
     Align = alClient
     BackgroundColor = clBtnFace
     UseColoredTabs = True
     ParentBackgroundColor = False
     ParentColor = False
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 1
     FixedDimension = 19
     object TabSheet1: TRzTabSheet
@@ -123,7 +123,7 @@ object Form1: TForm1
         BorderOuter = fsNone
         Color = cl3DLight
         TabOrder = 1
-        object RzGroupBox1: TRzGroupBox
+        object rzgrpbx_target: TRzGroupBox
           Left = 0
           Top = 0
           Width = 244
@@ -494,7 +494,7 @@ object Form1: TForm1
         end
         object RzToolbar1: TRzToolbar
           Left = 6
-          Top = 441
+          Top = 705
           Width = 251
           Height = 84
           Align = alNone
@@ -621,13 +621,51 @@ object Form1: TForm1
         end
         object TV: TTreeView
           Left = 6
-          Top = 529
+          Top = 800
           Width = 251
-          Height = 432
+          Height = 161
           AutoExpand = True
           Indent = 19
           TabOrder = 7
           OnClick = TVClick
+        end
+        object rzgrpbx_radar: TRzGroupBox
+          Left = 6
+          Top = 428
+          Width = 244
+          Height = 129
+          Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1088#1072#1076#1072#1088#1072':'
+          CaptionFont.Charset = DEFAULT_CHARSET
+          CaptionFont.Color = clWindowText
+          CaptionFont.Height = -9
+          CaptionFont.Name = 'Tahoma'
+          CaptionFont.Style = [fsBold]
+          Color = cl3DLight
+          FlatColor = clInfoBk
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          GradientColorStart = clGrayText
+          GradientColorStop = clGrayText
+          GroupStyle = gsBanner
+          ParentFont = False
+          TabOrder = 8
+          VisualStyle = vsGradient
+          object RzRadioGroup1: TRzRadioGroup
+            Left = 11
+            Top = 24
+            Width = 118
+            Height = 41
+            Caption = #1053#1072#1082#1083#1086#1085' '#1051#1063#1052
+            Columns = 2
+            Items.Strings = (
+              #1051#1063#1052'+'
+              #1051#1063#1052'-')
+            ParentColor = True
+            TabOrder = 0
+          end
         end
       end
     end
@@ -764,8 +802,27 @@ object Form1: TForm1
         Top = 3
         Width = 185
         Height = 929
+        Lines.Strings = (
+          'ArrBig'
+          '-------------')
         ScrollBars = ssVertical
         TabOrder = 4
+      end
+      object Memo7: TMemo
+        Left = 955
+        Top = 3
+        Width = 185
+        Height = 929
+        ScrollBars = ssVertical
+        TabOrder = 5
+      end
+      object Memo8: TMemo
+        Left = 1146
+        Top = 3
+        Width = 185
+        Height = 929
+        ScrollBars = ssVertical
+        TabOrder = 6
       end
     end
   end
@@ -773,7 +830,7 @@ object Form1: TForm1
     Left = 835
     Top = 224
     Bitmap = {
-      494C01011800D000740010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800D000800010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
