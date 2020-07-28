@@ -24,6 +24,7 @@
 #pragma link "TeeProcs"
 #pragma link "RzRadGrp"
 #pragma link "RzRadGrp"
+#pragma link "RzCmboBx"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 
@@ -52,11 +53,13 @@ float virezDD = 25;
 float deltaDD = 3E8 * 32 / 19178720 / 2;
 float virezKm = virezDD * deltaDD;
 bool IsPulse = false;
+bool isDrawRoute = false;
 
 float SArrLFMup[8192] = {0};
 float SArrLFMdown[8192] = {0};
 float ArrRe[32768] = {0};
 DynamicArray<int>ArrBig;
+// float lineArrRe[32768] = {0};
 
 TList *ListPulses = new TList;
 
@@ -109,8 +112,11 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	glEnable(GL_LIGHTING); // разрешаем работу с освещенностью
 	glEnable(GL_LIGHT0); // включаем источник света 0
 
-	Zoom = 1;
-	// DecimalSeparator = 0x2e;
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	Zoom = 1.5;
+	DecimalSeparator = 0x2e;
 
 	Radar.WaveLength = 100;
 	Radar.I_F = 4794680;
@@ -156,56 +162,9 @@ void __fastcall TForm1::FormDestroy(TObject *Sender) {
 }
 
 // ---------------------------------------------------------------------------
-
-void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
-
-	int i = 0, j = 0;
-	float x = 0.0, y = 0.0, a = 0.0;
-	unsigned int Cl;
-	if (ColorDialog1->Color == 0) // Cl = ColorToRGB(clGreen);
-			Cl = RGB(55, 53, 74);
-	else
-		Cl = ColorToRGB(ColorDialog1->Color);
-	glClearColor(double(LOBYTE(Cl)) / 255, double(HIBYTE(Cl)) / 255, double(LOBYTE(HIWORD(Cl))) / 255, 1);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	PaintGrid();
-	DrawAxis();
-	DrawSweep();
-
-	glEnable(GL_BLEND);
-
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, TargetColor);
-	// PaintTarget();
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, PointColor);
-	if (IndexPoint != 5)
-		PaintPoint();
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, BezierColor);
-
-	if (bezier_ready) {
-		PaintPoint();
-		PaintBezier();
-	}
-
-	SwapBuffers(dc1);
-}
-
-// ---------------------------------------------------------------------------
 void TForm1::PaintBezier() {
 	if (edt_beta0 != "" && edt_beta1 != "" && edt_beta2 != "" && edt_beta3 != "" && edt_D0 != "" && edt_D1 != "" && edt_D2 != "" &&
 		edt_D3 != "") {
-
-		// OGLpoints[0][0] = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
-		// OGLpoints[0][1] = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
-		//
-		// OGLpoints[1][0] = (StrToFloat(edt_D1->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta1->Text) / 180.0);
-		// OGLpoints[1][1] = (StrToFloat(edt_D1->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta1->Text) / 180.0);
-		//
-		// OGLpoints[2][0] = (StrToFloat(edt_D2->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta2->Text) / 180.0);
-		// OGLpoints[2][1] = (StrToFloat(edt_D2->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta2->Text) / 180.0);
-		//
-		// OGLpoints[3][0] = (StrToFloat(edt_D3->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta3->Text) / 180.0);
-		// OGLpoints[3][1] = (StrToFloat(edt_D3->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta3->Text) / 180.0);
 
 		OGLpoints[0][0] = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
 		OGLpoints[0][1] = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
@@ -310,7 +269,6 @@ void TForm1::PaintGrid() {
 		glVertex2f(objx, objy);
 		glEnd();
 	}
-
 }
 
 // ---------------------------------------------------------------------------
@@ -329,6 +287,11 @@ void TForm1::InitViewProection(float x, float y, float dXX, float dYY) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-1.0 * Diagonal / Zoom, 1.0 * Diagonal / Zoom, -1.0 / Zoom, 1.0 / Zoom, -1.0, 1.0);
+
+		glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	InvalidateRect(hwnd1, 0, false);
+
 }
 // ---------------------------------------------------------------------------
 
@@ -372,27 +335,6 @@ void TForm1::DrawAxis() {
 	glEndList();
 }
 
-void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y) {
-
-	glGetIntegerv(GL_VIEWPORT, viewport);
-	glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
-	glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
-	gluUnProject(X, (float)viewport[3] - Y, 0, modelMatrix, projMatrix, viewport, &objx, &objy, &objz);
-
-	D = sqrt(objy * objy + objx * objx) * 450;
-	// Az = ArcTan2(objy, objx);
-	Az = ArcTan2(objx, objy);
-
-	if (Az > 0)
-		Az = 180 / Pi * Az;
-	else
-		Az = 360 + (180 / Pi * Az);
-
-	RzMapInfo->Caption = Format("%3.3f км,  %3.0f", ARRAYOFCONST((D, Az))) + " \xB0";
-	Caption = Format("OpenGL X_coord = %3.3f,  Y_coord = %3.3f,  Z_coord = %3.3f", ARRAYOFCONST((objx, objy, objz)));
-
-}
-
 // ---------------------------------------------------------------------------
 void __fastcall TForm1::BtnBackgroundClick(TObject *Sender) {
 	ColorDialog1->Execute();
@@ -425,6 +367,7 @@ void TForm1::AddPoint() {
 	else if (IndexPoint == 1) {
 		edt_beta1->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[1][0])));
 		edt_D1->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[1][1])));
+
 	}
 	else if (IndexPoint == 2) {
 		edt_beta2->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[2][0])));
@@ -433,6 +376,7 @@ void TForm1::AddPoint() {
 	else if (IndexPoint == 3) {
 		edt_beta3->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[3][0])));
 		edt_D3->Text = Format("%2.2f", ARRAYOFCONST((TrCoords[3][1])));
+
 	}
 	else {
 
@@ -457,6 +401,7 @@ void TForm1::PaintPoint() {
 	else {
 		bezier_ready = false;
 	}
+
 }
 
 // ---------------------------------------------------------------------------
@@ -767,67 +712,6 @@ float TForm1::GetTimePackage(int PackageID) {
 	return result;
 }
 
-void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
-	int i, j, ii;
-	TTreeNode * Root, *NodePackage, *NodePulses, *PulsesData;
-	TV->Items->Clear();
-
-	int PulsesOfPacket = GetCountPulsesOfPacket();
-	TimeArr = new int[PulsesOfPacket];
-	BetaArr = new float[PulsesOfPacket];
-	int step = 0, currentPulse = 0;
-
-	Root = AddNodeRoot();
-	// проход по пачкам
-	Memo1->Clear();
-
-	Memo1->Lines->BeginUpdate();
-	for (j = 0; j < 4; j++) {
-
-		NodePackage = AddNodePackage(Root, j);
-		Memo1->Lines->Add("Пачка #" + IntToStr(j + 1) + " период пачки = " + IntToStr(Radar.PackRec[j].Period));
-		// проход по запускам
-		for (ii = 0; ii < Radar.PackRec[j].CntIZ; ii++) {
-			NodePulses = AddNodePulses(NodePackage, ii);
-			TimeArr[currentPulse] = step;
-			BetaArr[currentPulse] = TimeArr[currentPulse] * 1.0e-9 * 360.0 / 10.0;
-			// PulsesData = AddChild( NodePulses, ii);
-			tmpItem = new TtmpItemRec;
-			tmpItem->ZapID = ii;
-			tmpItem->PackID = 1;
-			tmpItem->PckgID = j;
-
-			tmpItem->Time = PulseToTime(1, j, ii);
-
-			tmpItem->Beta = BetaArr[currentPulse] + currentTarget.Beta;
-			tmpItem->TimeBack = tmpItem->Time + 2 * currentTarget.Distance / 3.0e8;
-			tmpItem->Parent = NULL;
-			NodePulses->Data = tmpItem;
-
-			// Memo2->Lines->Add("PckgID" + IntToStr(((TtmpItemRec*)NodePulses->Data)->PckgID));
-			Memo1->Lines->Add(" Запуск[" + IntToStr(ii + 1) + "] = " + IntToStr(step) + "  нс");
-			step = step + Radar.PackRec[j].Period;
-			currentPulse++;
-
-		}
-		Memo1->Lines->Add("");
-	}
-	Memo1->Lines->EndUpdate();
-
-	UpdateListPulses();
-
-	TimeOfPacket = TimeArr[PulsesOfPacket - 1];
-	BetaOfPacket = TimeOfPacket * 1.0e-9 * 360.0 / 10.0;
-
-	Memo1->Lines->Add(" Кол-во запусков для режима 6 об. = " + IntToStr(GetCountPulsesOfPacket()));
-	Memo1->Lines->Add(" Время пакета = " + IntToStr(TimeOfPacket) + " ns");
-	Memo1->Lines->Add(" Поворот антенны за время пакета = " + FloatToStr(BetaOfPacket) + " градусов");
-	Memo1->Lines->Delete(Memo1->Lines->Count);
-
-	Memo2->Text = Memo1->Text;
-	delete[]TimeArr;
-	delete[]BetaArr;
-}
 
 int TForm1::DistanceToDiskret(float Distance) {
 	int result = 0;
@@ -912,8 +796,8 @@ void TForm1::UpdateListPulses() {
 
 void __fastcall TForm1::BtnDataClick(TObject *Sender) {
 	TtmpItemRec *tmpR, *tmpPar;
-//	double *NoiseBufferRe;
-	DynamicArray<double> NoiseBufferRe;
+	// double *NoiseBufferRe;
+	DynamicArray<double>NoiseBufferRe;
 	int Dskr, Cnt, CntDskr, HiddenDiskret, shft, x, pulsesID;
 	TPoint Q;
 	float LevN = Power(10, Radar.Noise / 20.0);
@@ -944,7 +828,7 @@ void __fastcall TForm1::BtnDataClick(TObject *Sender) {
 	NoiseBufferRe.Length = CntDskr * GetCountSamplesOfPulse() + 32;
 	for (int k = 0; k < CntDskr * GetCountSamplesOfPulse() + 32; k++) {
 		NoiseBufferRe[k] = (1.0 * (Random(65536) - 32768.0) / 65536.0);
-//					Memo6->Lines->Add(NoiseBufferRe[k]);
+		// Memo6->Lines->Add(NoiseBufferRe[k]);
 	}
 
 	tmpR->ArrData = &ArrBig[ii];
@@ -954,7 +838,7 @@ void __fastcall TForm1::BtnDataClick(TObject *Sender) {
 
 	}
 
-//	Memo6->Lines->BeginUpdate();
+	// Memo6->Lines->BeginUpdate();
 	for (int k = 0; k < CntDskr; k++) {
 		if ((k >= HiddenDiskret) && (k < Dskr + Radar.LFMlength)) {
 			for (int j = 0; j < GetCountSamplesOfPulse(); j++) {
@@ -964,12 +848,12 @@ void __fastcall TForm1::BtnDataClick(TObject *Sender) {
 		}
 		Q = FQ(&NoiseBufferRe[k * GetCountSamplesOfPulse()], Scale);
 		Memo7->Lines->Add(Q.X);
-//		Memo8->Lines->Add(Q.Y);
+		// Memo8->Lines->Add(Q.Y);
 		ArrBig[ii] = MAKELONG(Q.Y, Q.X);
-	   		Memo6->Lines->Add(ArrBig[ii]);
+		Memo6->Lines->Add(ArrBig[ii]);
 		ii++;
 	}
-//		Memo6->Lines->EndUpdate();
+	// Memo6->Lines->EndUpdate();
 
 	// pulsesID++ ;
 
@@ -989,7 +873,6 @@ void __fastcall TForm1::BtnDataClick(TObject *Sender) {
 	//
 	// }
 	// WriteToBittware(ArrBig, Mode2Turn);
-
 
 	BtnPlotClick(this);
 	RzPageControl1->ActivePage = TabSheet3;
@@ -1090,12 +973,176 @@ void TForm1::GetADCPulseLFM(bool EnPulses, TtmpItemRec RN, double IArr[], int Sh
 }
 
 void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
+	Memo1->Lines->Clear();
+	Memo1->Lines->BeginUpdate();
+	for (int i = 0; i < 58; i++) {
+		Memo1->Lines->Add(linePoints[i][0]);
+		Memo1->Lines->Add(linePoints[i][1]);
+	}
+	Memo1->Lines->EndUpdate();
+}
 
-	for (int i = 0; i < ArrBig.Length; i++) {
+void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y) {
 
-		Memo6->Lines->BeginUpdate();
-		Memo6->Lines->Add(ArrBig[i]);
-		Memo6->Lines->EndUpdate();
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
+	glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
+	gluUnProject(X, (float)viewport[3] - Y, 0, modelMatrix, projMatrix, viewport, &objx, &objy, &objz);
 
+	D = sqrt(objy * objy + objx * objx) * 450;
+	// Az = ArcTan2(objy, objx);
+	Az = ArcTan2(objx, objy);
+
+	if (Az > 0)
+		Az = 180 / Pi * Az;
+	else
+		Az = 360 + (180 / Pi * Az);
+
+	RzMapInfo->Caption = Format("%3.3f км,  %3.0f", ARRAYOFCONST((D, Az))) + " \xB0";
+	Caption = Format("OpenGL X_coord = %3.3f,  Y_coord = %3.3f,  Z_coord = %3.3f", ARRAYOFCONST((objx, objy, objz)));
+
+}
+
+// ---------------------------------------------------------------------------
+void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
+
+	int i = 0, j = 0;
+	float x = 0.0, y = 0.0, a = 0.0;
+	unsigned int Cl;
+	if (ColorDialog1->Color == 0) // Cl = ColorToRGB(clGreen);
+			Cl = RGB(55, 53, 74);
+	else
+		Cl = ColorToRGB(ColorDialog1->Color);
+	glClearColor(double(LOBYTE(Cl)) / 255, double(HIBYTE(Cl)) / 255, double(LOBYTE(HIWORD(Cl))) / 255, 1);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	PaintGrid();
+	DrawAxis();
+	DrawSweep();
+	glEnable(GL_BLEND);
+
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, TargetColor);
+	PaintTarget();
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, PointColor);
+	if (IndexPoint != 5)
+		PaintPoint();
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, BezierColor);
+
+	if (bezier_ready) {
+		PaintPoint();
+		PaintBezier();
+		PaintLine();
+	}
+	PaintLine();
+
+	SwapBuffers(dc1);
+}
+
+// ---------------------------------------------------------------------------
+void TForm1::PaintLine() {
+
+	if (edt_beta3->Text != "") {
+		glLineWidth(2);
+		glEnable(GL_LINE_SMOOTH);
+		glBegin(GL_LINE_STRIP);
+
+		linePoints[0][0] = StrToFloat(edt_D0->Text) / 450.0 * sin(Pi * StrToFloat(edt_beta0->Text) / 180);
+		linePoints[0][1] = StrToFloat(edt_D0->Text) / 450.0 * cos(Pi * StrToFloat(edt_beta0->Text) / 180);
+
+		linePoints[1][0] = StrToFloat(edt_D3->Text) / 450.0 * sin(Pi * StrToFloat(edt_beta3->Text) / 180);
+		linePoints[1][1] = StrToFloat(edt_D3->Text) / 450.0 * cos(Pi * StrToFloat(edt_beta3->Text) / 180);
+
+		glVertex2f(linePoints[0][0], linePoints[0][1]);
+		glVertex2f(linePoints[1][0], linePoints[1][1]);
+		glEnd();
+	}
+
+}
+
+// ---------------------------------------------------------------------------
+void TForm1::DrawRoute() {
+	if (isDrawRoute) {
+		glLineWidth(2);
+		glEnable(GL_LINE_SMOOTH);
+		glBegin(GL_LINE_STRIP);
+		for (int i = 1; i < 8192; i++) {
+			linePoints[0][0] = StrToFloat(edt_D0->Text) / 450.0 * sin(Pi * StrToFloat(edt_beta0->Text) / 180);
+			linePoints[0][1] = StrToFloat(edt_D0->Text) / 450.0 * cos(Pi * StrToFloat(edt_beta0->Text) / 180);
+			linePoints[1][0] = StrToFloat(edt_D3->Text) / 450.0 * sin(Pi * StrToFloat(edt_beta3->Text) / 180);
+			linePoints[1][1] = StrToFloat(edt_D3->Text) / 450.0 * cos(Pi * StrToFloat(edt_beta3->Text) / 180);
+			glVertex2f(linePoints[0][0], linePoints[0][1]);
+			glVertex2f(linePoints[1][0], linePoints[1][1]);
+		}
+		glEnd();
 	}
 }
+
+void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
+	int i, j, ii;
+	TTreeNode * Root, *NodePackage, *NodePulses, *PulsesData;
+	TV->Items->Clear();
+
+	int PulsesOfPacket = GetCountPulsesOfPacket();
+	TimeArr = new int[PulsesOfPacket];
+	BetaArr = new float[PulsesOfPacket];
+	int step = 0, currentPulse = 0;
+
+	Root = AddNodeRoot();
+	// проход по пачкам
+	Memo1->Clear();
+
+	Memo1->Lines->BeginUpdate();
+	for (j = 0; j < 4; j++) {
+
+		NodePackage = AddNodePackage(Root, j);
+		Memo1->Lines->Add("Пачка #" + IntToStr(j + 1) + " период пачки = " + IntToStr(Radar.PackRec[j].Period));
+		// проход по запускам
+		for (ii = 0; ii < Radar.PackRec[j].CntIZ; ii++) {
+			NodePulses = AddNodePulses(NodePackage, ii);
+			TimeArr[currentPulse] = step;
+			BetaArr[currentPulse] = TimeArr[currentPulse] * 1.0e-9 * 360.0 / 10.0;
+			// PulsesData = AddChild( NodePulses, ii);
+			tmpItem = new TtmpItemRec;
+			tmpItem->ZapID = ii;
+			tmpItem->PackID = 1;
+			tmpItem->PckgID = j;
+
+			tmpItem->Time = PulseToTime(0, j, ii);
+
+			tmpItem->Beta = BetaArr[currentPulse] + currentTarget.Beta;
+			tmpItem->TimeBack = tmpItem->Time + 2 * currentTarget.Distance / 3.0e8;
+
+			linePoints[ii][0] = (StrToFloat(edt_D0->Text) + currentTarget.Velocity * tmpItem->TimeBack) / 450.0 * sin
+				(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+			linePoints[ii][1] = (StrToFloat(edt_D0->Text) + currentTarget.Velocity * tmpItem->TimeBack) / 450.0 * cos
+				(Pi * StrToFloat(edt_beta0->Text) / 180.0);
+
+			tmpItem->Parent = NULL;
+			NodePulses->Data = tmpItem;
+
+			// Memo2->Lines->Add("PckgID" + IntToStr(((TtmpItemRec*)NodePulses->Data)->PckgID));
+			Memo1->Lines->Add(" Запуск[" + IntToStr(ii + 1) + "] = " + IntToStr(step) + "  нс");
+			step = step + Radar.PackRec[j].Period;
+			currentPulse++;
+
+		}
+		Memo1->Lines->Add("");
+	}
+	// ShowMessage(FloatToStr(currentPulse));
+	Memo1->Lines->EndUpdate();
+
+	UpdateListPulses();
+
+	TimeOfPacket = TimeArr[PulsesOfPacket - 1];
+	BetaOfPacket = TimeOfPacket * 1.0e-9 * 360.0 / 10.0;
+
+	Memo1->Lines->Add(" Кол-во запусков для режима 6 об. = " + IntToStr(GetCountPulsesOfPacket()));
+	Memo1->Lines->Add(" Время пакета = " + IntToStr(TimeOfPacket) + " ns");
+	Memo1->Lines->Add(" Поворот антенны за время пакета = " + FloatToStr(BetaOfPacket) + " градусов");
+	Memo1->Lines->Delete(Memo1->Lines->Count);
+
+	Memo2->Text = Memo1->Text;
+	delete[]TimeArr;
+	delete[]BetaArr;
+}
+

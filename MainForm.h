@@ -28,6 +28,7 @@
 #include "TeEngine.hpp"
 #include "TeeProcs.hpp"
 #include "RzRadGrp.hpp"
+#include "RzCmboBx.hpp"
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -69,7 +70,6 @@ struct TtmpItemRec {
 	void* BackItem, *Parent, *ArrData;
 };
 
-
 enum TLFMMode {
 	lfmUp, lfmDown
 };
@@ -81,7 +81,6 @@ __published: // IDE-managed Components
 	TRzStatusBar *RzStatusBar1;
 	TImageList *ImageList1;
 	TRzPanel *RzPanel1;
-	TRzClockStatus *RzClockStatus1;
 	TRzFieldStatus *RzMapInfo;
 	TColorDialog *ColorDialog1;
 	TTimer *Timer1;
@@ -141,6 +140,12 @@ __published: // IDE-managed Components
 	TMemo *Memo8;
 	TRzRadioGroup *RzRadioGroup1;
 	TRzGroupBox *rzgrpbx_radar;
+	TRzComboBox *RzComboBox1;
+	TRzEditListBox *RzEditListBox1;
+	TRzEditListBox *RzEditListBox2;
+	TRzEditListBox *RzEditListBox3;
+	TRzRadioGroup *RzRadioGroup2;
+	TRzLabel *RzLabel1;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
@@ -174,6 +179,8 @@ private: // User declarations
 	void InitViewProection(float x, float y, float dXX, float dYY);
 	void PaintCurrentCircle();
 	void DrawAxis();
+	void PaintLine();
+	void DrawRoute();
 
 	HWND hwnd1;
 	HGLRC hrc1;
@@ -183,6 +190,8 @@ private: // User declarations
 	GLfloat MCPoint[4];
 	GLfloat MCTarget[4];
 	GLfloat tX, tY, DX, DY;
+
+	float linePoints[8192][2];
 
 public: // User declarations
 
@@ -214,9 +223,9 @@ public: // User declarations
 	void UpdateListPulses();
 	int GetShiftADCClock(float dT);
 	void GetADCPulseLFM(bool EnPulses, TtmpItemRec RN, double IArr[], int Shift);
-	void ADCGenerateTargetLFM(bool EnPulses, TLFMMode UpDown, double Arr[], float dbKu, float DeltaTimePulse, float Deviation,
-	float Phase, float dbNoise, int Shift);
-	void DarwModuleDiskrets(TtmpItemRec *RN) ;
+	void ADCGenerateTargetLFM(bool EnPulses, TLFMMode UpDown, double Arr[], float dbKu, float DeltaTimePulse, float Deviation, float Phase,
+		float dbNoise, int Shift);
+	void DarwModuleDiskrets(TtmpItemRec *RN);
 
 	TPoint FQ(double Arr[], float Scale);
 
@@ -224,6 +233,7 @@ public: // User declarations
 	TTreeNode* AddNodePackage(TTreeNode * Parent, int i);
 	TTreeNode* AddNodePulses(TTreeNode * Parent, int i);
 	Target* AddTarget();
+
 	TList *ListTr;
 
 	__fastcall TForm1(TComponent * Owner);

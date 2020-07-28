@@ -27,6 +27,7 @@
 #include "Series.hpp"
 #include "TeEngine.hpp"
 #include "TeeProcs.hpp"
+#include "RzRadGrp.hpp"
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -58,6 +59,7 @@ struct TRecRadar {
 	int ADCClock;
 	int ADCWidth;
 	int LFMlength;
+	float Noise;
 	TRecFreqPackage PackRec[4];
 };
 
@@ -65,6 +67,11 @@ struct TtmpItemRec {
 	double Beta, Time, Ampl, TimeBack;
 	int ZapID, PackID, PckgID;
 	void* BackItem, *Parent, *ArrData;
+};
+
+
+enum TLFMMode {
+	lfmUp, lfmDown
 };
 
 // ---------------------------------------------------------------------------
@@ -79,7 +86,7 @@ __published: // IDE-managed Components
 	TColorDialog *ColorDialog1;
 	TTimer *Timer1;
 	TRzPanel *RzPanel2;
-	TRzGroupBox *RzGroupBox1;
+	TRzGroupBox *rzgrpbx_target;
 	TRzLabel *lbl_epr;
 	TRzLabel *lbl_speed;
 	TRzMaskEdit *edt_epr;
@@ -130,6 +137,10 @@ __published: // IDE-managed Components
 	TMemo *Memo5;
 	TMemo *Memo6;
 	TRzToolButton *BtnData;
+	TMemo *Memo7;
+	TMemo *Memo8;
+	TRzRadioGroup *RzRadioGroup1;
+	TRzGroupBox *rzgrpbx_radar;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
@@ -199,8 +210,13 @@ public: // User declarations
 
 	int DistanceToDiskret(float Distance);
 	float DiskretToDistance(int Diskret);
-
+	void FillListPulses(int &Index, TList * ListPulses);
+	void UpdateListPulses();
 	int GetShiftADCClock(float dT);
+	void GetADCPulseLFM(bool EnPulses, TtmpItemRec RN, double IArr[], int Shift);
+	void ADCGenerateTargetLFM(bool EnPulses, TLFMMode UpDown, double Arr[], float dbKu, float DeltaTimePulse, float Deviation,
+	float Phase, float dbNoise, int Shift);
+	void DarwModuleDiskrets(TtmpItemRec *RN) ;
 
 	TPoint FQ(double Arr[], float Scale);
 
@@ -208,6 +224,7 @@ public: // User declarations
 	TTreeNode* AddNodePackage(TTreeNode * Parent, int i);
 	TTreeNode* AddNodePulses(TTreeNode * Parent, int i);
 	Target* AddTarget();
+	TList *ListTr;
 
 	__fastcall TForm1(TComponent * Owner);
 };
