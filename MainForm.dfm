@@ -31,12 +31,9 @@ object Form1: TForm1
     ParentColor = False
     TabIndex = 0
     TabOrder = 0
-    ExplicitTop = 19
-    ExplicitHeight = 984
     FixedDimension = 19
     object TabSheet1: TRzTabSheet
       Caption = #1056#1072#1076#1072#1088
-      ExplicitHeight = 961
       object RzPanel1: TRzPanel
         Left = 0
         Top = 19
@@ -49,15 +46,18 @@ object Form1: TForm1
         BorderShadow = clBlack
         Color = clBlack
         DoubleBuffered = False
+        FullRepaint = False
         ParentDoubleBuffered = False
         ParentShowHint = False
         ShowHint = False
         TabOrder = 0
         Transparent = True
         OnClick = RzPanel1Click
+        OnMouseDown = RzPanel1MouseDown
         OnMouseMove = RzPanel1MouseMove
+        OnMouseUp = RzPanel1MouseUp
         OnPaint = RzPanel1Paint
-        ExplicitTop = 0
+        ExplicitTop = 43
       end
       object RzPanel2: TRzPanel
         Left = 960
@@ -707,8 +707,6 @@ object Form1: TForm1
         GradientColorStop = clActiveCaption
         ParentDoubleBuffered = False
         TabOrder = 2
-        ExplicitTop = 21
-        ExplicitWidth = 251
         object RzMapInfo: TRzFieldStatus
           Left = 355
           Top = 0
@@ -733,7 +731,6 @@ object Form1: TForm1
     end
     object TabSheet2: TRzTabSheet
       Caption = #1043#1088#1072#1092#1080#1082
-      ExplicitHeight = 961
       object Chart1: TChart
         Left = 0
         Top = 0
@@ -822,7 +819,6 @@ object Form1: TForm1
     end
     object TabSheet3: TRzTabSheet
       Caption = #1044#1072#1085#1085#1099#1077
-      ExplicitHeight = 961
       object Memo2: TMemo
         Left = 0
         Top = 3
@@ -894,7 +890,7 @@ object Form1: TForm1
     Left = 835
     Top = 224
     Bitmap = {
-      494C01011800D000880010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800D0008C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1826,10 +1822,11 @@ object Form1: TForm1
       000000000000}
   end
   object ColorDialog1: TColorDialog
-    Left = 763
-    Top = 216
+    Left = 755
+    Top = 224
   end
   object Timer1: TTimer
+    Enabled = False
     Interval = 28
     OnTimer = Timer1Timer
     Left = 672

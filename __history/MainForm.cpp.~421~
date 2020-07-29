@@ -28,14 +28,13 @@
 #pragma resource "*.dfm"
 TForm1 *Form1;
 
-const GLuint grid_list = 0, axis_list = 1, bezier_list = 2;
+// const GLuint grid_list = 0, axis_list = 1, bezier_list = 2;
 short sweep_az;
 
 GLdouble modelMatrix[16];
 GLdouble projMatrix[16];
 GLint viewport[4];
 GLdouble objx, objy, objz = 0;
-TPoint *targetArr = new TPoint[100];
 float D, Az = 0;
 GLfloat BezierColor[4] = {0, 1, 0, 1};
 GLfloat PointColor[4] = {1, 0, 0, 1};
@@ -54,28 +53,21 @@ float deltaDD = 3E8 * 32 / 19178720 / 2;
 float virezKm = virezDD * deltaDD;
 bool IsPulse = false;
 bool isDrawRoute = false;
+bool restart = false;
 
 float SArrLFMup[8192] = {0};
 float SArrLFMdown[8192] = {0};
 float ArrRe[32768] = {0};
 DynamicArray<int>ArrBig;
+bool TVready = false;
 // float lineArrRe[32768] = {0};
-
+GLuint grid_list;
 TList *ListPulses = new TList;
 
 #define frac(X) (X)-int(X)
 
 // ---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner) : TForm(Owner) {
-	targetArr[0].X = 0;
-	targetArr[0].Y = 0;
-	targetArr[1].X = 10;
-	targetArr[1].Y = 0;
-	targetArr[2].X = 100;
-	targetArr[2].Y = 100;
-	targetArr[3].X = 300;
-	targetArr[3].Y = 200;
-
 	ArrBig.Length = 10;
 }
 
@@ -84,9 +76,7 @@ void TForm1::SetDCPixelFormat(HDC hdc) {
 
 	PIXELFORMATDESCRIPTOR pfd;
 	int nPixelFormat = 0;
-
 	ZeroMemory(&pfd, sizeof(pfd));
-
 	pfd.nSize = sizeof(pfd);
 	pfd.nVersion = 1;
 	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_GENERIC_ACCELERATED | PFD_SUPPORT_GDI;
@@ -94,7 +84,6 @@ void TForm1::SetDCPixelFormat(HDC hdc) {
 	pfd.cColorBits = 32;
 	pfd.cDepthBits = 32;
 	pfd.iLayerType = PFD_MAIN_PLANE;
-
 	nPixelFormat = ChoosePixelFormat(hdc, &pfd);
 	SetPixelFormat(hdc, nPixelFormat, &pfd);
 }
@@ -107,15 +96,15 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	hrc1 = wglCreateContext(dc1);
 	wglMakeCurrent(dc1, hrc1);
 	// glRotatef (90, 0.0, 0.0, 1.0);
-
 	glEnable(GL_DEPTH_TEST); // разрешаем тест глубины
 	glEnable(GL_LIGHTING); // разрешаем работу с освещенностью
 	glEnable(GL_LIGHT0); // включаем источник света 0
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
-	Zoom = 1.5;
+	glPushMatrix();
+	PaintGrid();
+	Zoom = 1.0;
 	DecimalSeparator = 0x2e;
 
 	Radar.WaveLength = 100;
@@ -143,14 +132,17 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	Radar.PackRec[3].EnumKpp = 0;
 	currentTarget.Name = "Mig-29";
 	currentTarget.S = 10;
-	currentTarget.Velocity = 0;
+	currentTarget.Velocity = StrToFloat(edt_speed->Text);
 	currentTarget.Distance = 50000;
 	currentTarget.Beta = 90;
 	currentTarget.Length = 10;
 	currentTarget.Height = 1000;
+	ResultShiftScene.X = 0;
+	ResultShiftScene.Y = 0;
+
 	ListTr = new TList;
-	BtnAddTVClick(this);
-	BtnPlotClick(this);
+	// BtnAddTVClick(this);
+	// BtnPlotClick(this);
 	RzPageControl1->ActivePage = TabSheet1;
 
 }
@@ -183,7 +175,7 @@ void TForm1::PaintBezier() {
 	glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4, &OGLpoints[0][0]);
 	glEnable(GL_MAP1_VERTEX_3);
 	glColor3f(1.0, 1.0, 1.0);
-	glLineWidth(1);
+	glLineWidth(Zoom*1);
 	glEnable(GL_LINE_SMOOTH);
 	glBegin(GL_LINE_STRIP);
 	for (GLint i = 0; i <= 30; i++)
@@ -194,8 +186,8 @@ void TForm1::PaintBezier() {
 
 // ---------------------------------------------------------------------------
 void TForm1::PaintGrid() {
-
-	glNewList(grid_list, GL_COMPILE_AND_EXECUTE);
+	grid_list = glGenLists(1);
+	glNewList(grid_list, GL_COMPILE);
 	const int nSec = 40;
 	int i = 0, j = 0;
 	float a = 0.0, x = 0.0, y = 0.0, k = 0.0, Cl = 0.0, ClMax = 0.0, ClMin = 0.0;
@@ -260,20 +252,22 @@ void TForm1::PaintGrid() {
 	}
 	glEndList();
 
-	if (D < 451) {
-		glPointSize(7);
-		glEnable(GL_POINT_SMOOTH);
-		glColor3f(1.0, 1.0, 1.0);
-		// glColor3f(Color2RGB(clyellow).R,Color2RGB(clyellow).g,Color2RGB(clyellow).b);
-		glBegin(GL_POINTS);
-		glVertex2f(objx, objy);
-		glEnd();
-	}
+	//
+	// if (D < 451) {
+	// glPointSize(Zoom*2);
+	// glEnable(GL_POINT_SMOOTH);
+	// glColor3f(1.0, 1.0, 1.0);
+	// // glColor3f(Color2RGB(clyellow).R,Color2RGB(clyellow).g,Color2RGB(clyellow).b);
+	// glBegin(GL_POINTS);
+	// glVertex2f(objx, objy);
+	// glEnd();
+	// }
+
 }
 
 // ---------------------------------------------------------------------------
 void TForm1::PaintTarget() {
-	glPointSize(7);
+	glPointSize(Zoom*0.1);
 	glEnable(GL_POINT_SMOOTH);
 	glBegin(GL_POINTS);
 	tX = tY = 0.5;
@@ -283,21 +277,55 @@ void TForm1::PaintTarget() {
 
 void TForm1::InitViewProection(float x, float y, float dXX, float dYY) {
 	float tmpX = 0.0, tmpY = 0.0;
-	Diagonal = RzPanel1->Width / RzPanel1->Height;
+	Diagonal = (float)RzPanel1->Width / RzPanel1->Height;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-1.0 * Diagonal / Zoom, 1.0 * Diagonal / Zoom, -1.0 / Zoom, 1.0 / Zoom, -1.0, 1.0);
+	tmpX = x * Zoom;
+	tmpY = y * Zoom;
+	tmpX = -(tmpX - dXX);
+	tmpY = -(tmpY * dYY);
+	DX = tmpX / Zoom;
+	DY = tmpY / Zoom;
+
+	// glViewport(0, 0, RzPanel1->Width, RzPanel1->Height);
 	glMatrixMode(GL_MODELVIEW);
-	InvalidateRect(hwnd1, 0, false);
+}
+
+// ---------------------------------------------------------------------------
+void TForm1::InitViewProection() {
+
+	double tmpX = 0, tmpY = 0;
+	Diagonal = (float)RzPanel1->Width / RzPanel1->Height;
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-1.0 * Diagonal / Zoom, 1.0 * Diagonal / Zoom, -1.0 / Zoom, 1.0 / Zoom, -1.0, 1.0);
+
+	if (MousePosMove.State == siManualDrag) {
+		tmpX = MousePosMove.X - MousePosDown.X;
+		tmpY = MousePosMove.Y - MousePosDown.Y; ;
+		ResultShiftScene.X = tmpX;
+		ResultShiftScene.Y = tmpY;
+
+	}
+	if (MousePosMove.State == siNone) {
+		tmpX = ResultShiftScene.X;
+		tmpY = ResultShiftScene.Y;
+
+	}
+	if (!restart)
+		glTranslatef(tmpX, tmpY, 0);
+	// glViewport(0, 0, RzPanel1->Width, RzPanel1->Height);
+	glMatrixMode(GL_MODELVIEW);
 
 }
-// ---------------------------------------------------------------------------
 
 void __fastcall TForm1::FormMouseWheel(TObject *Sender, TShiftState Shift, int WheelDelta, TPoint &MousePos, bool &Handled) {
 	float tmpX, tmpY, X, Y;
 
-	X = (MousePos.X - RzPanel1->Width / 2) / (RzPanel1->Width / 2) * Diagonal;
-	Y = -(MousePos.Y - RzPanel1->Height / 2) / (RzPanel1->Height / 2);
+	X = (MousePos.X - RzPanel1->Width / 2.0) / (RzPanel1->Width / 2.0) * Diagonal;
+	Y = -(MousePos.Y - RzPanel1->Height / 2.0) / (RzPanel1->Height / 2.0);
 	tmpX = X / Zoom - DX / Zoom;
 	tmpY = Y / Zoom - DY / Zoom;
 
@@ -307,11 +335,11 @@ void __fastcall TForm1::FormMouseWheel(TObject *Sender, TShiftState Shift, int W
 		Zoom = Zoom / 1.05;
 
 	InitViewProection(X, Y, tmpX, tmpY);
+	InvalidateRect(hwnd1, 0, false);
 }
 // ---------------------------------------------------------------------------
 
 void TForm1::DrawAxis() {
-	glNewList(axis_list, GL_COMPILE_AND_EXECUTE);
 	// --------Axis X--------------------
 	glBegin(GL_LINE_STRIP);
 	glVertex3f(-1, 0, 0);
@@ -340,14 +368,19 @@ void __fastcall TForm1::BtnBackgroundClick(TObject *Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm1::RzPanel1Click(TObject *Sender) {
+	if (MousePosMove.State != siManualDrag) {
+		point_ready = true;
 
-	point_ready = true;
+		if (IndexPoint > 4) {
+			IndexPoint = 0;
+		}
+		if (D < 451)
+			AddPoint();
+	InvalidateRect(hwnd1, 0, false);
 
-	if (IndexPoint > 4) {
-		IndexPoint = 0;
 	}
-	if (D < 451)
-		AddPoint();
+
+
 }
 // ---------------------------------------------------------------------------
 
@@ -388,7 +421,7 @@ void TForm1::AddPoint() {
 // ---------------------------------------------------------------------------
 void TForm1::PaintPoint() {
 	if (point_ready) {
-		glPointSize(7);
+		glPointSize(Zoom*2);
 		glEnable(GL_POINT_SMOOTH);
 		glBegin(GL_POINTS);
 		for (int i = 0; i < IndexPoint; i++) {
@@ -405,7 +438,7 @@ void TForm1::PaintPoint() {
 // ---------------------------------------------------------------------------
 void TForm1::DrawSweep() {
 
-	glLineWidth(1.0);
+	glLineWidth(Zoom*1.0);
 	glEnable(GL_LINE_SMOOTH);
 	glBegin(GL_LINE_STRIP);
 	glVertex2f(0, 0);
@@ -438,12 +471,12 @@ void __fastcall TForm1::Textout(char* str, GLfloat x, GLfloat y, GLfloat *color)
 }
 
 void __fastcall TForm1::BtnRouteClick(TObject *Sender) {
-	if (edt_beta0->Text != "" && edt_beta1->Text != "" && edt_beta2->Text != "" && edt_beta3->Text != "" && edt_D0->Text != "" &&
-		edt_D1->Text != "" && edt_D2->Text != "" && edt_D3->Text != "") {
-
-		bezier_ready = true;
-		InvalidateRect(hwnd1, NULL, false);
-	}
+	// if (edt_beta0->Text != "" && edt_beta1->Text != "" && edt_beta2->Text != "" && edt_beta3->Text != "" && edt_D0->Text != "" &&
+	// edt_D1->Text != "" && edt_D2->Text != "" && edt_D3->Text != "") {
+	//
+	// bezier_ready = true;
+	// InvalidateRect(hwnd1, NULL, false);
+	// }
 }
 // ---------------------------------------------------------------------------
 
@@ -486,6 +519,12 @@ void __fastcall TForm1::BtnRestartClick(TObject *Sender) {
 	edt_D2->Clear();
 	edt_beta3->Clear();
 	edt_D3->Clear();
+	Zoom = 1;
+	MousePosMove.X = MousePosMove.Y = 0;
+	MousePosDown.X = MousePosDown.Y = 0;
+	restart = true;
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
 	InvalidateRect(hwnd1, NULL, true);
 }
 
@@ -708,74 +747,6 @@ float TForm1::GetTimePackage(int PackageID) {
 	int i = 0;
 	result = Radar.PackRec[PackageID].Period * Radar.PackRec[PackageID].CntIZ * 1E-9;
 	return result;
-}
-
-void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
-	int i, j, ii;
-	TTreeNode * Root, *NodePackage, *NodePulses, *PulsesData;
-	TV->Items->Clear();
-
-	int PulsesOfPacket = GetCountPulsesOfPacket();
-	TimeArr = new int[PulsesOfPacket];
-	BetaArr = new float[PulsesOfPacket];
-	int step = 0, currentPulse = 0;
-
-	Root = AddNodeRoot();
-	// проход по пачкам
-	Memo1->Clear();
-
-	Memo1->Lines->BeginUpdate();
-	for (j = 0; j < 4; j++) {
-
-		NodePackage = AddNodePackage(Root, j);
-		Memo1->Lines->Add("Пачка #" + IntToStr(j + 1) + " период пачки = " + IntToStr(Radar.PackRec[j].Period));
-		// проход по запускам
-		for (ii = 0; ii < Radar.PackRec[j].CntIZ; ii++) {
-			NodePulses = AddNodePulses(NodePackage, ii);
-			TimeArr[currentPulse] = step;
-			BetaArr[currentPulse] = TimeArr[currentPulse] * 1.0e-9 * 360.0 / 10.0;
-			// PulsesData = AddChild( NodePulses, ii);
-			tmpItem = new TtmpItemRec;
-			tmpItem->ZapID = ii;
-			tmpItem->PackID = 1;
-			tmpItem->PckgID = j;
-
-			tmpItem->Time = PulseToTime(0, j, ii);
-
-			tmpItem->Beta = BetaArr[currentPulse] + currentTarget.Beta;
-			tmpItem->TimeBack = tmpItem->Time + 2 * currentTarget.Distance / 3.0e8;
-
-			linePoints[ii][0] = (StrToFloat(edt_D0->Text) + currentTarget.Velocity * tmpItem->TimeBack) / 450.0 * sin
-				(Pi * StrToFloat(edt_beta0->Text) / 180);
-			linePoints[ii][1] = (StrToFloat(edt_D0->Text) + currentTarget.Velocity * tmpItem->TimeBack) / 450.0 * cos
-				(Pi * StrToFloat(edt_beta0->Text) / 180);
-
-			tmpItem->Parent = NULL;
-			NodePulses->Data = tmpItem;
-
-			// Memo2->Lines->Add("PckgID" + IntToStr(((TtmpItemRec*)NodePulses->Data)->PckgID));
-			Memo1->Lines->Add(" Запуск[" + IntToStr(ii + 1) + "] = " + IntToStr(step) + "  нс");
-			step = step + Radar.PackRec[j].Period;
-			currentPulse++;
-
-		}
-		Memo1->Lines->Add("");
-	}
-	Memo1->Lines->EndUpdate();
-
-	UpdateListPulses();
-
-	TimeOfPacket = TimeArr[PulsesOfPacket - 1];
-	BetaOfPacket = TimeOfPacket * 1.0e-9 * 360.0 / 10.0;
-
-	Memo1->Lines->Add(" Кол-во запусков для режима 6 об. = " + IntToStr(GetCountPulsesOfPacket()));
-	Memo1->Lines->Add(" Время пакета = " + IntToStr(TimeOfPacket) + " ns");
-	Memo1->Lines->Add(" Поворот антенны за время пакета = " + FloatToStr(BetaOfPacket) + " градусов");
-	Memo1->Lines->Delete(Memo1->Lines->Count);
-
-	Memo2->Text = Memo1->Text;
-	delete[]TimeArr;
-	delete[]BetaArr;
 }
 
 int TForm1::DistanceToDiskret(float Distance) {
@@ -1040,10 +1011,12 @@ void TForm1::GetADCPulseLFM(bool EnPulses, TtmpItemRec RN, double IArr[], int Sh
 void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 	Memo1->Lines->Clear();
 	Memo1->Lines->BeginUpdate();
-	for ( int i = 0; i < 10; i++) {
+	for (int i = 0; i < 58; i++) {
 		Memo1->Lines->Add(linePoints[i][0]);
+		Memo1->Lines->Add(linePoints[i][1]);
 	}
 	Memo1->Lines->EndUpdate();
+	InvalidateRect(hwnd1, 0, false);
 }
 
 void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y) {
@@ -1063,13 +1036,147 @@ void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, in
 		Az = 360 + (180 / Pi * Az);
 
 	RzMapInfo->Caption = Format("%3.3f км,  %3.0f", ARRAYOFCONST((D, Az))) + " \xB0";
-	Caption = Format("OpenGL X_coord = %3.3f,  Y_coord = %3.3f,  Z_coord = %3.3f", ARRAYOFCONST((objx, objy, objz)));
+	Caption = Format("OpenGL X_coord = %.6f,  Y_coord = %.6f,  Z_coord = %.6f", ARRAYOFCONST((objx, objy, objz)));
+
+	float tmpX, tmpY;
+
+	if (Shift.Contains(ssRight)) {
+
+		MousePosMove.X = MousePosMove.X + objx;
+		MousePosMove.Y = MousePosMove.Y + objy;
+		MousePosMove.State = siManualDrag;
+		InvalidateRect(hwnd1, 0, false);
+	}
+
+	else
+		MousePosMove.State = siNone;
 
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
+void TForm1::DrawRoute() {
+	if (TVready) {
+		glPointSize(Zoom);
+		glBegin(GL_POINTS);
+		for (int i = 0; i < 58; i++) {
+			glVertex2f(linePoints[i][0], linePoints[i][1]);
+		}
+		glEnd();
+	}
+}
 
+void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
+	if (edt_beta3->Text != "" && edt_beta0->Text != "") {
+		int i, j, ii;
+		double deltaBeta = 0, deltaDistance = 0;
+		TVready = false;
+		TTreeNode * Root, *NodePackage, *NodePulses, *PulsesData;
+		TV->Items->Clear();
+
+		int PulsesOfPacket = GetCountPulsesOfPacket();
+		TimeArr = new int[PulsesOfPacket];
+		BetaArr = new float[PulsesOfPacket];
+		int step = 0, currentPulse = 0;
+
+		Root = AddNodeRoot();
+		// проход по пачкам
+		Memo1->Clear();
+
+		Memo1->Lines->BeginUpdate();
+		for (j = 0; j < 4; j++) {
+
+			NodePackage = AddNodePackage(Root, j);
+			Memo1->Lines->Add("Пачка #" + IntToStr(j + 1) + " период пачки = " + IntToStr(Radar.PackRec[j].Period));
+			// проход по запускам
+			for (ii = 0; ii < Radar.PackRec[j].CntIZ; ii++) {
+				NodePulses = AddNodePulses(NodePackage, ii);
+				TimeArr[currentPulse] = step;
+				BetaArr[currentPulse] = TimeArr[currentPulse] * 1.0e-9 * 360.0 / 10.0;
+				// PulsesData = AddChild( NodePulses, ii);
+				tmpItem = new TtmpItemRec;
+				tmpItem->ZapID = ii;
+				tmpItem->PackID = 1;
+				tmpItem->PckgID = j;
+
+				tmpItem->Time = PulseToTime(0, j, ii);
+
+				tmpItem->Beta = BetaArr[currentPulse] + currentTarget.Beta;
+				tmpItem->TimeBack = tmpItem->Time + 2 * currentTarget.Distance / 3.0e8;
+
+				// delta
+
+				linePoints[currentPulse][0] = (StrToFloat(edt_D0->Text) + currentTarget.Velocity * tmpItem->TimeBack) / 450.0 * sin
+					(Pi * (StrToFloat(edt_beta3->Text) - StrToFloat(edt_beta0->Text)) / 180.0);
+				linePoints[currentPulse][1] = (StrToFloat(edt_D0->Text) + currentTarget.Velocity * tmpItem->TimeBack) / 450.0 * cos
+					(Pi * (StrToFloat(edt_beta3->Text) - StrToFloat(edt_beta0->Text)) / 180.0);
+
+				tmpItem->Parent = NULL;
+				NodePulses->Data = tmpItem;
+
+				// Memo2->Lines->Add("PckgID" + IntToStr(((TtmpItemRec*)NodePulses->Data)->PckgID));
+				Memo1->Lines->Add(" Запуск[" + IntToStr(ii + 1) + "] = " + IntToStr(step) + "  нс");
+				step = step + Radar.PackRec[j].Period;
+				currentPulse++;
+
+			}
+			Memo1->Lines->Add("");
+		}
+		// ShowMessage(FloatToStr(currentPulse));
+		Memo1->Lines->EndUpdate();
+
+		UpdateListPulses();
+
+		TimeOfPacket = TimeArr[PulsesOfPacket - 1];
+		BetaOfPacket = TimeOfPacket * 1.0e-9 * 360.0 / 10.0;
+
+		Memo1->Lines->Add(" Кол-во запусков для режима 6 об. = " + IntToStr(GetCountPulsesOfPacket()));
+		Memo1->Lines->Add(" Время пакета = " + IntToStr(TimeOfPacket) + " ns");
+		Memo1->Lines->Add(" Поворот антенны за время пакета = " + FloatToStr(BetaOfPacket) + " градусов");
+		Memo1->Lines->Delete(Memo1->Lines->Count);
+
+		Memo2->Text = Memo1->Text;
+		delete[]TimeArr;
+		delete[]BetaArr;
+
+		TVready = true;
+	}
+}
+
+void __fastcall TForm1::RzPanel1MouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y) {
+	// if (Shift.Contains(ssRight)) {
+	//
+	// glGetIntegerv(GL_VIEWPORT, viewport);
+	// glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
+	// glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
+	// gluUnProject(X, (float)viewport[3] - Y, 0, modelMatrix, projMatrix, viewport, &objx, &objy, &objz);
+	// MousePosDown.X = objx;
+	// MousePosDown.Y = objy;
+	// }
+
+}
+
+// ---------------------------------------------------------------------------
+void __fastcall TForm1::RzPanel1MouseUp(TObject * Sender, TMouseButton Button, TShiftState Shift, int X, int Y) {
+
+	if (Shift.Contains(ssRight)) {
+
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
+		glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
+		gluUnProject(X, (float)viewport[3] - Y, 0, modelMatrix, projMatrix, viewport, &objx, &objy, &objz);
+		MousePosDown.X = MousePosDown.X + objx;
+		MousePosDown.Y = MousePosDown.Y + objy;
+	}
+
+	MousePosMove.State = siNone;
+}
+
+// ---------------------------------------------------------------------------
+void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
+	PAINTSTRUCT ps;
+	BeginPaint(hwnd1, &ps);
+	InitViewProection();
+	restart =false;
 	int i = 0, j = 0;
 	float x = 0.0, y = 0.0, a = 0.0;
 	unsigned int Cl;
@@ -1080,67 +1187,24 @@ void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 	glClearColor(double(LOBYTE(Cl)) / 255, double(HIBYTE(Cl)) / 255, double(LOBYTE(HIWORD(Cl))) / 255, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	PaintGrid();
-	DrawAxis();
-	DrawSweep();
+	glCallList(grid_list);
+	// DrawAxis();
+	// DrawSweep();
 	glEnable(GL_BLEND);
 
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, TargetColor);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, TargetColor);
 	PaintTarget();
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, PointColor);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, PointColor);
 	if (IndexPoint != 5)
 		PaintPoint();
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, BezierColor);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, BezierColor);
 
 	if (bezier_ready) {
 		PaintPoint();
 		PaintBezier();
-		PaintLine();
 	}
-	PaintLine();
+	DrawRoute();
 
 	SwapBuffers(dc1);
-}
-
-// ---------------------------------------------------------------------------
-void TForm1::PaintLine() {
-
-	if (edt_beta3->Text != "") {
-		glLineWidth(2);
-		glEnable(GL_LINE_SMOOTH);
-		glBegin(GL_LINE_STRIP);
-
-		linePoints[0][0] = StrToFloat(edt_D0->Text) / 450.0 * sin(Pi * StrToFloat(edt_beta0->Text) / 180);
-		linePoints[0][1] = StrToFloat(edt_D0->Text) / 450.0 * cos(Pi * StrToFloat(edt_beta0->Text) / 180);
-
-		linePoints[1][0] = StrToFloat(edt_D3->Text) / 450.0 * sin(Pi * StrToFloat(edt_beta3->Text) / 180);
-		linePoints[1][1] = StrToFloat(edt_D3->Text) / 450.0 * cos(Pi * StrToFloat(edt_beta3->Text) / 180);
-
-		glVertex2f(linePoints[0][0], linePoints[0][1]);
-		glVertex2f(linePoints[1][0], linePoints[1][1]);
-		glEnd();
-	}
-
-}
-
-// ---------------------------------------------------------------------------
-void TForm1::DrawRoute() {
-
-	if (isDrawRoute) {
-		glLineWidth(2);
-		glEnable(GL_LINE_SMOOTH);
-		glBegin(GL_LINE_STRIP);
-
-		for (int i = 1; i < 8192; i++) {
-			linePoints[0][0] = StrToFloat(edt_D0->Text) / 450.0 * sin(Pi * StrToFloat(edt_beta0->Text) / 180);
-			linePoints[0][1] = StrToFloat(edt_D0->Text) / 450.0 * cos(Pi * StrToFloat(edt_beta0->Text) / 180);
-
-			linePoints[1][0] = StrToFloat(edt_D3->Text) / 450.0 * sin(Pi * StrToFloat(edt_beta3->Text) / 180);
-			linePoints[1][1] = StrToFloat(edt_D3->Text) / 450.0 * cos(Pi * StrToFloat(edt_beta3->Text) / 180);
-
-			glVertex2f(linePoints[0][0], linePoints[0][1]);
-			glVertex2f(linePoints[1][0], linePoints[1][1]);
-		}
-		glEnd();
-	}
+	EndPaint(hwnd1, &ps);
 }

@@ -74,6 +74,15 @@ enum TLFMMode {
 	lfmUp, lfmDown
 };
 
+enum TStateInput {
+	siNone, siManualDrag
+};
+
+struct TRecGPSFloat {
+	double X, Y, Z, M;
+	TStateInput State;
+} ResultShiftScene, MousePosMove, MousePosDown;
+
 // ---------------------------------------------------------------------------
 class TForm1 : public TForm {
 __published: // IDE-managed Components
@@ -166,6 +175,8 @@ __published: // IDE-managed Components
 	void __fastcall BtnDebugClick(TObject *Sender);
 	void __fastcall edt_beta1Enter(TObject *Sender);
 	void __fastcall BtnDataClick(TObject *Sender);
+	void __fastcall RzPanel1MouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
+	void __fastcall RzPanel1MouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
 
 private: // User declarations
 
@@ -176,10 +187,10 @@ private: // User declarations
 	void SetDCPixelFormat(HDC hdc);
 	void PaintGrid();
 	void PaintTarget();
+	void InitViewProection();
 	void InitViewProection(float x, float y, float dXX, float dYY);
 	void PaintCurrentCircle();
 	void DrawAxis();
-	void PaintLine();
 	void DrawRoute();
 
 	HWND hwnd1;
@@ -191,7 +202,7 @@ private: // User declarations
 	GLfloat MCTarget[4];
 	GLfloat tX, tY, DX, DY;
 
-	float linePoints[8192][2];
+	double linePoints[58][2];
 
 public: // User declarations
 
