@@ -241,6 +241,8 @@ public: // User declarations
 	TPoint FQ(double Arr[], float Scale);
 
 	TTreeNode* AddNodeRoot(void);
+	TTreeNode * AddNodeRot(int i);
+	TTreeNode * TForm1::AddNodePacket(TTreeNode * Parent, int i);
 	TTreeNode* AddNodePackage(TTreeNode * Parent, int i);
 	TTreeNode* AddNodePulses(TTreeNode * Parent, int i);
 	Target* AddTarget();

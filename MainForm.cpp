@@ -546,6 +546,24 @@ TTreeNode * TForm1::AddNodeRoot() {
 }
 
 // ---------------------------------------------------------------------------
+TTreeNode * TForm1::AddNodeRot(int i) {
+	TTreeNode * result;
+	result = TV->Items->AddChild(NULL, " Оборот №" + IntToStr(i + 1));
+	result->SelectedIndex = 0;
+	return result;
+}
+
+// ---------------------------------------------------------------------------
+TTreeNode * TForm1::AddNodePacket(TTreeNode * Parent, int i) {
+	TTreeNode * result;
+	result = TV->Items->AddChild(Parent, " Пакет №" + IntToStr(i + 1));
+	result->SelectedIndex = 0;
+	return result;
+}
+
+
+
+// ---------------------------------------------------------------------------
 TTreeNode * TForm1::AddNodePackage(TTreeNode * Parent, int i) {
 	TTreeNode * result;
 	result = TV->Items->AddChild(Parent, " Пачка №" + IntToStr(i + 1));
