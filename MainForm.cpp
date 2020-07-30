@@ -102,8 +102,8 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glPushMatrix();
-	PaintGrid();
+	// glPushMatrix();
+	// PaintGrid();
 	Zoom = 1.0;
 	DecimalSeparator = 0x2e;
 
@@ -186,8 +186,8 @@ void TForm1::PaintBezier() {
 
 // ---------------------------------------------------------------------------
 void TForm1::PaintGrid() {
-	grid_list = glGenLists(1);
-	glNewList(grid_list, GL_COMPILE);
+	// grid_list = glGenLists(1);
+	// glNewList(grid_list, GL_COMPILE);
 	const int nSec = 40;
 	int i = 0, j = 0;
 	float a = 0.0, x = 0.0, y = 0.0, k = 0.0, Cl = 0.0, ClMax = 0.0, ClMin = 0.0;
@@ -250,18 +250,17 @@ void TForm1::PaintGrid() {
 		glEnd();
 
 	}
-	glEndList();
+	// glEndList();
 
-	//
-	// if (D < 451) {
-	// glPointSize(Zoom*2);
-	// glEnable(GL_POINT_SMOOTH);
-	// glColor3f(1.0, 1.0, 1.0);
-	// // glColor3f(Color2RGB(clyellow).R,Color2RGB(clyellow).g,Color2RGB(clyellow).b);
-	// glBegin(GL_POINTS);
-	// glVertex2f(objx, objy);
-	// glEnd();
-	// }
+	if (D < 451) {
+		glPointSize(Zoom*2);
+		glEnable(GL_POINT_SMOOTH);
+		glColor3f(1.0, 1.0, 1.0);
+		// glColor3f(Color2RGB(clyellow).R,Color2RGB(clyellow).g,Color2RGB(clyellow).b);
+		glBegin(GL_POINTS);
+		glVertex2f(objx, objy);
+		glEnd();
+	}
 
 }
 
@@ -368,17 +367,17 @@ void __fastcall TForm1::BtnBackgroundClick(TObject *Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm1::RzPanel1Click(TObject *Sender) {
-	if (MousePosMove.State != siManualDrag) {
-		point_ready = true;
+	// if (MousePosMove.State != siManualDrag) {
+	point_ready = true;
 
-		if (IndexPoint > 4) {
-			IndexPoint = 0;
-		}
-		if (D < 451)
-			AddPoint();
-		InvalidateRect(hwnd1, 0, false);
-
+	if (IndexPoint > 4) {
+		IndexPoint = 0;
 	}
+	if (D < 451)
+		AddPoint();
+	// InvalidateRect(hwnd1, 0, false);
+
+	// }
 
 }
 // ---------------------------------------------------------------------------
@@ -410,7 +409,7 @@ void TForm1::AddPoint() {
 	}
 	else {
 
-	   //	BtnRestartClick(this);
+		// BtnRestartClick(this);
 
 	}
 
@@ -522,7 +521,7 @@ void __fastcall TForm1::BtnRestartClick(TObject *Sender) {
 	MousePosMove.X = MousePosMove.Y = 0;
 	MousePosDown.X = MousePosDown.Y = 0;
 	restart = true;
-	glPopMatrix();
+	// glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	InvalidateRect(hwnd1, NULL, true);
 }
@@ -560,8 +559,6 @@ TTreeNode * TForm1::AddNodePacket(TTreeNode * Parent, int i) {
 	result->SelectedIndex = 0;
 	return result;
 }
-
-
 
 // ---------------------------------------------------------------------------
 TTreeNode * TForm1::AddNodePackage(TTreeNode * Parent, int i) {
@@ -1190,8 +1187,8 @@ void __fastcall TForm1::RzPanel1MouseUp(TObject * Sender, TMouseButton Button, T
 
 // ---------------------------------------------------------------------------
 void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
-	PAINTSTRUCT ps;
-	BeginPaint(hwnd1, &ps);
+//	PAINTSTRUCT ps;
+//	BeginPaint(hwnd1, &ps);
 	InitViewProection();
 	restart = false;
 	int i = 0, j = 0;
@@ -1204,7 +1201,8 @@ void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 	glClearColor(double(LOBYTE(Cl)) / 255, double(HIBYTE(Cl)) / 255, double(LOBYTE(HIWORD(Cl))) / 255, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glCallList(grid_list);
+	PaintGrid();
+//	glCallList(grid_list);
 	// DrawAxis();
 	// DrawSweep();
 	glEnable(GL_BLEND);
@@ -1223,5 +1221,5 @@ void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 	DrawRoute();
 
 	SwapBuffers(dc1);
-	EndPaint(hwnd1, &ps);
+//	EndPaint(hwnd1, &ps);
 }

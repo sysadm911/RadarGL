@@ -53,6 +53,7 @@ float deltaDD = 3E8 * 32 / 19178720 / 2;
 float virezKm = virezDD * deltaDD;
 bool IsPulse = false;
 bool isDrawRoute = false;
+bool restart = false;
 
 float SArrLFMup[8192] = {0};
 float SArrLFMdown[8192] = {0};
@@ -101,6 +102,7 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	glPushMatrix();
 	PaintGrid();
 	Zoom = 1.0;
 	DecimalSeparator = 0x2e;
@@ -293,7 +295,6 @@ void TForm1::InitViewProection(float x, float y, float dXX, float dYY) {
 // ---------------------------------------------------------------------------
 void TForm1::InitViewProection() {
 
-	glPushMatrix();
 	double tmpX = 0, tmpY = 0;
 	Diagonal = (float)RzPanel1->Width / RzPanel1->Height;
 
@@ -313,8 +314,8 @@ void TForm1::InitViewProection() {
 		tmpY = ResultShiftScene.Y;
 
 	}
-
-	glTranslatef(tmpX, tmpY, 0);
+	if (!restart)
+		glTranslatef(tmpX, tmpY, 0);
 	// glViewport(0, 0, RzPanel1->Width, RzPanel1->Height);
 	glMatrixMode(GL_MODELVIEW);
 
@@ -375,8 +376,9 @@ void __fastcall TForm1::RzPanel1Click(TObject *Sender) {
 		}
 		if (D < 451)
 			AddPoint();
+		InvalidateRect(hwnd1, 0, false);
+
 	}
-	InvalidateRect(hwnd1, 0, false);
 
 }
 // ---------------------------------------------------------------------------
@@ -408,7 +410,7 @@ void TForm1::AddPoint() {
 	}
 	else {
 
-		BtnRestartClick(this);
+	   //	BtnRestartClick(this);
 
 	}
 
@@ -519,9 +521,8 @@ void __fastcall TForm1::BtnRestartClick(TObject *Sender) {
 	Zoom = 1;
 	MousePosMove.X = MousePosMove.Y = 0;
 	MousePosDown.X = MousePosDown.Y = 0;
+	restart = true;
 	glPopMatrix();
-		glTranslatef(0, 0, 0);
-	// glViewport(0, 0, RzPanel1->Width, RzPanel1->Height);
 	glMatrixMode(GL_MODELVIEW);
 	InvalidateRect(hwnd1, NULL, true);
 }
@@ -543,6 +544,24 @@ TTreeNode * TForm1::AddNodeRoot() {
 	result->SelectedIndex = 0;
 	return result;
 }
+
+// ---------------------------------------------------------------------------
+TTreeNode * TForm1::AddNodeRot(int i) {
+	TTreeNode * result;
+	result = TV->Items->AddChild(NULL, " Оборот №" + IntToStr(i + 1));
+	result->SelectedIndex = 0;
+	return result;
+}
+
+// ---------------------------------------------------------------------------
+TTreeNode * TForm1::AddNodePacket(TTreeNode * Parent, int i) {
+	TTreeNode * result;
+	result = TV->Items->AddChild(Parent, " Пакет №" + IntToStr(i + 1));
+	result->SelectedIndex = 0;
+	return result;
+}
+
+
 
 // ---------------------------------------------------------------------------
 TTreeNode * TForm1::AddNodePackage(TTreeNode * Parent, int i) {
@@ -1173,9 +1192,8 @@ void __fastcall TForm1::RzPanel1MouseUp(TObject * Sender, TMouseButton Button, T
 void __fastcall TForm1::RzPanel1Paint(TObject *Sender) {
 	PAINTSTRUCT ps;
 	BeginPaint(hwnd1, &ps);
-
 	InitViewProection();
-
+	restart = false;
 	int i = 0, j = 0;
 	float x = 0.0, y = 0.0, a = 0.0;
 	unsigned int Cl;
