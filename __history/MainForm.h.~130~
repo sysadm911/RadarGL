@@ -79,7 +79,7 @@ enum TStateInput {
 };
 
 struct TRecGPSFloat {
-	float X, Y, Z, M;
+	double X, Y, Z, M;
 	TStateInput State;
 } ResultShiftScene, MousePosMove, MousePosDown;
 
@@ -191,7 +191,6 @@ private: // User declarations
 	void InitViewProection(float x, float y, float dXX, float dYY);
 	void PaintCurrentCircle();
 	void DrawAxis();
-	void PaintLine();
 	void DrawRoute();
 
 	HWND hwnd1;
@@ -203,7 +202,7 @@ private: // User declarations
 	GLfloat MCTarget[4];
 	GLfloat tX, tY, DX, DY;
 
-	double linePoints[8192][2];
+	double linePoints[58][2];
 
 public: // User declarations
 
@@ -241,7 +240,21 @@ public: // User declarations
 
 	TPoint FQ(double Arr[], float Scale);
 
+   	int GetCountPulsesOfPacket(void);
+	int GetCountSamplesOfPulse();
+	int GetCountSamplesOfPulseLFM();
+	float GetTimePackage(int PackageID);
+	float PulseToTime(int PacketID, int PackageID, int PulseId);
+
+	int  GetCountPacketOfRotaion();
+	int  GetCountRotation();
+	float  GetTimePackage(int PackageID);
+	int  GetCountPackages();
+	float  GetTimePacket();
+
 	TTreeNode* AddNodeRoot(void);
+	TTreeNode * AddNodeRot(int i);
+	TTreeNode * TForm1::AddNodePacket(TTreeNode * Parent, int i);
 	TTreeNode* AddNodePackage(TTreeNode * Parent, int i);
 	TTreeNode* AddNodePulses(TTreeNode * Parent, int i);
 	Target* AddTarget();

@@ -65,7 +65,7 @@ struct TRecRadar {
 };
 
 struct TtmpItemRec {
-	double Beta, Time, Ampl, TimeBack;
+	double deltaTime, deltaDistance, Beta, Time, Ampl, TimeBack, X, Y;
 	int ZapID, PackID, PckgID;
 	void* BackItem, *Parent, *ArrData;
 };
@@ -218,16 +218,6 @@ public: // User declarations
 	int TimeOfPacket;
 	float BetaOfPacket;
 
-	int GetCountPulsesOfPacket(void);
-
-	int GetCountSamplesOfPulse();
-
-	int GetCountSamplesOfPulseLFM();
-
-	float GetTimePackage(int PackageID);
-
-	float PulseToTime(int PacketID, int PackageID, int PulseId);
-
 	int DistanceToDiskret(float Distance);
 	float DiskretToDistance(int Diskret);
 	void FillListPulses(int &Index, TList * ListPulses);
@@ -239,6 +229,17 @@ public: // User declarations
 	void DarwModuleDiskrets(TtmpItemRec *RN);
 
 	TPoint FQ(double Arr[], float Scale);
+
+	int GetCountSamplesOfPulse();
+	int GetCountSamplesOfPulseLFM();
+	float PulseToTime(int PacketID, int PackageID, int PulseId);
+	int GetCountPulsesOfPacket();
+	int GetCountPacketOfRotaion();
+	int GetCountRotation();
+	float GetTimePackage(int PackageID);
+	int GetCountPackages();
+	float GetTimePacket();
+	float GetAzimutOfTime(float Time);
 
 	TTreeNode* AddNodeRoot(void);
 	TTreeNode * AddNodeRot(int i);
