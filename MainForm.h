@@ -31,7 +31,7 @@
 #include "RzCmboBx.hpp"
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <GL/glut.h>
+//#include <GL/glut.h>
 #define Pi M_PI
 
 typedef struct Target {

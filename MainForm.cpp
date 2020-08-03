@@ -267,23 +267,6 @@ void TForm1::PaintGrid() {
 
 }
 
-// ---------------------------------------------------------------------------
-void TForm1::PaintTarget() {
-
-	TtmpItemRec *tmpR;
-	glPointSize(5);
-	glEnable(GL_POINT_SMOOTH);
-	glBegin(GL_POINTS);
-	if (TV->Selected->Level == 3) {
-		for (int i = 0; i < TV->Selected->Count; i++) {
-			tmpR = (TtmpItemRec*)TV->Items->Item[i]->Data;
-			glVertex2f(tmpR->X, tmpR->Y);
-		}
-	}
-	glEnd();
-	target_ready = false;
-}
-
 void TForm1::InitViewProection(float x, float y, float dXX, float dYY) {
 	float tmpX = 0.0, tmpY = 0.0;
 	Diagonal = (float)RzPanel1->Width / RzPanel1->Height;
@@ -468,13 +451,13 @@ void __fastcall TForm1::Timer1Timer(TObject *Sender) {
 // ---------------------------------------------------------------------------
 void __fastcall TForm1::Textout(char* str, GLfloat x, GLfloat y, GLfloat *color) {
 
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-	glRasterPos2f(x, y);
-	int i = 0;
-	while (str[i] != '\0') {
-		glutBitmapCharacter(GLUT_BITMAP_8_BY_13, str[i]);
-		i++;
-	}
+	// glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+	// glRasterPos2f(x, y);
+	// int i = 0;
+	// while (str[i] != '\0') {
+	// glutBitmapCharacter(GLUT_BITMAP_8_BY_13, str[i]);
+	// i++;
+	// }
 }
 
 void __fastcall TForm1::BtnRouteClick(TObject *Sender) {
@@ -739,7 +722,7 @@ void __fastcall TForm1::TVClick(TObject *Sender) {
 		Memo1->Lines->Add("tmpItem->Y =  " + FloatToStr(tmpR->Y));
 		Memo1->Lines->EndUpdate();
 	}
-	target_ready = true;
+
 	InvalidateRect(hwnd1, 0, false);
 }
 // ---------------------------------------------------------------------------
@@ -811,7 +794,8 @@ void TForm1::UpdateListPulses() {
 		if (true) {
 			// Ptr = (Target*) ListTr->Items[itr];
 
-			FillListPulses(i, ListPulses); // «аливка списками запусков дл€ этой цели-itr
+			FillListPulses(i, ListPulses);
+			// «аливка списками запусков дл€ этой цели-itr
 
 			for (ii = 0; ii < ListPulses->Count; ii++) {
 				RN = (TtmpItemRec*)ListPulses->Items[ii];
@@ -1027,30 +1011,12 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 	// Memo1->Lines->EndUpdate();
 	// InvalidateRect(hwnd1, 0, false);
 
-	// TtmpItemRec *tmpR;
-	// for (int i = 0; i < TV->Items->Count; i++) {
-	//
-	// if (TV->Items->Item[i]->Level == 3) {
-	//
-	// tmpR = (TtmpItemRec*)TV->Items->Item[i]->Data;
-	glPointSize(Zoom*10);
-	glEnable(GL_POINT_SMOOTH);
-	glBegin(GL_POINTS);
-	// glVertex2f(tmpR->X, tmpR->Y);
-
-	glVertex2f(0.5, 0.5);
-	glEnd();
-	// }
-
-	// }
-
-	PaintGrid();
-//		 InvalidateRect(hwnd1, 0, false);
-	SwapBuffers(dc1);
+	target_ready = true;
+	InvalidateRect(hwnd1, 0, false);
 
 }
 
-void __fastcall TForm1::RzPanel1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y) {
+void __fastcall TForm1::RzPanel1MouseMove(TObject * Sender, TShiftState Shift, int X, int Y) {
 
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
@@ -1162,7 +1128,7 @@ void __fastcall TForm1::RzPanel1Paint(TObject * Sender) {
 		PaintBezier();
 	}
 	DrawRoute();
-
+	PaintTarget();
 	SwapBuffers(dc1);
 	EndPaint(hwnd1, &ps);
 }
@@ -1219,7 +1185,7 @@ float TForm1::GetAzimutOfTime(float Time) {
 	return result;
 }
 
-void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
+void __fastcall TForm1::BtnAddTVClick(TObject * Sender) {
 	double deltaTime = 0, deltaBeta = 0, deltaDistance = 0, D_start = 0, D_startX = 0, D_startY = 0, D_end = 0, D_endX = 0, D_endY = 0,
 		Decart_Route_Start = 0, Decart_Route_End = 0, Decart_Route = 0;
 
@@ -1284,8 +1250,12 @@ void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
 							tmpItem->PckgID = j;
 							tmpItem->Time = PulseToTime(i, j, ii);
 							tmpItem->Beta = GetAzimutOfTime(tmpItem->Time) + currentTarget.Beta;
-							while (tmpItem->Beta >= 360)
-								tmpItem->Beta = tmpItem->Beta - 360.0;
+
+							if ((tmpItem->Beta >= StrToFloat(edt_beta0->Text)) && (tmpItem->Beta <= StrToFloat(edt_beta3->Text))) {;
+							}
+							else
+								tmpItem->Beta = 0;
+
 							tmpItem->TimeBack = tmpItem->Time + 2.0 * D_start / 3.0e8;
 							tmpItem->deltaTime = tmpItem->TimeBack - tmpItem->Time;
 							tmpItem->deltaDistance = currentTarget.Velocity * (tmpItem->deltaTime);
@@ -1300,8 +1270,8 @@ void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
 							currentPulse++;
 
 							D_start += tmpItem->deltaDistance;
-							fprintf(F, "PackID =%3d   PckgID =%3d   ZapID =%3d   X =%17.15f Y =%17.15f D_start = %17.15f\n",
-								tmpItem->PackID, tmpItem->PckgID, tmpItem->ZapID, tmpItem->X, tmpItem->Y, D_start);
+							fprintf(F, "Beta = %17.15f  PackID =%3d   PckgID =%3d   ZapID =%3d   X =%17.15f Y =%17.15f D_start = %17.15f\n",
+								tmpItem->Beta, tmpItem->PackID, tmpItem->PckgID, tmpItem->ZapID, tmpItem->X, tmpItem->Y, D_start);
 
 						}
 
@@ -1341,8 +1311,14 @@ void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
 							tmpItem->PckgID = j;
 							tmpItem->Time = PulseToTime(i, j, ii);
 							tmpItem->Beta = GetAzimutOfTime(tmpItem->Time) + currentTarget.Beta;
-							while (tmpItem->Beta >= 360)
-								tmpItem->Beta = tmpItem->Beta - 360.0;
+							// while (tmpItem->Beta >= 360)
+							// tmpItem->Beta = tmpItem->Beta - 360.0;
+
+							if ((tmpItem->Beta >= StrToFloat(edt_beta0->Text)) && (tmpItem->Beta <= StrToFloat(edt_beta3->Text))) {;
+							}
+							else
+								tmpItem->Beta = 0;
+
 							tmpItem->TimeBack = tmpItem->Time + 2.0 * D_start / 3.0e8;
 							tmpItem->deltaTime = tmpItem->TimeBack - tmpItem->Time;
 							tmpItem->deltaDistance = currentTarget.Velocity * (tmpItem->deltaTime);
@@ -1356,8 +1332,8 @@ void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
 							currentPulse++;
 
 							D_start -= tmpItem->deltaDistance;
-							fprintf(F, "PackID =%3d   PckgID =%3d   ZapID =%3d   X =%17.15f Y =%17.15f D_start = %17.15f\n",
-								tmpItem->PackID, tmpItem->PckgID, tmpItem->ZapID, tmpItem->X, tmpItem->Y, D_start);
+							fprintf(F, "Beta = %17.15f  PackID =%3d   PckgID =%3d   ZapID =%3d   X =%17.15f Y =%17.15f D_start = %17.15f\n",
+								tmpItem->Beta, tmpItem->PackID, tmpItem->PckgID, tmpItem->ZapID, tmpItem->X, tmpItem->Y, D_start);
 
 						}
 
@@ -1375,4 +1351,50 @@ void __fastcall TForm1::BtnAddTVClick(TObject *Sender) {
 	}
 	Cursor = crDefault;
 
+}
+
+// ---------------------------------------------------------------------------
+void TForm1::PaintTarget() {
+
+	// TtmpItemRec *tmpR;
+	// glPointSize(5);
+	// glEnable(GL_POINT_SMOOTH);
+	// glBegin(GL_POINTS);
+	// if (TV->Selected->Level == 3) {
+	// for (int i = 0; i < TV->Selected->Count; i++) {
+	// tmpR = (TtmpItemRec*)TV->Items->Item[i]->Data;
+	// glVertex2f(tmpR->X, tmpR->Y);
+	// }
+	// }
+	// glEnd();
+
+	if (target_ready) {
+
+		TtmpItemRec *tmpR;
+		glPointSize(0.5);
+		glEnable(GL_POINT_SMOOTH);
+		for (int i = 0; i < 10000; i++) {
+
+			if (TV->Items->Item[i]->Level == 3) {
+
+				tmpR = (TtmpItemRec*)TV->Items->Item[i]->Data;
+
+				// if (tmpItem->Beta != 0) {
+				glBegin(GL_POINTS);
+				glVertex2f(tmpR->X, tmpR->Y);
+				glEnd();
+				// }
+
+			}
+		}
+
+		// for (float i = 0.0; i < 1.0;) {
+		// glBegin(GL_POINTS);
+		// glVertex2f(i, i);
+		// glEnd();
+		// i += 0.01;
+	}
+	// PaintGrid();
+	// InvalidateRect(hwnd1, 0, false);
+	// SwapBuffers(dc1);
 }
