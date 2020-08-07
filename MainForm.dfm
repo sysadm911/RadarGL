@@ -730,10 +730,6 @@ object Form1: TForm1
     end
     object TabSheet2: TRzTabSheet
       Caption = #1043#1088#1072#1092#1080#1082
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Chart1: TChart
         Left = 0
         Top = 0
@@ -822,10 +818,6 @@ object Form1: TForm1
     end
     object TabSheet3: TRzTabSheet
       Caption = #1044#1072#1085#1085#1099#1077
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Memo2: TMemo
         Left = 0
         Top = 3
@@ -897,7 +889,7 @@ object Form1: TForm1
     Left = 835
     Top = 224
     Bitmap = {
-      494C010118001D00100010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001D002C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

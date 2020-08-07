@@ -461,12 +461,12 @@ void __fastcall TForm1::Textout(char* str, GLfloat x, GLfloat y, GLfloat *color)
 }
 
 void __fastcall TForm1::BtnRouteClick(TObject *Sender) {
-	if (edt_beta0->Text != "" && edt_beta1->Text != "" && edt_beta2->Text != "" && edt_beta3->Text != "" && edt_D0->Text != "" &&
-		edt_D1->Text != "" && edt_D2->Text != "" && edt_D3->Text != "") {
-
-		bezier_ready = true;
-		InvalidateRect(hwnd1, NULL, false);
-	}
+	// if (edt_beta0->Text != "" && edt_beta1->Text != "" && edt_beta2->Text != "" && edt_beta3->Text != "" && edt_D0->Text != "" &&
+	// edt_D1->Text != "" && edt_D2->Text != "" && edt_D3->Text != "") {
+	//
+	// bezier_ready = true;
+	// InvalidateRect(hwnd1, NULL, false);
+	// }
 }
 // ---------------------------------------------------------------------------
 
@@ -1109,7 +1109,7 @@ void __fastcall TForm1::RzPanel1Paint(TObject * Sender) {
 
 	PaintGrid();
 	// glCallList(grid_list);
-	DrawAxis();
+	// DrawAxis();
 	// DrawSweep();
 	glEnable(GL_BLEND);
 
@@ -1373,8 +1373,8 @@ void __fastcall TForm1::BtnAddTVClick(TObject * Sender) {
 	}
 	Cursor = crDefault;
 
-	delete[]TimeArr;
-	delete[]BetaArr;
+		 delete[]	TimeArr;
+		delete[] BetaArr;
 
 }
 
