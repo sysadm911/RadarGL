@@ -31,7 +31,7 @@
 #include "RzCmboBx.hpp"
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <GL/glut.h>
+// #include <GL/glut.h>
 #define Pi M_PI
 
 typedef struct Target {
@@ -65,7 +65,7 @@ struct TRecRadar {
 };
 
 struct TtmpItemRec {
-	double Beta, Time, Ampl, TimeBack;
+	double deltaTime, deltaDistance, Beta, Time, Ampl, TimeBack, X, Y;
 	int ZapID, PackID, PckgID;
 	void* BackItem, *Parent, *ArrData;
 };
@@ -175,8 +175,6 @@ __published: // IDE-managed Components
 	void __fastcall BtnDebugClick(TObject *Sender);
 	void __fastcall edt_beta1Enter(TObject *Sender);
 	void __fastcall BtnDataClick(TObject *Sender);
-	void __fastcall RzPanel1MouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
-	void __fastcall RzPanel1MouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
 
 private: // User declarations
 
@@ -233,12 +231,13 @@ public: // User declarations
 	int GetCountSamplesOfPulse();
 	int GetCountSamplesOfPulseLFM();
 	float PulseToTime(int PacketID, int PackageID, int PulseId);
-    int GetCountPulsesOfPacket();
+	int GetCountPulsesOfPacket();
 	int GetCountPacketOfRotaion();
 	int GetCountRotation();
 	float GetTimePackage(int PackageID);
 	int GetCountPackages();
 	float GetTimePacket();
+	float GetAzimutOfTime(float Time);
 
 	TTreeNode* AddNodeRoot(void);
 	TTreeNode * AddNodeRot(int i);

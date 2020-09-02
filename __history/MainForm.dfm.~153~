@@ -2,8 +2,8 @@ object Form1: TForm1
   Left = 206
   Top = 0
   Caption = 'RadarGL'
-  ClientHeight = 1003
-  ClientWidth = 1469
+  ClientHeight = 686
+  ClientWidth = 1173
   Color = clBtnFace
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
@@ -12,7 +12,7 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesigned
+  Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnMouseWheel = FormMouseWheel
@@ -21,8 +21,8 @@ object Form1: TForm1
   object RzPageControl1: TRzPageControl
     Left = 0
     Top = 0
-    Width = 1469
-    Height = 1003
+    Width = 1173
+    Height = 686
     ActivePage = TabSheet1
     Align = alClient
     BackgroundColor = clBtnFace
@@ -31,15 +31,18 @@ object Form1: TForm1
     ParentColor = False
     TabIndex = 0
     TabOrder = 0
+    ExplicitWidth = 1469
+    ExplicitHeight = 1003
     FixedDimension = 19
     object TabSheet1: TRzTabSheet
       Caption = #1056#1072#1076#1072#1088
+      ExplicitWidth = 1465
+      ExplicitHeight = 980
       object RzPanel1: TRzPanel
         Left = 0
         Top = 19
-        Width = 960
-        Height = 961
-        Align = alLeft
+        Width = 646
+        Height = 646
         BorderOuter = fsNone
         BorderColor = clBlack
         BorderHighlight = clBlack
@@ -59,11 +62,10 @@ object Form1: TForm1
         OnPaint = RzPanel1Paint
       end
       object RzPanel2: TRzPanel
-        Left = 960
+        Left = 652
         Top = 19
-        Width = 505
-        Height = 961
-        Align = alClient
+        Width = 613
+        Height = 590
         BorderOuter = fsNone
         Color = cl3DLight
         TabOrder = 1
@@ -71,8 +73,7 @@ object Form1: TForm1
           Left = 0
           Top = 0
           Width = 244
-          Height = 961
-          Align = alLeft
+          Height = 921
           Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1094#1077#1083#1080':'
           CaptionFont.Charset = DEFAULT_CHARSET
           CaptionFont.Color = clWindowText
@@ -111,9 +112,9 @@ object Form1: TForm1
           object lbl_speed: TRzLabel
             Left = 33
             Top = 55
-            Width = 97
+            Width = 104
             Height = 13
-            Caption = #1057#1082#1086#1088#1086#1089#1090#1100' '#1094#1077#1083#1080', '#1084'/'#1089
+            Caption = #1057#1082#1086#1088#1086#1089#1090#1100' '#1094#1077#1083#1080', '#1082#1084'/'#1095
             Font.Charset = RUSSIAN_CHARSET
             Font.Color = clWindowText
             Font.Height = -11
@@ -431,11 +432,11 @@ object Form1: TForm1
           end
         end
         object RzToolbar1: TRzToolbar
-          Left = 6
-          Top = 705
-          Width = 251
-          Height = 84
-          Align = alNone
+          Left = 0
+          Top = 546
+          Width = 613
+          Height = 44
+          Align = alBottom
           AutoStyle = False
           Images = ImageList1
           RowHeight = 40
@@ -505,9 +506,39 @@ object Form1: TForm1
             Caption = 'Add TV'
             OnClick = BtnAddTVClick
           end
+          object BtnPlot: TRzToolButton
+            Left = 306
+            Top = 2
+            Hint = 'Edit'
+            DisabledIndex = 19
+            ImageIndex = 18
+            Layout = blGlyphTop
+            Caption = 'Plot'
+            OnClick = BtnPlotClick
+          end
+          object BtnDebug: TRzToolButton
+            Left = 366
+            Top = 2
+            Hint = 'Replace'
+            DisabledIndex = 21
+            ImageIndex = 20
+            Layout = blGlyphTop
+            Caption = 'Debug'
+            OnClick = BtnDebugClick
+          end
+          object BtnData: TRzToolButton
+            Left = 426
+            Top = 2
+            Hint = 'Note'
+            DisabledIndex = 23
+            ImageIndex = 22
+            Layout = blGlyphTop
+            Caption = #1044#1072#1085#1085#1099#1077
+            OnClick = BtnDataClick
+          end
           object BtnAddTarget: TRzToolButton
-            Left = 4
-            Top = 42
+            Left = 244
+            Top = 2
             Width = 62
             Height = 40
             Hint = 'Attach'
@@ -517,51 +548,20 @@ object Form1: TForm1
             Caption = 'Add Target'
             OnClick = BtnAddTargetClick
           end
-          object BtnPlot: TRzToolButton
-            Left = 66
-            Top = 42
-            Hint = 'Edit'
-            DisabledIndex = 19
-            ImageIndex = 18
-            Layout = blGlyphTop
-            Caption = 'Plot'
-            OnClick = BtnPlotClick
-          end
-          object BtnDebug: TRzToolButton
-            Left = 126
-            Top = 42
-            Hint = 'Replace'
-            DisabledIndex = 21
-            ImageIndex = 20
-            Layout = blGlyphTop
-            Caption = 'Debug'
-            OnClick = BtnDebugClick
-          end
-          object BtnData: TRzToolButton
-            Left = 186
-            Top = 42
-            Hint = 'Note'
-            DisabledIndex = 23
-            ImageIndex = 22
-            Layout = blGlyphTop
-            Caption = #1044#1072#1085#1085#1099#1077
-            OnClick = BtnDataClick
-          end
         end
         object Memo1: TMemo
           Left = 263
-          Top = 0
+          Top = 198
           Width = 242
-          Height = 961
-          Align = alRight
+          Height = 224
           ScrollBars = ssVertical
           TabOrder = 6
         end
         object rzgrpbx_radar: TRzGroupBox
-          Left = 6
+          Left = 0
           Top = 428
-          Width = 251
-          Height = 253
+          Width = 505
+          Height = 114
           Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1088#1072#1076#1072#1088#1072':'
           CaptionFont.Charset = DEFAULT_CHARSET
           CaptionFont.Color = clWindowText
@@ -582,14 +582,14 @@ object Form1: TForm1
           TabOrder = 7
           VisualStyle = vsGradient
           object RzLabel1: TRzLabel
-            Left = 24
-            Top = 166
-            Width = 202
+            Left = 247
+            Top = 86
+            Width = 258
             Height = 26
             AutoSize = False
             Caption = 
-              'To edit an item simply click a second time '#13'on an item, or press' +
-              ' the F2 key'
+              'To edit an item simply click a second time on an item, or press ' +
+              'the F2 key'
             WordWrap = True
             BlinkIntervalOff = 1000
             BlinkIntervalOn = 1000
@@ -625,8 +625,8 @@ object Form1: TForm1
             TabOrder = 1
           end
           object RzEditListBox1: TRzEditListBox
-            Left = 22
-            Top = 103
+            Left = 247
+            Top = 23
             Width = 53
             Height = 57
             ItemHeight = 13
@@ -638,8 +638,8 @@ object Form1: TForm1
             TabOrder = 2
           end
           object RzEditListBox2: TRzEditListBox
-            Left = 97
-            Top = 103
+            Left = 306
+            Top = 23
             Width = 53
             Height = 57
             ItemHeight = 13
@@ -651,8 +651,8 @@ object Form1: TForm1
             TabOrder = 3
           end
           object RzEditListBox3: TRzEditListBox
-            Left = 173
-            Top = 103
+            Left = 365
+            Top = 23
             Width = 54
             Height = 57
             ItemHeight = 13
@@ -678,10 +678,10 @@ object Form1: TForm1
           end
         end
         object TV: TTreeView
-          Left = 6
-          Top = 793
-          Width = 251
-          Height = 161
+          Left = 266
+          Top = 0
+          Width = 239
+          Height = 192
           AutoExpand = True
           Indent = 19
           TabOrder = 8
@@ -691,7 +691,7 @@ object Form1: TForm1
       object RzStatusBar1: TRzStatusBar
         Left = 0
         Top = 0
-        Width = 1465
+        Width = 1169
         Height = 19
         ShowSizeGrip = False
         Align = alTop
@@ -706,6 +706,7 @@ object Form1: TForm1
         GradientColorStop = clActiveCaption
         ParentDoubleBuffered = False
         TabOrder = 2
+        ExplicitWidth = 1465
         object RzMapInfo: TRzFieldStatus
           Left = 355
           Top = 0
@@ -730,10 +731,12 @@ object Form1: TForm1
     end
     object TabSheet2: TRzTabSheet
       Caption = #1043#1088#1072#1092#1080#1082
+      ExplicitWidth = 1465
+      ExplicitHeight = 980
       object Chart1: TChart
         Left = 0
         Top = 0
-        Width = 1465
+        Width = 1169
         Height = 300
         Legend.Visible = False
         Title.Text.Strings = (
@@ -741,6 +744,7 @@ object Form1: TForm1
         View3D = False
         Align = alTop
         TabOrder = 0
+        ExplicitWidth = 1465
         ColorPaletteIndex = 13
         object Series1: TLineSeries
           Marks.Arrow.Visible = True
@@ -760,7 +764,7 @@ object Form1: TForm1
       object Chart2: TChart
         Left = 0
         Top = 300
-        Width = 1465
+        Width = 1169
         Height = 300
         Legend.Visible = False
         Title.Text.Strings = (
@@ -768,6 +772,7 @@ object Form1: TForm1
         View3D = False
         Align = alTop
         TabOrder = 1
+        ExplicitWidth = 1465
         ColorPaletteIndex = 13
         object Series3: TLineSeries
           Marks.Arrow.Visible = True
@@ -787,7 +792,7 @@ object Form1: TForm1
       object Chart3: TChart
         Left = 0
         Top = 600
-        Width = 1465
+        Width = 1169
         Height = 300
         Legend.Visible = False
         Title.Text.Strings = (
@@ -797,6 +802,7 @@ object Form1: TForm1
         View3D = False
         Align = alTop
         TabOrder = 2
+        ExplicitWidth = 1465
         ColorPaletteIndex = 13
         object Series2: TLineSeries
           Marks.Arrow.Visible = True
@@ -818,6 +824,8 @@ object Form1: TForm1
     end
     object TabSheet3: TRzTabSheet
       Caption = #1044#1072#1085#1085#1099#1077
+      ExplicitWidth = 1465
+      ExplicitHeight = 980
       object Memo2: TMemo
         Left = 0
         Top = 3
@@ -886,10 +894,10 @@ object Form1: TForm1
     end
   end
   object ImageList1: TImageList
-    Left = 835
-    Top = 224
+    Left = 147
+    Top = 56
     Bitmap = {
-      494C01011800D000900010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001D00340010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1821,14 +1829,14 @@ object Form1: TForm1
       000000000000}
   end
   object ColorDialog1: TColorDialog
-    Left = 755
-    Top = 224
+    Left = 83
+    Top = 56
   end
   object Timer1: TTimer
     Enabled = False
     Interval = 28
     OnTimer = Timer1Timer
-    Left = 672
-    Top = 224
+    Left = 24
+    Top = 56
   end
 end

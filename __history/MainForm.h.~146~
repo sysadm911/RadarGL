@@ -31,7 +31,7 @@
 #include "RzCmboBx.hpp"
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <GL/glut.h>
+// #include <GL/glut.h>
 #define Pi M_PI
 
 typedef struct Target {
@@ -65,7 +65,7 @@ struct TRecRadar {
 };
 
 struct TtmpItemRec {
-	double Beta, Time, Ampl, TimeBack;
+	double deltaTime, deltaDistance, Beta, Time, Ampl, TimeBack, X, Y;
 	int ZapID, PackID, PckgID;
 	void* BackItem, *Parent, *ArrData;
 };
@@ -81,7 +81,7 @@ enum TStateInput {
 struct TRecGPSFloat {
 	double X, Y, Z, M;
 	TStateInput State;
-} ResultShiftScene, MousePosMove, MousePosDown;
+} ResultShiftScene, MousePosMove, MousePosDown, MousePosUp;
 
 // ---------------------------------------------------------------------------
 class TForm1 : public TForm {
@@ -165,8 +165,6 @@ __published: // IDE-managed Components
 	void __fastcall RzPanel1Click(TObject *Sender);
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall BtnRouteClick(TObject *Sender);
-	void __fastcall lbl_beta0Change(TObject *Sender);
-	void __fastcall lbl_beta0KeyPress(TObject *Sender, wchar_t &Key);
 	void __fastcall BtnRestartClick(TObject *Sender);
 	void __fastcall TVClick(TObject *Sender);
 	void __fastcall BtnAddTVClick(TObject *Sender);
@@ -239,6 +237,7 @@ public: // User declarations
 	float GetTimePackage(int PackageID);
 	int GetCountPackages();
 	float GetTimePacket();
+	float GetAzimutOfTime(float Time);
 
 	TTreeNode* AddNodeRoot(void);
 	TTreeNode * AddNodeRot(int i);

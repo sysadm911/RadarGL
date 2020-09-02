@@ -31,7 +31,7 @@
 #include "RzCmboBx.hpp"
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <GL/glut.h>
+// #include <GL/glut.h>
 #define Pi M_PI
 
 typedef struct Target {
@@ -176,7 +176,6 @@ __published: // IDE-managed Components
 	void __fastcall edt_beta1Enter(TObject *Sender);
 	void __fastcall BtnDataClick(TObject *Sender);
 	void __fastcall RzPanel1MouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
-	void __fastcall RzPanel1MouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
 
 private: // User declarations
 
