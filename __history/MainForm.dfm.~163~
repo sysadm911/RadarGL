@@ -17,6 +17,7 @@ object Form1: TForm1
   Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyPress = FormKeyPress
   OnMouseWheel = FormMouseWheel
   PixelsPerInch = 96
   TextHeight = 13
@@ -42,7 +43,7 @@ object Form1: TForm1
       ExplicitHeight = 980
       object RzPanel1: TRzPanel
         Left = 0
-        Top = 19
+        Top = 25
         Width = 654
         Height = 654
         BorderOuter = fsNone
@@ -60,6 +61,7 @@ object Form1: TForm1
         OnClick = RzPanel1Click
         OnMouseDown = RzPanel1MouseDown
         OnMouseMove = RzPanel1MouseMove
+        OnMouseUp = RzPanel1MouseUp
         OnPaint = RzPanel1Paint
       end
       object RzPanel2: TRzPanel
@@ -263,8 +265,8 @@ object Form1: TForm1
             BlinkIntervalOn = 1000
           end
           object edt_beta0: TRzMaskEdit
-            Left = 136
-            Top = 29
+            Left = 139
+            Top = 31
             Width = 81
             Height = 21
             Font.Charset = DEFAULT_CHARSET
@@ -516,7 +518,6 @@ object Form1: TForm1
             ImageIndex = 18
             Layout = blGlyphTop
             Caption = 'Plot'
-            OnClick = BtnPlotClick
           end
           object BtnDebug: TRzToolButton
             Left = 366

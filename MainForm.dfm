@@ -12,6 +12,7 @@ object Form1: TForm1
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
@@ -34,13 +35,11 @@ object Form1: TForm1
     ParentColor = False
     TabIndex = 0
     TabOrder = 0
-    ExplicitWidth = 1469
-    ExplicitHeight = 1003
     FixedDimension = 19
     object TabSheet1: TRzTabSheet
       Caption = #1056#1072#1076#1072#1088
-      ExplicitWidth = 1465
-      ExplicitHeight = 980
+      ExplicitLeft = 0
+      ExplicitTop = 21
       object RzPanel1: TRzPanel
         Left = 0
         Top = 25
@@ -456,7 +455,6 @@ object Form1: TForm1
           Color = clGradientInactiveCaption
           TabOrder = 5
           VisualStyle = vsGradient
-          ExplicitWidth = 613
           ToolbarControls = (
             BtnRoute
             BtnBackground
@@ -709,7 +707,6 @@ object Form1: TForm1
         GradientColorStop = clActiveCaption
         ParentDoubleBuffered = False
         TabOrder = 2
-        ExplicitWidth = 1465
         object RzMapInfo: TRzFieldStatus
           Left = 355
           Top = 0
@@ -734,8 +731,6 @@ object Form1: TForm1
     end
     object TabSheet2: TRzTabSheet
       Caption = #1043#1088#1072#1092#1080#1082
-      ExplicitWidth = 1465
-      ExplicitHeight = 980
       object Chart1: TChart
         Left = 0
         Top = 0
@@ -747,7 +742,6 @@ object Form1: TForm1
         View3D = False
         Align = alTop
         TabOrder = 0
-        ExplicitWidth = 1465
         ColorPaletteIndex = 13
         object Series1: TLineSeries
           Marks.Arrow.Visible = True
@@ -775,7 +769,6 @@ object Form1: TForm1
         View3D = False
         Align = alTop
         TabOrder = 1
-        ExplicitWidth = 1465
         ColorPaletteIndex = 13
         object Series3: TLineSeries
           Marks.Arrow.Visible = True
@@ -805,7 +798,6 @@ object Form1: TForm1
         View3D = False
         Align = alTop
         TabOrder = 2
-        ExplicitWidth = 1465
         ColorPaletteIndex = 13
         object Series2: TLineSeries
           Marks.Arrow.Visible = True
@@ -827,8 +819,6 @@ object Form1: TForm1
     end
     object TabSheet3: TRzTabSheet
       Caption = #1044#1072#1085#1085#1099#1077
-      ExplicitWidth = 1465
-      ExplicitHeight = 980
       object Memo2: TMemo
         Left = 0
         Top = 3
@@ -900,7 +890,7 @@ object Form1: TForm1
     Left = 147
     Top = 56
     Bitmap = {
-      494C010118001D00340010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001D00380010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

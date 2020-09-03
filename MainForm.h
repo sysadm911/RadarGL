@@ -29,6 +29,9 @@
 #include "TeeProcs.hpp"
 #include "RzRadGrp.hpp"
 #include "RzCmboBx.hpp"
+#include "cspin.h"
+#include "RzSpnEdt.hpp"
+#include "Spin.hpp"
 #include <GL/gl.h>
 #include <GL/glu.h>
 // #include <GL/glut.h>
