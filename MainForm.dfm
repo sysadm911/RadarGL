@@ -2,9 +2,10 @@ object Form1: TForm1
   Left = 206
   Top = 0
   AutoSize = True
+  BorderStyle = bsSingle
   Caption = 'RadarGL'
-  ClientHeight = 694
-  ClientWidth = 1183
+  ClientHeight = 704
+  ClientWidth = 1193
   Color = clBtnFace
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
@@ -25,8 +26,8 @@ object Form1: TForm1
   object RzPageControl1: TRzPageControl
     Left = 0
     Top = 0
-    Width = 1183
-    Height = 694
+    Width = 1193
+    Height = 704
     ActivePage = TabSheet1
     Align = alClient
     BackgroundColor = clBtnFace
@@ -35,11 +36,13 @@ object Form1: TForm1
     ParentColor = False
     TabIndex = 0
     TabOrder = 0
+    ExplicitWidth = 1183
+    ExplicitHeight = 694
     FixedDimension = 19
     object TabSheet1: TRzTabSheet
       Caption = #1056#1072#1076#1072#1088
-      ExplicitLeft = 0
-      ExplicitTop = 21
+      ExplicitWidth = 1179
+      ExplicitHeight = 671
       object RzPanel1: TRzPanel
         Left = 0
         Top = 25
@@ -144,7 +147,7 @@ object Form1: TForm1
           object edt_speed: TRzMaskEdit
             Left = 142
             Top = 52
-            Width = 81
+            Width = 80
             Height = 21
             EditMask = '#####;0; '
             Font.Charset = DEFAULT_CHARSET
@@ -155,7 +158,7 @@ object Form1: TForm1
             MaxLength = 5
             ParentFont = False
             TabOrder = 1
-            Text = '1000'
+            Text = '1080'
           end
         end
         object rzgrpbx_coord3: TRzGroupBox
@@ -692,7 +695,7 @@ object Form1: TForm1
       object RzStatusBar1: TRzStatusBar
         Left = 0
         Top = 0
-        Width = 1179
+        Width = 1189
         Height = 19
         ShowSizeGrip = False
         Align = alTop
@@ -707,6 +710,7 @@ object Form1: TForm1
         GradientColorStop = clActiveCaption
         ParentDoubleBuffered = False
         TabOrder = 2
+        ExplicitWidth = 1179
         object RzMapInfo: TRzFieldStatus
           Left = 355
           Top = 0
@@ -731,10 +735,12 @@ object Form1: TForm1
     end
     object TabSheet2: TRzTabSheet
       Caption = #1043#1088#1072#1092#1080#1082
+      ExplicitWidth = 1179
+      ExplicitHeight = 671
       object Chart1: TChart
         Left = 0
         Top = 0
-        Width = 1179
+        Width = 1189
         Height = 300
         Legend.Visible = False
         Title.Text.Strings = (
@@ -742,6 +748,7 @@ object Form1: TForm1
         View3D = False
         Align = alTop
         TabOrder = 0
+        ExplicitWidth = 1179
         ColorPaletteIndex = 13
         object Series1: TLineSeries
           Marks.Arrow.Visible = True
@@ -761,7 +768,7 @@ object Form1: TForm1
       object Chart2: TChart
         Left = 0
         Top = 300
-        Width = 1179
+        Width = 1189
         Height = 300
         Legend.Visible = False
         Title.Text.Strings = (
@@ -769,6 +776,7 @@ object Form1: TForm1
         View3D = False
         Align = alTop
         TabOrder = 1
+        ExplicitWidth = 1179
         ColorPaletteIndex = 13
         object Series3: TLineSeries
           Marks.Arrow.Visible = True
@@ -788,7 +796,7 @@ object Form1: TForm1
       object Chart3: TChart
         Left = 0
         Top = 600
-        Width = 1179
+        Width = 1189
         Height = 300
         Legend.Visible = False
         Title.Text.Strings = (
@@ -798,6 +806,7 @@ object Form1: TForm1
         View3D = False
         Align = alTop
         TabOrder = 2
+        ExplicitWidth = 1179
         ColorPaletteIndex = 13
         object Series2: TLineSeries
           Marks.Arrow.Visible = True
@@ -819,6 +828,8 @@ object Form1: TForm1
     end
     object TabSheet3: TRzTabSheet
       Caption = #1044#1072#1085#1085#1099#1077
+      ExplicitWidth = 1179
+      ExplicitHeight = 671
       object Memo2: TMemo
         Left = 0
         Top = 3
@@ -890,7 +901,7 @@ object Form1: TForm1
     Left = 147
     Top = 56
     Bitmap = {
-      494C010118001D00380010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001D003C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

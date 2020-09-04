@@ -971,31 +971,33 @@ float TForm1::GetAzimutOfTime(float Time) {
 	return result;
 }
 
-void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
-
-	glBegin(GL_LINES);
-
-	float fx0, fy0, fx1, fy1 = 0.0;
-
-	D_startX = StrToFloat(edt_D0->Text) * 1000.0 * sin(Pi * StrToFloat(edt_beta0->Text) / 180);
-	D_startY = StrToFloat(edt_D0->Text) * 1000.0 * cos(Pi * StrToFloat(edt_beta0->Text) / 180);
-
-	D_endX = StrToFloat(edt_D3->Text) * 1000.0 * sin(Pi * StrToFloat(edt_beta3->Text) / 180);
-	D_endY = StrToFloat(edt_D3->Text) * 1000.0 * cos(Pi * StrToFloat(edt_beta3->Text) / 180);
-
-	fx0 = D_startX / 450000.0;
-	fx1 = D_endX / 450000.0;
-	fy0 = D_startY / 450000.0;
-	fy1 = D_endY / 450000.0;
-
-	glVertex2f(fx0, fy0);
-	glVertex2f(fx1, fy1);
-
-	glEnd();
-
-	SwapBuffers(dc1);
-
-}
+// void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
+//
+// // glBegin(GL_LINES);
+// //
+// // float fx0, fy0, fx1, fy1 = 0.0;
+// //
+// // D_startX = StrToFloat(edt_D0->Text) * 1000.0 * sin(Pi * StrToFloat(edt_beta0->Text) / 180);
+// // D_startY = StrToFloat(edt_D0->Text) * 1000.0 * cos(Pi * StrToFloat(edt_beta0->Text) / 180);
+// //
+// // D_endX = StrToFloat(edt_D3->Text) * 1000.0 * sin(Pi * StrToFloat(edt_beta3->Text) / 180);
+// // D_endY = StrToFloat(edt_D3->Text) * 1000.0 * cos(Pi * StrToFloat(edt_beta3->Text) / 180);
+// //
+// // fx0 = D_startX / 450000.0;
+// // fx1 = D_endX / 450000.0;
+// // fy0 = D_startY / 450000.0;
+// // fy1 = D_endY / 450000.0;
+// //
+// // glVertex2f(fx0, fy0);
+// // glVertex2f(fx1, fy1);
+// //
+// // glEnd();
+// //
+// // SwapBuffers(dc1);
+//
+// Memo1->Lines->Add("GetTimePacket = " + FloatToStr(GetTimePacket()));
+//
+// }
 
 // ---------------------------------------------------------------------------
 void __fastcall TForm1::RzPanel1MouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y) {
@@ -1098,9 +1100,6 @@ void __fastcall TForm1::BtnAddTVClick(TObject * Sender) {
 		D_endX = D_end * sin(Pi * StrToFloat(edt_beta3->Text) / 180);
 		D_endY = D_end * cos(Pi * StrToFloat(edt_beta3->Text) / 180);
 
-		Decart_Route = sqrt((D_startX + D_endX) * (D_startX + D_endX) + (D_startY + D_endY) * (D_startY + D_endY));
-		Decart_Route_End = Decart_Route;
-
 		// FILE *F;
 		// if ((F = fopen("C:\\Users\\user\\Desktop\\RadarGL.txt", "w+")) == NULL)
 		// ShowMessage("Cannot open input file.\n");
@@ -1201,8 +1200,8 @@ void __fastcall TForm1::BtnAddTVClick(TObject * Sender) {
 							tmpItem->PckgID = j;
 							tmpItem->Time = PulseToTime(i, j, ii);
 							tmpItem->Beta = GetAzimutOfTime(tmpItem->Time) + currentTarget.Beta;
-//							 while (tmpItem->Beta >= 360)
-//							 tmpItem->Beta = tmpItem->Beta - 360.0;
+							// while (tmpItem->Beta >= 360)
+							// tmpItem->Beta = tmpItem->Beta - 360.0;
 							if (t1 < t2) {
 								if (!((tmpItem->Beta >= t1) && (tmpItem->Beta <= t2))) {
 									tmpItem->Beta = currentTarget.Beta;
@@ -1234,9 +1233,7 @@ void __fastcall TForm1::BtnAddTVClick(TObject * Sender) {
 							D_start -= tmpItem->deltaDistance;
 							// fprintf(F, "Beta = %17.15f  PackID =%3d   PckgID =%3d   ZapID =%3d   X =%17.15f Y =%17.15f D_start = %17.15f\n",
 							// tmpItem->Beta, tmpItem->PackID, tmpItem->PckgID, tmpItem->ZapID, tmpItem->X, tmpItem->Y, D_start);
-
 						}
-
 					}
 				}
 			}
@@ -1247,7 +1244,6 @@ void __fastcall TForm1::BtnAddTVClick(TObject * Sender) {
 		TV->Items->EndUpdate();
 		// fclose(F);
 		Memo1->Lines->Add("N of Rotation = " + FloatToStr(irot));
-
 	}
 	Screen->Cursor = crDefault;
 	delete[]TimeArr;
@@ -1255,5 +1251,117 @@ void __fastcall TForm1::BtnAddTVClick(TObject * Sender) {
 	glEnd();
 	glEndList();
 	SwapBuffers(dc1);
+}
 
+void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
+
+	if (edt_beta3->Text != "" && edt_beta0->Text != "") {
+		Screen->Cursor = crHourGlass;
+		int i, j, ii, irot;
+
+		int PulsesOfPacket = GetCountPulsesOfPacket(); // 58
+		int CntPack = GetCountPacketOfRotaion(); // 170
+		int step = 0, currentPulse = 0;
+
+		currentTarget.Velocity = StrToFloat(edt_speed->Text) * 1000.0 / 3600.0;
+		currentTarget.Distance = StrToFloat(edt_D0->Text) * 1000;
+		currentTarget.Beta = StrToFloat(edt_beta0->Text);
+
+		float t1 = StrToFloat(edt_beta0->Text);
+		float t2 = StrToFloat(edt_beta3->Text);
+
+		D_start = StrToFloat(edt_D0->Text) * 1000.0;
+		D_end = StrToFloat(edt_D3->Text) * 1000.0;
+
+		D_startX = D_start * sin(Pi * StrToFloat(edt_beta0->Text) / 180);
+		D_startY = D_start * cos(Pi * StrToFloat(edt_beta0->Text) / 180);
+
+		D_endX = D_end * sin(Pi * StrToFloat(edt_beta3->Text) / 180);
+		D_endY = D_end * cos(Pi * StrToFloat(edt_beta3->Text) / 180);
+
+		// Decart_Route = sqrt((D_startX + D_endX) * (D_startX + D_endX) + (D_startY + D_endY) * (D_startY + D_endY));
+		// Decart_Route_End = Decart_Route;
+
+		double Route = sqrt(D_start * D_start + D_end * D_end - 2 * D_start * D_end * (cos(Pi * (t2 - t1) / 180.0)));
+		double RouteTime = Route / currentTarget.Velocity;
+		Memo1->Lines->Clear();
+		Memo1->Lines->Add("ѕуть который проходит цель в метрах = " + FloatToStr(Route));
+		Memo1->Lines->Add("¬рем€ наблюдени€ цели = " + FloatToStr(RouteTime));
+		Memo1->Lines->Add("”гол между начальным и конечным положением цели = " + FloatToStr(t2-t1));
+		Memo1->Lines->Add(" оличество оборотов антенны которое совершает антенна за врем€ наблюдени€ цели= " + FloatToStr(RouteTime / 10));
+
+		glPointSize(Zoom*2);
+		glEnable(GL_POINT_SMOOTH);
+		glBegin(GL_POINTS);
+
+//		if (D_start < D_end) {
+//
+//			irot = 0;
+//			currentPulse = 0;
+//			while (D_start < D_end) {
+//
+//				irot++;
+//
+//				for (i = 0; i < CntPack; i++) {
+//
+//					for (j = 0; j < 4; j++) {
+//
+//						for (ii = 0; ii < Radar.PackRec[j].CntIZ; ii++) {
+//
+//							float Time = PulseToTime(i, j, ii);
+//							float TimeBack = Time + 2.0 * D_start / 3.0e8;
+//							float deltaTime = TimeBack - Time;
+//							float deltaDistance = currentTarget.Velocity * (deltaTime);
+//							float X = (D_start / 450000.0) * sin(Pi * tmpItem->Beta / 180.0);
+//							float Y = (D_start / 450000.0) * cos(Pi * tmpItem->Beta / 180.0);
+//							glVertex2f(X, Y);
+//							currentPulse++;
+//							D_start += tmpItem->deltaDistance;
+//
+//						}
+//
+//					}
+//				}
+//			}
+//
+//			Memo1->Lines->Add("IZ count = " + FloatToStr(currentPulse));
+//		}
+//		else {
+//
+//			irot = 0;
+//			currentPulse = 0;
+//			while (D_start > D_end) {
+//
+//				irot++;
+//
+//				for (i = 0; i < CntPack; i++) {
+//
+//					for (j = 0; j < 4; j++) {
+//
+//						for (ii = 0; ii < Radar.PackRec[j].CntIZ; ii++) {
+//							float Time = PulseToTime(i, j, ii);
+//
+//							float TimeBack = tmpItem->Time + 2.0 * D_start / 3.0e8;
+//							float deltaTime = tmpItem->TimeBack - tmpItem->Time;
+//							float deltaDistance = currentTarget.Velocity * (tmpItem->deltaTime);
+//							float X = (D_start / 450000.0) * sin(Pi * tmpItem->Beta / 180.0);
+//							float Y = (D_start / 450000.0) * cos(Pi * tmpItem->Beta / 180.0);
+//
+//							glVertex2f(X, Y);
+//
+//							currentPulse++;
+//
+//							D_start -= deltaDistance;
+//						}
+//					}
+//				}
+//			}
+//			Memo1->Lines->Add("IZ count = " + FloatToStr(currentPulse));
+//		}
+//
+//		Memo1->Lines->Add("N of Rotation = " + FloatToStr(irot));
+	}
+	Screen->Cursor = crDefault;
+	glEnd();
+	SwapBuffers(dc1);
 }
