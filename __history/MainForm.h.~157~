@@ -29,6 +29,9 @@
 #include "TeeProcs.hpp"
 #include "RzRadGrp.hpp"
 #include "RzCmboBx.hpp"
+#include "cspin.h"
+#include "RzSpnEdt.hpp"
+#include "Spin.hpp"
 #include <GL/gl.h>
 #include <GL/glu.h>
 // #include <GL/glut.h>
@@ -169,12 +172,14 @@ __published: // IDE-managed Components
 	void __fastcall TVClick(TObject *Sender);
 	void __fastcall BtnAddTVClick(TObject *Sender);
 	void __fastcall BtnAddTargetClick(TObject *Sender);
-	void __fastcall BtnPlotClick(TObject *Sender);
 	void __fastcall BtnDebugClick(TObject *Sender);
 	void __fastcall edt_beta1Enter(TObject *Sender);
 	void __fastcall BtnDataClick(TObject *Sender);
 	void __fastcall RzPanel1MouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
 	void __fastcall RzPanel1MouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
+
+	void __fastcall FormKeyPress(TObject *Sender, wchar_t &Key);
+	void __fastcall edt_D0Change(TObject *Sender);
 
 private: // User declarations
 
@@ -188,8 +193,6 @@ private: // User declarations
 	void InitViewProection();
 	void InitViewProection(float x, float y, float dXX, float dYY);
 	void PaintCurrentCircle();
-	void DrawAxis();
-	void DrawRoute();
 
 	HWND hwnd1;
 	HGLRC hrc1;

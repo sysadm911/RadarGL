@@ -112,11 +112,6 @@ __published: // IDE-managed Components
 	TRzLabel *lbl_D0;
 	TRzMaskEdit *edt_beta0;
 	TRzMaskEdit *edt_D0;
-	TRzGroupBox *rzgrpbx_coord1;
-	TRzLabel *lbl_beta1;
-	TRzLabel *lbl_D1;
-	TRzMaskEdit *edt_beta1;
-	TRzMaskEdit *edt_D1;
 	TRzGroupBox *rzgrpbx_coord2;
 	TRzLabel *lbl_beta2;
 	TRzLabel *lbl_D2;
@@ -158,6 +153,11 @@ __published: // IDE-managed Components
 	TRzEditListBox *RzEditListBox3;
 	TRzRadioGroup *RzRadioGroup2;
 	TRzLabel *RzLabel1;
+	TRzGroupBox *rzgrpbx_coord1;
+	TRzLabel *lbl_beta1;
+	TRzLabel *lbl_D1;
+	TRzMaskEdit *edt_beta1;
+	TRzMaskEdit *edt_D1;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
@@ -179,6 +179,7 @@ __published: // IDE-managed Components
 	void __fastcall RzPanel1MouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
 
 	void __fastcall FormKeyPress(TObject *Sender, wchar_t &Key);
+	void __fastcall edt_D0Change(TObject *Sender);
 
 private: // User declarations
 

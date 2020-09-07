@@ -66,7 +66,7 @@ DynamicArray<int>ArrBig;
 DynamicArray<float>Pulses;
 bool TVready = false;
 // float lineArrRe[32768] = {0};
-GLuint grid_list;
+GLuint grid_list, grid_list2;
 TList *ListPulses = new TList;
 
 int startX, startY = 0;
@@ -574,21 +574,6 @@ void __fastcall TForm1::TVClick(TObject *Sender) {
 }
 // ---------------------------------------------------------------------------
 
-float TForm1::PulseToTime(int PacketID, int PackageID, int PulseId) {
-	float result = 0.0;
-	int i = 0, Cnt = 0;
-	result = PacketID;
-	i = PackageID; // - 1;
-	while (i > 0) {
-		result = result + GetTimePackage(i);
-		i--;
-	}
-	result = result + PulseId * Radar.PackRec[PackageID].Period * 1E-9;
-	return result;
-}
-
-// ---------------------------------------------------------------------------
-
 int TForm1::DistanceToDiskret(float Distance) {
 	int result = 0;
 	double test = 0.0;
@@ -915,6 +900,7 @@ void __fastcall TForm1::RzPanel1Paint(TObject * Sender) {
 		glCallList(grid_list);
 	}
 
+	glCallList(grid_list2);
 	SwapBuffers(dc1);
 	EndPaint(hwnd1, &ps);
 }
@@ -938,6 +924,19 @@ float TForm1::GetTimePackage(int PackageID) {
 	float result = 0.0;
 	int i = 0;
 	result = Radar.PackRec[PackageID].Period * Radar.PackRec[PackageID].CntIZ * 1E-9;
+	return result;
+}
+
+float TForm1::PulseToTime(int PacketID, int PackageID, int PulseId) {
+	float result = 0.0;
+	int i = 0, Cnt = 0;
+	result = PacketID;
+	i = PackageID; // - 1;
+	while (i > 0) {
+		result = result + GetTimePackage(i);
+		i--;
+	}
+	result = result + PulseId * Radar.PackRec[PackageID].Period * 1E-9;
 	return result;
 }
 
@@ -1062,6 +1061,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, wchar_t &Key) {
 	glOrtho(-1.0 / Zoom, 1.0 / Zoom, -1.0 / Zoom, 1.0 / Zoom, -1.0, 1.0);
 	glTranslatef(xpos, ypos, zpos);
 	InvalidateRect(hwnd1, 0, false);
+
 }
 
 // ---------------------------------------------------------------------------
@@ -1265,7 +1265,6 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 
 		currentTarget.Velocity = StrToFloat(edt_speed->Text) * 1000.0 / 3600.0;
 		currentTarget.Distance = StrToFloat(edt_D0->Text) * 1000;
-		currentTarget.Beta = StrToFloat(edt_beta0->Text);
 
 		float t1 = StrToFloat(edt_beta0->Text);
 		float t2 = StrToFloat(edt_beta3->Text);
@@ -1273,98 +1272,69 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		D_start = StrToFloat(edt_D0->Text) * 1000.0;
 		D_end = StrToFloat(edt_D3->Text) * 1000.0;
 
-		D_startX = D_start * sin(Pi * StrToFloat(edt_beta0->Text) / 180);
-		D_startY = D_start * cos(Pi * StrToFloat(edt_beta0->Text) / 180);
-
-		D_endX = D_end * sin(Pi * StrToFloat(edt_beta3->Text) / 180);
-		D_endY = D_end * cos(Pi * StrToFloat(edt_beta3->Text) / 180);
-
-		// Decart_Route = sqrt((D_startX + D_endX) * (D_startX + D_endX) + (D_startY + D_endY) * (D_startY + D_endY));
-		// Decart_Route_End = Decart_Route;
-
 		double Route = sqrt(D_start * D_start + D_end * D_end - 2 * D_start * D_end * (cos(Pi * (t2 - t1) / 180.0)));
 		double RouteTime = Route / currentTarget.Velocity;
 		Memo1->Lines->Clear();
 		Memo1->Lines->Add("Путь который проходит цель в метрах = " + FloatToStr(Route));
-		Memo1->Lines->Add();
+		Memo1->Lines->Add("");
 		Memo1->Lines->Add("Время наблюдения цели = " + FloatToStr(RouteTime));
-		Memo1->Lines->Add();
-		Memo1->Lines->Add("Угол между начальным и конечным положением цели = " + FloatToStr(t2 - t1));
-		Memo1->Lines->Add();
+		Memo1->Lines->Add("");
+		if (t2 > t1)
+			Memo1->Lines->Add("Угол между начальным и конечным положением цели = " + FloatToStr(t2 - t1));
+		if (t2 < t1)
+			Memo1->Lines->Add("Угол между начальным и конечным положением цели = " + FloatToStr(t1 - t2));
+
+		Memo1->Lines->Add("");
+
 		Memo1->Lines->Add("Количество оборотов антенны которое совершает антенна за время наблюдения цели= " + FloatToStr(RouteTime / 10));
+		Memo1->Lines->Add("Угол между начальным и конечным положением цели = " + FloatToStr(t2 - t1));
+		Memo1->Lines->Add("За время одного оборота цель пролетит расстояние = " + FloatToStr(currentTarget.Velocity * 10));
+
+		Memo1->Lines->Add("Угол teta = " + FloatToStr
+			(180 / Pi * (acos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
+
+		deltaDD = currentTarget.Velocity * 10;
+
+		Memo1->Lines->Add("D_start_next = " + FloatToStr(sqrt(D_start*D_start + deltaDD*deltaDD -
+			2*D_start*deltaDD * cos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
+
+		grid_list2 = glGenLists(1);
+		glNewList(grid_list2, GL_COMPILE_AND_EXECUTE);
 
 		glPointSize(Zoom*2);
 		glEnable(GL_POINT_SMOOTH);
 		glBegin(GL_POINTS);
 
-		// if (D_start < D_end) {
-		//
-		// irot = 0;
-		// currentPulse = 0;
-		// while (D_start < D_end) {
-		//
-		// irot++;
-		//
-		// for (i = 0; i < CntPack; i++) {
-		//
-		// for (j = 0; j < 4; j++) {
-		//
-		// for (ii = 0; ii < Radar.PackRec[j].CntIZ; ii++) {
-		//
-		// float Time = PulseToTime(i, j, ii);
-		// float TimeBack = Time + 2.0 * D_start / 3.0e8;
-		// float deltaTime = TimeBack - Time;
-		// float deltaDistance = currentTarget.Velocity * (deltaTime);
-		// float X = (D_start / 450000.0) * sin(Pi * tmpItem->Beta / 180.0);
-		// float Y = (D_start / 450000.0) * cos(Pi * tmpItem->Beta / 180.0);
-		// glVertex2f(X, Y);
-		// currentPulse++;
-		// D_start += tmpItem->deltaDistance;
-		//
-		// }
-		//
-		// }
-		// }
-		// }
-		//
-		// Memo1->Lines->Add("IZ count = " + FloatToStr(currentPulse));
-		// }
-		// else {
-		//
-		// irot = 0;
-		// currentPulse = 0;
-		// while (D_start > D_end) {
-		//
-		// irot++;
-		//
-		// for (i = 0; i < CntPack; i++) {
-		//
-		// for (j = 0; j < 4; j++) {
-		//
-		// for (ii = 0; ii < Radar.PackRec[j].CntIZ; ii++) {
-		// float Time = PulseToTime(i, j, ii);
-		//
-		// float TimeBack = tmpItem->Time + 2.0 * D_start / 3.0e8;
-		// float deltaTime = tmpItem->TimeBack - tmpItem->Time;
-		// float deltaDistance = currentTarget.Velocity * (tmpItem->deltaTime);
-		// float X = (D_start / 450000.0) * sin(Pi * tmpItem->Beta / 180.0);
-		// float Y = (D_start / 450000.0) * cos(Pi * tmpItem->Beta / 180.0);
-		//
-		// glVertex2f(X, Y);
-		//
-		// currentPulse++;
-		//
-		// D_start -= deltaDistance;
-		// }
-		// }
-		// }
-		// }
-		// Memo1->Lines->Add("IZ count = " + FloatToStr(currentPulse));
-		// }
-		//
-		// Memo1->Lines->Add("N of Rotation = " + FloatToStr(irot));
+		double teta = acos((D_start * D_start + Route * Route - D_end * D_end) / (2 * D_start * Route));
+
+		double D_start_next = 0;
+		double X, Y = 0.0;
+		int counter = 0;
+
+		glVertex2f(D_start/450.000*sin(Pi*t1/180), D_start/450.000*cos(Pi*t1/180));
+				glVertex2f(D_end/450.000*sin(Pi*t2/180), D_end/450.000*cos(Pi*t2/180));
+
+		double beta_rad = t2 * Pi / 180;
+		double alfa = 0;
+		for (int i = 0; i < RouteTime / 10; i++){
+			D_start_next = sqrt(D_start * D_start + deltaDD * deltaDD - 2 * D_start * deltaDD * cos(teta));
+
+			 alfa = acos((D_start * D_start + D_start_next * D_start_next - deltaDD * deltaDD) / (2 * D_start * D_start_next));
+
+			X = (D_start_next / 450000.0) * sin(alfa);
+			Y = (D_start_next / 450000.0) * cos(alfa);
+
+			glVertex2f(X, Y);
+
+			D_start = D_start_next;
+
+			counter++;
+		}
+		Screen->Cursor = crDefault;
+		glEnd();
+		glEndList();
+		ShowMessage(FloatToStr(counter));
+		InvalidateRect(hwnd1,0,false);
+
 	}
-	Screen->Cursor = crDefault;
-	glEnd();
-	SwapBuffers(dc1);
 }
