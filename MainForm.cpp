@@ -382,6 +382,7 @@ void TForm1::AddPoint() {
 // ---------------------------------------------------------------------------
 void TForm1::PaintPoint() {
 	if (point_ready) {
+
 		glPointSize(Zoom*2);
 		glEnable(GL_POINT_SMOOTH);
 		glBegin(GL_POINTS);
@@ -1287,14 +1288,18 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		Memo1->Lines->Add("");
 
 		Memo1->Lines->Add(" оличество оборотов антенны которое совершает антенна за врем€ наблюдени€ цели= " + FloatToStr(RouteTime / 10));
+		Memo1->Lines->Add("");
 		Memo1->Lines->Add("”гол между начальным и конечным положением цели = " + FloatToStr(t2 - t1));
+		Memo1->Lines->Add("");
 		Memo1->Lines->Add("«а врем€ одного оборота цель пролетит рассто€ние = " + FloatToStr(currentTarget.Velocity * 10));
 
+		Memo1->Lines->Add("");
 		Memo1->Lines->Add("”гол teta = " + FloatToStr
 			(180 / Pi * (acos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
 
 		deltaDD = currentTarget.Velocity * 10;
 
+		Memo1->Lines->Add("");
 		Memo1->Lines->Add("D_start_next = " + FloatToStr(sqrt(D_start*D_start + deltaDD*deltaDD -
 			2*D_start*deltaDD * cos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
 
@@ -1323,7 +1328,7 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 			double teta = acos((D_start * D_start + Route * Route - D_end * D_end) / (2 * D_start * Route));
 			D_start_next = sqrt(D_start * D_start + deltaDD * deltaDD - 2 * D_start * deltaDD * cos(teta));
 
-			alfa =alfa + acos((D_start * D_start + D_start_next * D_start_next - deltaDD * deltaDD) / (2 * D_start * D_start_next));
+			alfa = alfa + acos((D_start * D_start + D_start_next * D_start_next - deltaDD * deltaDD) / (2 * D_start * D_start_next));
 
 			X = (D_start_next / 450000.0) * sin(alfa + Pi * t1 / 180.0);
 			Y = (D_start_next / 450000.0) * cos(alfa + Pi * t1 / 180.0);

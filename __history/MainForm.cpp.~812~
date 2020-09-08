@@ -382,6 +382,7 @@ void TForm1::AddPoint() {
 // ---------------------------------------------------------------------------
 void TForm1::PaintPoint() {
 	if (point_ready) {
+
 		glPointSize(Zoom*2);
 		glEnable(GL_POINT_SMOOTH);
 		glBegin(GL_POINTS);
@@ -1287,18 +1288,19 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		Memo1->Lines->Add("");
 
 		Memo1->Lines->Add(" оличество оборотов антенны которое совершает антенна за врем€ наблюдени€ цели= " + FloatToStr(RouteTime / 10));
-		Memo1->Lines->Add("”гол между начальным и конечным положением цели = " + FloatToStr(t2 - t1));
-		Memo1->Lines->Add("«а врем€ одного оборота цель пролетит рассто€ние = " + FloatToStr(currentTarget.Velocity * 10));
+		Memo1->Lines->Add("");		Memo1->Lines->Add("”гол между начальным и конечным положением цели = " + FloatToStr(t2 - t1));
+		Memo1->Lines->Add("");		Memo1->Lines->Add("«а врем€ одного оборота цель пролетит рассто€ние = " + FloatToStr(currentTarget.Velocity * 10));
 
-		Memo1->Lines->Add("”гол teta = " + FloatToStr
+		Memo1->Lines->Add("");		Memo1->Lines->Add("”гол teta = " + FloatToStr
 			(180 / Pi * (acos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
 
 		deltaDD = currentTarget.Velocity * 10;
 
-		Memo1->Lines->Add("D_start_next = " + FloatToStr(sqrt(D_start*D_start + deltaDD*deltaDD -
+		Memo1->Lines->Add("");		Memo1->Lines->Add("D_start_next = " + FloatToStr(sqrt(D_start*D_start + deltaDD*deltaDD -
 			2*D_start*deltaDD * cos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
 
 		grid_list2 = glGenLists(1);
+
 		glNewList(grid_list2, GL_COMPILE_AND_EXECUTE);
 
 		glPointSize(Zoom*2);
@@ -1311,21 +1313,25 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		double X, Y = 0.0;
 		int counter = 0;
 
-		glVertex2f((D_start/450.000)*sin(Pi*t1/180), (D_start/450.000)*cos(Pi*t1/180));
-		glVertex2f((D_end/450.000)*sin(Pi*t2/180), (D_end/450.000)*cos(Pi*t2/180));
+		glVertex2f((D_start / 450000.)*sin(Pi*t1 / 180), (D_start / 450000.)*cos(Pi*t1 / 180));
+		glVertex2f((D_end / 450000.)*sin(Pi*t2 / 180), (D_end / 450000.)*cos(Pi*t2 / 180));
 
 		double beta_rad = t2 * Pi / 180;
 		double alfa = 0;
-		for (int i = 0; i < RouteTime / 10; i++){
+
+		while (Route > 0) {
+
+			double teta = acos((D_start * D_start + Route * Route - D_end * D_end) / (2 * D_start * Route));
 			D_start_next = sqrt(D_start * D_start + deltaDD * deltaDD - 2 * D_start * deltaDD * cos(teta));
 
-			 alfa = acos((D_start * D_start + D_start_next * D_start_next - deltaDD * deltaDD) / (2 * D_start * D_start_next));
+			alfa =alfa + acos((D_start * D_start + D_start_next * D_start_next - deltaDD * deltaDD) / (2 * D_start * D_start_next));
 
-			X = (D_start_next / 450000.0) * sin(alfa);
-			Y = (D_start_next / 450000.0) * cos(alfa);
+			X = (D_start_next / 450000.0) * sin(alfa + Pi * t1 / 180.0);
+			Y = (D_start_next / 450000.0) * cos(alfa + Pi * t1 / 180.0);
 
 			glVertex2f(X, Y);
 
+			Route = Route - deltaDD;
 			D_start = D_start_next;
 
 			counter++;
@@ -1334,7 +1340,11 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		glEnd();
 		glEndList();
 		ShowMessage(FloatToStr(counter));
-		InvalidateRect(hwnd1,0,false);
-
+		InvalidateRect(hwnd1, 0, true);
 	}
 }
+
+void __fastcall TForm1::edt_D0Change(TObject *Sender) {
+	// edt_D0->Text =edt_D0->Text;
+}
+// ---------------------------------------------------------------------------

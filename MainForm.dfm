@@ -41,7 +41,7 @@ object Form1: TForm1
       Caption = #1056#1072#1076#1072#1088
       object RzPanel1: TRzPanel
         Left = 0
-        Top = 25
+        Top = 24
         Width = 654
         Height = 654
         BorderOuter = fsNone
@@ -385,6 +385,7 @@ object Form1: TForm1
           Color = clGradientInactiveCaption
           TabOrder = 4
           VisualStyle = vsGradient
+          ExplicitTop = 570
           ToolbarControls = (
             BtnRoute
             BtnBackground
@@ -891,7 +892,7 @@ object Form1: TForm1
     Left = 147
     Top = 56
     Bitmap = {
-      494C010118001D00400010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001D00440010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
