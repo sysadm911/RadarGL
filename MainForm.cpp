@@ -1028,6 +1028,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, wchar_t &Key) {
 	// glOrtho(-1.0 * Diagonal / Zoom, 1.0 * Diagonal / Zoom, -1.0 / Zoom, 1.0 / Zoom, -1.0, 1.0);
 
 	switch (Key) {
+
 	case 'a':
 		xpos = xpos + 0.02;
 		glTranslatef(xpos, ypos, zpos);

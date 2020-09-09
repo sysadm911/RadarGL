@@ -1,13 +1,12 @@
 object Form1: TForm1
   Left = 206
   Top = 0
-  AutoSize = True
+  BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'RadarGL'
   ClientHeight = 704
-  ClientWidth = 1193
+  ClientWidth = 1180
   Color = clBtnFace
-  DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -26,7 +25,7 @@ object Form1: TForm1
   object RzPageControl1: TRzPageControl
     Left = 0
     Top = 0
-    Width = 1193
+    Width = 1180
     Height = 704
     ActivePage = TabSheet1
     Align = alClient
@@ -36,9 +35,11 @@ object Form1: TForm1
     ParentColor = False
     TabIndex = 0
     TabOrder = 0
+    ExplicitWidth = 1193
     FixedDimension = 19
     object TabSheet1: TRzTabSheet
       Caption = #1056#1072#1076#1072#1088
+      ExplicitWidth = 1189
       object RzPanel1: TRzPanel
         Left = 0
         Top = 24
@@ -51,6 +52,7 @@ object Form1: TForm1
         Color = clBlack
         DoubleBuffered = False
         FullRepaint = False
+        Locked = True
         ParentDoubleBuffered = False
         ParentShowHint = False
         ShowHint = False
@@ -66,7 +68,7 @@ object Form1: TForm1
         Left = 660
         Top = 19
         Width = 605
-        Height = 590
+        Height = 659
         BorderOuter = fsNone
         Color = cl3DLight
         TabOrder = 1
@@ -365,7 +367,7 @@ object Form1: TForm1
         end
         object RzToolbar1: TRzToolbar
           Left = 0
-          Top = 546
+          Top = 615
           Width = 605
           Height = 44
           Align = alBottom
@@ -385,7 +387,7 @@ object Form1: TForm1
           Color = clGradientInactiveCaption
           TabOrder = 4
           VisualStyle = vsGradient
-          ExplicitTop = 570
+          ExplicitTop = 578
           ToolbarControls = (
             BtnRoute
             BtnBackground
@@ -484,16 +486,16 @@ object Form1: TForm1
         object Memo1: TMemo
           Left = 263
           Top = 198
-          Width = 242
-          Height = 224
+          Width = 250
+          Height = 411
           ScrollBars = ssVertical
           TabOrder = 5
         end
         object rzgrpbx_radar: TRzGroupBox
           Left = 0
           Top = 428
-          Width = 505
-          Height = 114
+          Width = 249
+          Height = 181
           Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1088#1072#1076#1072#1088#1072':'
           CaptionFont.Charset = DEFAULT_CHARSET
           CaptionFont.Color = clWindowText
@@ -513,20 +515,6 @@ object Form1: TForm1
           ParentFont = False
           TabOrder = 6
           VisualStyle = vsGradient
-          object RzLabel1: TRzLabel
-            Left = 247
-            Top = 86
-            Width = 258
-            Height = 26
-            AutoSize = False
-            Caption = 
-              'To edit an item simply click a second time on an item, or press ' +
-              'the F2 key'
-            WordWrap = True
-            BlinkIntervalOff = 1000
-            BlinkIntervalOn = 1000
-            LightTextStyle = True
-          end
           object RzRadioGroup1: TRzRadioGroup
             Left = 109
             Top = 21
@@ -557,8 +545,8 @@ object Form1: TForm1
             TabOrder = 1
           end
           object RzEditListBox1: TRzEditListBox
-            Left = 247
-            Top = 23
+            Left = 7
+            Top = 103
             Width = 53
             Height = 57
             ItemHeight = 13
@@ -570,8 +558,8 @@ object Form1: TForm1
             TabOrder = 2
           end
           object RzEditListBox2: TRzEditListBox
-            Left = 306
-            Top = 23
+            Left = 66
+            Top = 103
             Width = 53
             Height = 57
             ItemHeight = 13
@@ -583,8 +571,8 @@ object Form1: TForm1
             TabOrder = 3
           end
           object RzEditListBox3: TRzEditListBox
-            Left = 365
-            Top = 23
+            Left = 125
+            Top = 103
             Width = 54
             Height = 57
             ItemHeight = 13
@@ -612,7 +600,7 @@ object Form1: TForm1
         object TV: TTreeView
           Left = 266
           Top = 0
-          Width = 239
+          Width = 247
           Height = 192
           AutoExpand = True
           Indent = 19
@@ -694,7 +682,7 @@ object Form1: TForm1
       object RzStatusBar1: TRzStatusBar
         Left = 0
         Top = 0
-        Width = 1189
+        Width = 1176
         Height = 19
         ShowSizeGrip = False
         Align = alTop
@@ -709,6 +697,7 @@ object Form1: TForm1
         GradientColorStop = clActiveCaption
         ParentDoubleBuffered = False
         TabOrder = 2
+        ExplicitWidth = 1189
         object RzMapInfo: TRzFieldStatus
           Left = 355
           Top = 0
@@ -733,10 +722,11 @@ object Form1: TForm1
     end
     object TabSheet2: TRzTabSheet
       Caption = #1043#1088#1072#1092#1080#1082
+      ExplicitWidth = 1189
       object Chart1: TChart
         Left = 0
         Top = 0
-        Width = 1189
+        Width = 1176
         Height = 300
         Legend.Visible = False
         Title.Text.Strings = (
@@ -744,6 +734,7 @@ object Form1: TForm1
         View3D = False
         Align = alTop
         TabOrder = 0
+        ExplicitWidth = 1189
         ColorPaletteIndex = 13
         object Series1: TLineSeries
           Marks.Arrow.Visible = True
@@ -763,7 +754,7 @@ object Form1: TForm1
       object Chart2: TChart
         Left = 0
         Top = 300
-        Width = 1189
+        Width = 1176
         Height = 300
         Legend.Visible = False
         Title.Text.Strings = (
@@ -771,6 +762,7 @@ object Form1: TForm1
         View3D = False
         Align = alTop
         TabOrder = 1
+        ExplicitWidth = 1189
         ColorPaletteIndex = 13
         object Series3: TLineSeries
           Marks.Arrow.Visible = True
@@ -790,7 +782,7 @@ object Form1: TForm1
       object Chart3: TChart
         Left = 0
         Top = 600
-        Width = 1189
+        Width = 1176
         Height = 300
         Legend.Visible = False
         Title.Text.Strings = (
@@ -800,6 +792,7 @@ object Form1: TForm1
         View3D = False
         Align = alTop
         TabOrder = 2
+        ExplicitWidth = 1189
         ColorPaletteIndex = 13
         object Series2: TLineSeries
           Marks.Arrow.Visible = True
@@ -821,6 +814,7 @@ object Form1: TForm1
     end
     object TabSheet3: TRzTabSheet
       Caption = #1044#1072#1085#1085#1099#1077
+      ExplicitWidth = 1189
       object Memo2: TMemo
         Left = 0
         Top = 3
@@ -892,7 +886,7 @@ object Form1: TForm1
     Left = 147
     Top = 56
     Bitmap = {
-      494C010118001D00440010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001D00480010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

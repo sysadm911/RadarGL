@@ -152,7 +152,6 @@ __published: // IDE-managed Components
 	TRzEditListBox *RzEditListBox2;
 	TRzEditListBox *RzEditListBox3;
 	TRzRadioGroup *RzRadioGroup2;
-	TRzLabel *RzLabel1;
 	TRzGroupBox *rzgrpbx_coord1;
 	TRzLabel *lbl_beta1;
 	TRzLabel *lbl_D1;
