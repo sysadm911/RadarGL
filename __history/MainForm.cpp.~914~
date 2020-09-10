@@ -3,6 +3,9 @@
 #include <vcl.h>
 #include <tchar.h>
 #include <stdio.h>
+#include <memory>
+#include <alloc.h>
+#include <malloc.h>
 #pragma hdrstop
 
 #include "MainForm.h"
@@ -967,7 +970,6 @@ int TForm1::GetCountPacketOfRotaion() {
 float TForm1::GetAzimutOfTime(float Time) {
 	float result = 0.0;
 	result = Time * 6.0 / 60.0 * 360.0;
-
 	return result;
 }
 
@@ -1028,6 +1030,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, wchar_t &Key) {
 	// glOrtho(-1.0 * Diagonal / Zoom, 1.0 * Diagonal / Zoom, -1.0 / Zoom, 1.0 / Zoom, -1.0, 1.0);
 
 	switch (Key) {
+
 	case 'a':
 		xpos = xpos + 0.02;
 		glTranslatef(xpos, ypos, zpos);
@@ -1276,34 +1279,85 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		double Route = sqrt(D_start * D_start + D_end * D_end - 2 * D_start * D_end * (cos(Pi * (t2 - t1) / 180.0)));
 		double RouteTime = Route / currentTarget.Velocity;
 		Memo1->Lines->Clear();
-		Memo1->Lines->Add("Путь который проходит цель в метрах = " + FloatToStr(Route));
+
+		Memo1->Lines->Add("Путь который проходит цель, км = " + FloatToStr(Route / 1000.0));
 		Memo1->Lines->Add("");
+
 		Memo1->Lines->Add("Время наблюдения цели = " + FloatToStr(RouteTime));
 		Memo1->Lines->Add("");
+
 		if (t2 > t1)
-			Memo1->Lines->Add("Угол между начальным и конечным положением цели = " + FloatToStr(t2 - t1));
+			Memo1->Lines->Add("Угол между нач. и кон. положением цели = " + FloatToStr(t2 - t1));
 		if (t2 < t1)
-			Memo1->Lines->Add("Угол между начальным и конечным положением цели = " + FloatToStr(t1 - t2));
+			Memo1->Lines->Add("Угол между нач. и кон. положением цели = " + FloatToStr(t1 - t2));
 
 		Memo1->Lines->Add("");
 
-		Memo1->Lines->Add("Количество оборотов антенны которое совершает антенна за время наблюдения цели= " + FloatToStr(RouteTime / 10));
-		Memo1->Lines->Add("");		Memo1->Lines->Add("Угол между начальным и конечным положением цели = " + FloatToStr(t2 - t1));
-		Memo1->Lines->Add("");		Memo1->Lines->Add("За время одного оборота цель пролетит расстояние = " + FloatToStr(currentTarget.Velocity * 10));
+		Memo1->Lines->Add("За время одного оборота цель пролетит расстояние, км = " + FloatToStr(currentTarget.Velocity * 10));
 
-		Memo1->Lines->Add("");		Memo1->Lines->Add("Угол teta = " + FloatToStr
+		Memo1->Lines->Add("");
+		Memo1->Lines->Add("Угол teta = " + FloatToStr
 			(180 / Pi * (acos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
 
 		deltaDD = currentTarget.Velocity * 10;
 
-		Memo1->Lines->Add("");		Memo1->Lines->Add("D_start_next = " + FloatToStr(sqrt(D_start*D_start + deltaDD*deltaDD -
-			2*D_start*deltaDD * cos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
+		Memo1->Lines->Add("");
+
+		// Memo1->Lines->Add("D_start_next = " + FloatToStr(sqrt(D_start*D_start + deltaDD*deltaDD -
+		// 2*D_start*deltaDD * cos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
+		//
+		// Memo1->Lines->Add("");
+
+		Memo1->Lines->Add("GetTimePacket = " + FloatToStr(GetTimePacket()));
+		Memo1->Lines->Add("GetCountPacketOfRotation = " + FloatToStr(GetCountPacketOfRotaion()));
+		Memo1->Lines->Add("GetCountPulsesOfPacket = " + FloatToStr(GetCountPulsesOfPacket()));
+
+		Memo1->Lines->Add("");
+
+		Memo1->Lines->Add("Кол-во оборотов антенны, кот. совершает антенна за время наблюдения цели= " + FloatToStr(RouteTime / 10));
+		Memo1->Lines->Add("");
+
+		Memo1->Lines->Add("Кол-во пакетов за время наблюдения цели = " + FloatToStr(RouteTime / 10 *GetCountPacketOfRotaion()));
+
+		Memo1->Lines->Add("");
+
+		float number_of_DD = GetCountPulsesOfPacket() * RouteTime / 10 * GetCountPacketOfRotaion();
+
+		Memo1->Lines->Add("Кол-во парциальных запусков (дискретов дальности) за время наблюдения цели = " + FloatToStr(number_of_DD));
+		Memo1->Lines->Add("");
+
+		Memo1->Lines->Add("Кол-во байтов для хранения массива = " + FloatToStr(4*number_of_DD));
+		Memo1->Lines->Add("");
+
+		Memo1->Lines->Add("Кол-во мегабайт для хранения массива = " + FloatToStr(4*number_of_DD) / (1024. *1024.));
+		Memo1->Lines->Add("");
+
+		TMemoryStatusEx Status;
+		Status.dwLength = sizeof(TMemoryStatusEx);
+
+		GlobalMemoryStatusEx(&Status);
+		Memo1->Lines->Add("Status.ullAvailPhys:  Количество оставшейся физической памяти в мегабайтах." +
+			FloatToStr(Status.ullAvailPhys / (1024. *1024.)));
+		Memo1->Lines->Add("");
+
+		Memo1->Lines->Add("Status.ullAvailVirtual: 	Количество свободной виртуальной памяти в мегабайтах." +
+			FloatToStr(Status.ullAvailVirtual / (1024. *1024.)));
+		Memo1->Lines->Add("");
+
+		float *heapArray = new float[50000001];
+		for (int i = 0; i < 50000001; i++)
+			heapArray[i] = i + 5;
+
+		ShowMessage(FloatToStr(heapArray[50000000]));
+				ShowMessage(FloatToStr(heapArray[30000000]));
+
+		delete[]heapArray;
 
 		grid_list2 = glGenLists(1);
 
 		glNewList(grid_list2, GL_COMPILE_AND_EXECUTE);
 
-		glPointSize(Zoom*2);
+		glPointSize(Zoom * 2);
 		glEnable(GL_POINT_SMOOTH);
 		glBegin(GL_POINTS);
 
@@ -1313,8 +1367,8 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		double X, Y = 0.0;
 		int counter = 0;
 
-		glVertex2f((D_start / 450000.)*sin(Pi*t1 / 180), (D_start / 450000.)*cos(Pi*t1 / 180));
-		glVertex2f((D_end / 450000.)*sin(Pi*t2 / 180), (D_end / 450000.)*cos(Pi*t2 / 180));
+		glVertex2f((D_start / 450000.) * sin(Pi * t1 / 180), (D_start / 450000.) * cos(Pi * t1 / 180));
+		glVertex2f((D_end / 450000.) * sin(Pi * t2 / 180), (D_end / 450000.) * cos(Pi * t2 / 180));
 
 		double beta_rad = t2 * Pi / 180;
 		double alfa = 0;
@@ -1324,7 +1378,7 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 			double teta = acos((D_start * D_start + Route * Route - D_end * D_end) / (2 * D_start * Route));
 			D_start_next = sqrt(D_start * D_start + deltaDD * deltaDD - 2 * D_start * deltaDD * cos(teta));
 
-			alfa =alfa + acos((D_start * D_start + D_start_next * D_start_next - deltaDD * deltaDD) / (2 * D_start * D_start_next));
+			alfa = alfa + acos((D_start * D_start + D_start_next * D_start_next - deltaDD * deltaDD) / (2 * D_start * D_start_next));
 
 			X = (D_start_next / 450000.0) * sin(alfa + Pi * t1 / 180.0);
 			Y = (D_start_next / 450000.0) * cos(alfa + Pi * t1 / 180.0);
@@ -1344,7 +1398,7 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 	}
 }
 
-void __fastcall TForm1::edt_D0Change(TObject *Sender) {
+void __fastcall TForm1::edt_D0Change(TObject * Sender) {
 	// edt_D0->Text =edt_D0->Text;
 }
 // ---------------------------------------------------------------------------
