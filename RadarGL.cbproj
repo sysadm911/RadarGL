@@ -42,6 +42,7 @@
 			<BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<ILINK_StackReserveSize>0x01000000</ILINK_StackReserveSize>
 			<ILINK_HeapReserveSize>0x10100000</ILINK_HeapReserveSize>
 			<DynamicRTL>false</DynamicRTL>
 			<BCC_OptimizeForSpeed>false</BCC_OptimizeForSpeed>
