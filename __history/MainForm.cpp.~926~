@@ -113,7 +113,7 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	Zoom = 1.0;
-   	DecimalSeparator = 0x2e;
+	DecimalSeparator = 0x2e;
 	Radar.WaveLength = 100;
 	Radar.I_F = 4794680;
 	Radar.ADCClock = 19178720;
@@ -1283,10 +1283,14 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		Memo1->Lines->Add("¬рем€ наблюдени€ цели = " + FloatToStr(RouteTime));
 		Memo1->Lines->Add("");
 
+		float ugol = 0.0;
+
 		if (t2 > t1)
-			Memo1->Lines->Add("”гол между нач. и кон. положением цели = " + FloatToStr(t2 - t1));
+			ugol = t2 - t1;
 		if (t2 < t1)
-			Memo1->Lines->Add("”гол между нач. и кон. положением цели = " + FloatToStr(t1 - t2));
+			ugol = t1 - t2;
+
+		Memo1->Lines->Add("”гол между нач. и кон. положением цели = " + FloatToStr(ugol));
 
 		Memo1->Lines->Add("");
 
@@ -1314,14 +1318,22 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		Memo1->Lines->Add(" ол-во оборотов антенны, кот. совершает антенна за врем€ наблюдени€ цели= " + FloatToStr(RouteTime / 10));
 		Memo1->Lines->Add("");
 
-		Memo1->Lines->Add(" ол-во пакетов за врем€ наблюдени€ цели = " + FloatToStr(RouteTime / 10 *GetCountPacketOfRotaion()));
+		Memo1->Lines->Add(" ол-во излученных пакетов за врем€ наблюдени€ цели = " +
+			FloatToStr((RouteTime / 10) *GetCountPacketOfRotaion()));
 
 		Memo1->Lines->Add("");
 
-		float number_of_DD = GetCountPulsesOfPacket() * RouteTime / 10 * GetCountPacketOfRotaion();
+		float number_of_DD = GetCountPulsesOfPacket() * (RouteTime / 10) * GetCountPacketOfRotaion();
 
-		Memo1->Lines->Add(" ол-во парциальных запусков (дискретов дальности) за врем€ наблюдени€ цели = " + FloatToStr(number_of_DD));
+		Memo1->Lines->Add(" ол-во излученных парциальных запусков (дискретов дальности) за врем€ наблюдени€ цели = " +
+			FloatToStr(number_of_DD));
 		Memo1->Lines->Add("");
+		Memo1->Lines->Add(" ол-во пакетов, кот. попадают на траекторию полета цели = " + FloatToStr(ugol / 2.0713));
+
+		Memo1->Lines->Add("");
+
+		Memo1->Lines->Add(" ол-во излученных парциальных запусков (дискретов дальности) за врем€ наблюдени€ цели = " +
+			FloatToStr(ugol / 2.0713 * GetCountPulsesOfPacket())); Memo1->Lines->Add("");
 
 		Memo1->Lines->Add(" ол-во мегабайт дл€ хранени€ массива = " + FloatToStr(4*number_of_DD) / (1024. *1024.));
 		Memo1->Lines->Add("");
@@ -1388,7 +1400,7 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 
 			counter++;
 
-						Route = Route - deltaDD;
+			Route = Route - deltaDD;
 		}
 		Screen->Cursor = crDefault;
 		glEnd();
@@ -1401,4 +1413,4 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 void __fastcall TForm1::edt_D0Change(TObject * Sender) {
 	// edt_D0->Text =edt_D0->Text;
 }
-// ---------------------------------------------------------------------------
+// --------------------------------------------------------------------------

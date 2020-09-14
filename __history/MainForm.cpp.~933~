@@ -148,7 +148,6 @@ void __fastcall TForm1::FormCreate(TObject *Sender) {
 	ResultShiftScene.Y = 0;
 	ListTr = new TList;
 	RzPageControl1->ActivePage = TabSheet1;
-
 }
 
 // ---------------------------------------------------------------------------
@@ -303,7 +302,6 @@ void TForm1::InitViewProection() {
 		glTranslatef(tmpX, tmpY, 0);
 	// glViewport(0, 0, RzPanel1->Width, RzPanel1->Height);
 	glMatrixMode(GL_MODELVIEW);
-
 }
 
 void __fastcall TForm1::FormMouseWheel(TObject *Sender, TShiftState Shift, int WheelDelta, TPoint &MousePos, bool &Handled) {
@@ -717,9 +715,7 @@ void __fastcall TForm1::BtnDataClick(TObject *Sender) {
 		ii++;
 	}
 	// Memo6->Lines->EndUpdate();
-
 	// pulsesID++ ;
-
 	// Chart3->Series[0]->Clear();
 	// Chart3->LeftAxis->Maximum = 32000;
 	// Chart3->LeftAxis->Minimum = 0;
@@ -736,7 +732,6 @@ void __fastcall TForm1::BtnDataClick(TObject *Sender) {
 	//
 	// }
 	// WriteToBittware(ArrBig, Mode2Turn);
-
 	RzPageControl1->ActivePage = TabSheet3;
 }
 
@@ -746,7 +741,6 @@ void TForm1::DarwModuleDiskrets(TtmpItemRec *RN) {
 	int i, Cnt;
 	int Re, Im;
 	unsigned char b0, b1, b2, b3;
-
 	{
 		Chart3->Series[0]->Clear();
 		Chart3->LeftAxis->Maximum = 32000;
@@ -1283,10 +1277,14 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		Memo1->Lines->Add("¬рем€ наблюдени€ цели = " + FloatToStr(RouteTime));
 		Memo1->Lines->Add("");
 
+		float ugol = 0.0;
+
 		if (t2 > t1)
-			Memo1->Lines->Add("”гол между нач. и кон. положением цели = " + FloatToStr(t2 - t1));
+			ugol = t2 - t1;
 		if (t2 < t1)
-			Memo1->Lines->Add("”гол между нач. и кон. положением цели = " + FloatToStr(t1 - t2));
+			ugol = t1 - t2;
+
+		Memo1->Lines->Add("”гол между нач. и кон. положением цели = " + FloatToStr(ugol));
 
 		Memo1->Lines->Add("");
 
@@ -1314,16 +1312,27 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		Memo1->Lines->Add(" ол-во оборотов антенны, кот. совершает антенна за врем€ наблюдени€ цели= " + FloatToStr(RouteTime / 10));
 		Memo1->Lines->Add("");
 
-		Memo1->Lines->Add(" ол-во пакетов за врем€ наблюдени€ цели = " + FloatToStr(RouteTime / 10 *GetCountPacketOfRotaion()));
+		Memo1->Lines->Add(" ол-во излученных пакетов за врем€ наблюдени€ цели = " +
+			FloatToStr((RouteTime / 10) *GetCountPacketOfRotaion()));
 
 		Memo1->Lines->Add("");
 
-		float number_of_DD = GetCountPulsesOfPacket() * RouteTime / 10 * GetCountPacketOfRotaion();
+		float number_of_DD = GetCountPulsesOfPacket() * (RouteTime / 10) * GetCountPacketOfRotaion();
 
-		Memo1->Lines->Add(" ол-во парциальных запусков (дискретов дальности) за врем€ наблюдени€ цели = " + FloatToStr(number_of_DD));
+		Memo1->Lines->Add(" ол-во излученных парциальных запусков (дискретов дальности) за врем€ наблюдени€ цели = " +
+			FloatToStr(number_of_DD));
 		Memo1->Lines->Add("");
 
-		Memo1->Lines->Add(" ол-во мегабайт дл€ хранени€ массива = " + FloatToStr(4*number_of_DD) / (1024. *1024.));
+		Memo1->Lines->Add(" ол-во пакетов, кот. попадают на траекторию полета цели = " + FloatToStr(ugol / 2.0713));
+
+		Memo1->Lines->Add("");
+
+		Memo1->Lines->Add(" ол-во излученных парциальных запусков (дискретов дальности) за врем€ наблюдени€ цели = " +
+			FloatToStr(ugol / 2.0713 * GetCountPulsesOfPacket()));
+		Memo1->Lines->Add("");
+
+		Memo1->Lines->Add(" ол-во мегабайт дл€ хранени€ массива = " + FloatToStr(4*ugol / 2.0713 * GetCountPulsesOfPacket()) /
+			(1024. *1024.));
 		Memo1->Lines->Add("");
 
 		TMemoryStatusEx Status;
@@ -1346,11 +1355,11 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		// Memo1->Lines->Add("HeapSize = " + heap._size );
 		// Memo1->Lines->Add("");
 
-//		float *heapArray = new float[50000001];
-//		for (int i = 0; i < 50000001; i++)
-//			heapArray[i] = i+5;
-//		ShowMessage(FloatToStr(heapArray[50000000]));
-//		delete[]heapArray;
+		// float *heapArray = new float[50000001];
+		// for (int i = 0; i < 50000001; i++)
+		// heapArray[i] = i+5;
+		// ShowMessage(FloatToStr(heapArray[50000000]));
+		// delete[]heapArray;
 
 		grid_list2 = glGenLists(1);
 
@@ -1374,6 +1383,9 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 
 		while (Route > 0) {
 
+			Memo1->Lines->Add("Ќомер дискрета в кот. обнаруживаетс€ цель = " + FloatToStr(DistanceToDiskret(D_start)));
+			Memo1->Lines->Add("");
+
 			double teta = acos((D_start * D_start + Route * Route - D_end * D_end) / (2 * D_start * Route));
 			D_start_next = sqrt(D_start * D_start + deltaDD * deltaDD - 2 * D_start * deltaDD * cos(teta));
 
@@ -1384,10 +1396,11 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 
 			glVertex2f(X, Y);
 
-			Route = Route - deltaDD;
 			D_start = D_start_next;
 
 			counter++;
+
+			Route = Route - deltaDD;
 		}
 		Screen->Cursor = crDefault;
 		glEnd();
@@ -1400,4 +1413,4 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 void __fastcall TForm1::edt_D0Change(TObject * Sender) {
 	// edt_D0->Text =edt_D0->Text;
 }
-// ---------------------------------------------------------------------------
+// --------------------------------------------------------------------------
