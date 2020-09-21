@@ -740,8 +740,7 @@ void TForm1::DarwModuleDiskrets(TtmpItemRec *RN) {
 	int Arr[32768];
 	int i, Cnt;
 	int Re, Im;
-	unsigned char b0, b1, b2, b3;
-	{
+	unsigned char b0, b1, b2, b3; {
 		Chart3->Series[0]->Clear();
 		Chart3->LeftAxis->Maximum = 32000;
 		Chart3->LeftAxis->Minimum = 0;
@@ -1285,11 +1284,8 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 			ugol = t1 - t2;
 
 		Memo1->Lines->Add("”гол между нач. и кон. положением цели = " + FloatToStr(ugol));
-
 		Memo1->Lines->Add("");
-
 		Memo1->Lines->Add("«а врем€ одного оборота цель пролетит рассто€ние, км = " + FloatToStr(currentTarget.Velocity * 10));
-
 		Memo1->Lines->Add("");
 		Memo1->Lines->Add("”гол teta = " + FloatToStr
 			(180 / Pi * (acos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
@@ -1297,37 +1293,25 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		deltaDD = currentTarget.Velocity * 10;
 
 		Memo1->Lines->Add("");
-
-		// Memo1->Lines->Add("D_start_next = " + FloatToStr(sqrt(D_start*D_start + deltaDD*deltaDD -
-		// 2*D_start*deltaDD * cos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
-		//
-		// Memo1->Lines->Add("");
-
 		Memo1->Lines->Add("GetTimePacket = " + FloatToStr(GetTimePacket()));
 		Memo1->Lines->Add("GetCountPacketOfRotation = " + FloatToStr(GetCountPacketOfRotaion()));
 		Memo1->Lines->Add("GetCountPulsesOfPacket = " + FloatToStr(GetCountPulsesOfPacket()));
-
 		Memo1->Lines->Add("");
-
 		Memo1->Lines->Add(" ол-во оборотов антенны, кот. совершает антенна за врем€ наблюдени€ цели= " + FloatToStr(RouteTime / 10));
 		Memo1->Lines->Add("");
-
 		Memo1->Lines->Add(" ол-во излученных пакетов за врем€ наблюдени€ цели = " +
 			FloatToStr((RouteTime / 10) *GetCountPacketOfRotaion()));
 
 		Memo1->Lines->Add("");
-
 		float number_of_DD = GetCountPulsesOfPacket() * (RouteTime / 10) * GetCountPacketOfRotaion();
 
 		Memo1->Lines->Add(" ол-во излученных парциальных запусков (дискретов дальности) за врем€ наблюдени€ цели = " +
 			FloatToStr(number_of_DD));
 		Memo1->Lines->Add("");
-
 		Memo1->Lines->Add(" ол-во пакетов, кот. попадают на траекторию полета цели = " + FloatToStr(ugol / 2.0713));
-
 		Memo1->Lines->Add("");
 
-		Memo1->Lines->Add(" ол-во излученных парциальных запусков (дискретов дальности) за врем€ наблюдени€ цели = " +
+		Memo1->Lines->Add(" ол-во излученных парциальных запусков (дискретов дальности) кот. попадают на траекторию полета цели = " +
 			FloatToStr(ugol / 2.0713 * GetCountPulsesOfPacket()));
 		Memo1->Lines->Add("");
 
@@ -1339,27 +1323,13 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		Status.dwLength = sizeof(TMemoryStatusEx);
 
 		GlobalMemoryStatusEx(&Status);
-		Memo1->Lines->Add("Status.ullAvailPhys: 		 оличество оставшейс€ физической пам€ти в мегабайтах." +
+		Memo1->Lines->Add("Status.ullAvailPhys:   оличество оставшейс€ физической пам€ти в мегабайтах." +
 			FloatToStr(Status.ullAvailPhys / (1024. *1024.)));
 		Memo1->Lines->Add("");
 
 		Memo1->Lines->Add("Status.ullAvailVirtual: 	 оличество свободной виртуальной пам€ти в мегабайтах." +
 			FloatToStr(Status.ullAvailVirtual / (1024. *1024.)));
 		Memo1->Lines->Add("");
-
-		// _HEAPINFO heap;
-		//
-		// memset(&heap, 0, sizeof(heap));
-		// heapwalk(&heap);
-		//
-		// Memo1->Lines->Add("HeapSize = " + heap._size );
-		// Memo1->Lines->Add("");
-
-		// float *heapArray = new float[50000001];
-		// for (int i = 0; i < 50000001; i++)
-		// heapArray[i] = i+5;
-		// ShowMessage(FloatToStr(heapArray[50000000]));
-		// delete[]heapArray;
 
 		grid_list2 = glGenLists(1);
 
@@ -1383,23 +1353,19 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 
 		while (Route > 0) {
 
-			Memo1->Lines->Add("Ќомер дискрета в кот. обнаруживаетс€ цель = " + FloatToStr(DistanceToDiskret(D_start)));
-			Memo1->Lines->Add("");
+			// Memo1->Lines->Add("Ќомер дискрета в кот. обнаруживаетс€ цель = " + FloatToStr(DistanceToDiskret(D_start)));
+			// Memo1->Lines->Add("");
 
 			double teta = acos((D_start * D_start + Route * Route - D_end * D_end) / (2 * D_start * Route));
 			D_start_next = sqrt(D_start * D_start + deltaDD * deltaDD - 2 * D_start * deltaDD * cos(teta));
-
 			alfa = alfa + acos((D_start * D_start + D_start_next * D_start_next - deltaDD * deltaDD) / (2 * D_start * D_start_next));
 
 			X = (D_start_next / 450000.0) * sin(alfa + Pi * t1 / 180.0);
 			Y = (D_start_next / 450000.0) * cos(alfa + Pi * t1 / 180.0);
 
 			glVertex2f(X, Y);
-
 			D_start = D_start_next;
-
 			counter++;
-
 			Route = Route - deltaDD;
 		}
 		Screen->Cursor = crDefault;

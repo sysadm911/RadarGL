@@ -34,7 +34,6 @@ TForm1 *Form1;
 
 // const GLuint grid_list = 0, axis_list = 1, bezier_list = 2;
 short sweep_az;
-
 GLdouble modelMatrix[16];
 GLdouble projMatrix[16];
 GLint viewport[4];
@@ -68,7 +67,6 @@ bool TVready = false;
 // float lineArrRe[32768] = {0};
 GLuint grid_list, grid_list2;
 TList *ListPulses = new TList;
-
 int startX, startY = 0;
 
 double deltaTime = 0, deltaBeta = 0, deltaDistance = 0, D_start = 0, D_startX = 0, D_startY = 0, D_end = 0, D_endX = 0, D_endY = 0,
@@ -165,7 +163,6 @@ void TForm1::DrawSweep() {
 	glVertex2f(0, 0);
 	glVertex2f(sin(Pi*sweep_az / 180), sin(Pi*(90 - sweep_az) / 180));
 	glEnd();
-
 	sweep_az++;
 	if (sweep_az > 360) {
 		sweep_az = 0;
@@ -181,8 +178,7 @@ void __fastcall TForm1::Timer1Timer(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 void TForm1::PaintBezier() {
-	if (edt_beta0 != "" && edt_beta1 != "" && edt_beta2 != "" && edt_beta3 != "" && edt_D0 != "" && edt_D1 != "" && edt_D2 != "" &&
-		edt_D3 != "") {
+	if (edt_beta0 != "" && edt_beta1 != "" && edt_beta2 != "" && edt_beta3 != "" && edt_D0 != "" && edt_D1 != "" && edt_D2 != "" && edt_D3 != "") {
 
 		OGLpoints[0][0] = (StrToFloat(edt_D0->Text) / 450.0) * sin(Pi * StrToFloat(edt_beta0->Text) / 180.0);
 		OGLpoints[0][1] = (StrToFloat(edt_D0->Text) / 450.0) * cos(Pi * StrToFloat(edt_beta0->Text) / 180.0);
@@ -305,6 +301,7 @@ void TForm1::InitViewProection() {
 }
 
 void __fastcall TForm1::FormMouseWheel(TObject *Sender, TShiftState Shift, int WheelDelta, TPoint &MousePos, bool &Handled) {
+
 	float tmpX, tmpY, X, Y;
 
 	X = (MousePos.X - RzPanel1->Width / 2.0) / (RzPanel1->Width / 2.0) * Diagonal;
@@ -341,12 +338,11 @@ void __fastcall TForm1::RzPanel1Click(TObject *Sender) {
 	if (IndexPoint > 4) {
 		IndexPoint = 0;
 	}
+
 	if (D < 451)
 		AddPoint();
 	InvalidateRect(hwnd1, 0, false);
-
 	// }
-
 }
 
 // ---------------------------------------------------------------------------
@@ -393,8 +389,9 @@ void TForm1::PaintPoint() {
 
 // ---------------------------------------------------------------------------
 void __fastcall TForm1::BtnRouteClick(TObject *Sender) {
-	if (edt_beta0->Text != "" && edt_beta1->Text != "" && edt_beta2->Text != "" && edt_beta3->Text != "" && edt_D0->Text != "" &&
-		edt_D1->Text != "" && edt_D2->Text != "" && edt_D3->Text != "") {
+
+	if (edt_beta0->Text != "" && edt_beta1->Text != "" && edt_beta2->Text != "" && edt_beta3->Text != "" && edt_D0->Text != "" && edt_D1->Text !=
+		"" && edt_D2->Text != "" && edt_D3->Text != "") {
 
 		bezier_ready = true;
 		InvalidateRect(hwnd1, NULL, false);
@@ -425,7 +422,6 @@ void __fastcall TForm1::BtnRestartClick(TObject *Sender) {
 	glLoadIdentity();
 	glOrtho(-1.0 * Diagonal, 1.0 * Diagonal, -1.0, 1.0, -1.0, 1.0);
 	InvalidateRect(hwnd1, 0, true);
-
 }
 
 // ---------------------------------------------------------------------------
@@ -489,13 +485,11 @@ Target* TForm1::AddTarget() {
 int TForm1::GetCountSamplesOfPulse() {
 
 	return ceil((32.0 / Radar.ADCClock) * Radar.ADCClock);
-
 }
 
 int TForm1::GetCountSamplesOfPulseLFM() {
 
 	return GetCountSamplesOfPulse() * 52; // Radar.LFMlength;
-
 }
 
 void __fastcall TForm1::edt_beta1Enter(TObject *Sender) {
@@ -547,9 +541,7 @@ void __fastcall TForm1::TVClick(TObject *Sender) {
 			Memo1->Lines->Add("tmpItem->Y =  " + FloatToStr(tmpR->Y));
 			Memo1->Lines->Add(" ");
 			Memo1->Lines->EndUpdate();
-
 		}
-
 	}
 	else if (TV->Selected->Level == 3) {
 		Memo1->Lines->Clear();
@@ -568,7 +560,6 @@ void __fastcall TForm1::TVClick(TObject *Sender) {
 		Memo1->Lines->Add("tmpItem->Y =  " + FloatToStr(tmpR->Y));
 		Memo1->Lines->EndUpdate();
 	}
-
 	InvalidateRect(hwnd1, 0, false);
 }
 // ---------------------------------------------------------------------------
@@ -615,7 +606,6 @@ void TForm1::FillListPulses(int &Index, TList * ListPulses) {
 
 void TForm1::UpdateListPulses() {
 	int i = 0, j = 0, ii = 0, itr = 0;
-
 	Target *Ptr;
 	TtmpItemRec *RN = NULL, *tmpRN = NULL, *tmp = NULL;
 	bool resdata = false;
@@ -624,7 +614,6 @@ void TForm1::UpdateListPulses() {
 	while (i < TV->Items->Count)
 		if (true) {
 			// Ptr = (Target*) ListTr->Items[itr];
-
 			FillListPulses(i, ListPulses);
 			// «аливка списками запусков дл€ этой цели-itr
 
@@ -651,7 +640,6 @@ void TForm1::UpdateListPulses() {
 			// }
 			// else {
 		}
-
 	i++;
 }
 
@@ -740,8 +728,7 @@ void TForm1::DarwModuleDiskrets(TtmpItemRec *RN) {
 	int Arr[32768];
 	int i, Cnt;
 	int Re, Im;
-	unsigned char b0, b1, b2, b3;
-	{
+	unsigned char b0, b1, b2, b3; {
 		Chart3->Series[0]->Clear();
 		Chart3->LeftAxis->Maximum = 32000;
 		Chart3->LeftAxis->Minimum = 0;
@@ -767,12 +754,11 @@ void TForm1::DarwModuleDiskrets(TtmpItemRec *RN) {
 		Im = HIWORD(Arr[i]);
 		Chart3->Series[0]->Add(sqrt(Re*Re + Im*Im));
 	}
-
 }
 
 // ---------------------------------------------------------------------------
-void TForm1::ADCGenerateTargetLFM(bool EnPulses, TLFMMode UpDown, double Arr[], float dbKu, float DeltaTimePulse, float Deviation,
-	float Phase, float dbNoise, int Shift) {
+void TForm1::ADCGenerateTargetLFM(bool EnPulses, TLFMMode UpDown, double Arr[], float dbKu, float DeltaTimePulse, float Deviation, float Phase,
+	float dbNoise, int Shift) {
 	Target *Tr = NULL;
 	int i = 0, tlength = 0, wArr = 0, w = 0;
 	float a = 0.0, dskr = 0.0, df = 0.0, dFd = 0.0, Ku = 0.0, Knoise = 0.0, K = 0.0;
@@ -847,14 +833,11 @@ void __fastcall TForm1::RzPanel1MouseMove(TObject * Sender, TShiftState Shift, i
 	Caption = Format("OpenGL X_coord = %.6f,  Y_coord = %.6f,  Z_coord = %.6f", ARRAYOFCONST((objx, objy, objz)));
 
 	if (Shift.Contains(ssRight)) {
-
 		// MousePosMove.X = MousePosMove.X + objx;
 		// MousePosMove.Y = MousePosMove.Y + objy;
 		// MousePosMove.State = siManualDrag;
 		// InvalidateRect(hwnd1, 0, false);
-
 		// glTranslatef(xpos, ypos, zpos);
-
 	}
 	else
 		MousePosMove.State = siNone;
@@ -876,12 +859,9 @@ void __fastcall TForm1::RzPanel1Paint(TObject * Sender) {
 		Cl = ColorToRGB(ColorDialog1->Color);
 	glClearColor(double(LOBYTE(Cl)) / 255, double(HIBYTE(Cl)) / 255, double(LOBYTE(HIWORD(Cl))) / 255, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	PaintGrid();
-
 	// DrawSweep();
 	glEnable(GL_BLEND);
-
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, PointColor);
 
 	if (IndexPoint != 5)
@@ -964,34 +944,6 @@ float TForm1::GetAzimutOfTime(float Time) {
 	return result;
 }
 
-// void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
-//
-// // glBegin(GL_LINES);
-// //
-// // float fx0, fy0, fx1, fy1 = 0.0;
-// //
-// // D_startX = StrToFloat(edt_D0->Text) * 1000.0 * sin(Pi * StrToFloat(edt_beta0->Text) / 180);
-// // D_startY = StrToFloat(edt_D0->Text) * 1000.0 * cos(Pi * StrToFloat(edt_beta0->Text) / 180);
-// //
-// // D_endX = StrToFloat(edt_D3->Text) * 1000.0 * sin(Pi * StrToFloat(edt_beta3->Text) / 180);
-// // D_endY = StrToFloat(edt_D3->Text) * 1000.0 * cos(Pi * StrToFloat(edt_beta3->Text) / 180);
-// //
-// // fx0 = D_startX / 450000.0;
-// // fx1 = D_endX / 450000.0;
-// // fy0 = D_startY / 450000.0;
-// // fy1 = D_endY / 450000.0;
-// //
-// // glVertex2f(fx0, fy0);
-// // glVertex2f(fx1, fy1);
-// //
-// // glEnd();
-// //
-// // SwapBuffers(dc1);
-//
-// Memo1->Lines->Add("GetTimePacket = " + FloatToStr(GetTimePacket()));
-//
-// }
-
 // ---------------------------------------------------------------------------
 void __fastcall TForm1::RzPanel1MouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y) {
 
@@ -1056,11 +1008,9 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, wchar_t &Key) {
 	glOrtho(-1.0 / Zoom, 1.0 / Zoom, -1.0 / Zoom, 1.0 / Zoom, -1.0, 1.0);
 	glTranslatef(xpos, ypos, zpos);
 	InvalidateRect(hwnd1, 0, false);
-
 }
 
 // ---------------------------------------------------------------------------
-
 void __fastcall TForm1::BtnAddTVClick(TObject * Sender) {
 
 	if (edt_beta3->Text != "" && edt_beta0->Text != "") {
@@ -1218,13 +1168,9 @@ void __fastcall TForm1::BtnAddTVClick(TObject * Sender) {
 							tmpItem->Y = (D_start / 450000.0) * cos(Pi * tmpItem->Beta / 180.0);
 
 							glVertex2f(tmpItem->X, tmpItem->Y);
-
 							tmpItem->Parent = NULL;
-
 							NodePulses->Data = tmpItem;
-
 							currentPulse++;
-
 							D_start -= tmpItem->deltaDistance;
 							// fprintf(F, "Beta = %17.15f  PackID =%3d   PckgID =%3d   ZapID =%3d   X =%17.15f Y =%17.15f D_start = %17.15f\n",
 							// tmpItem->Beta, tmpItem->PackID, tmpItem->PckgID, tmpItem->ZapID, tmpItem->X, tmpItem->Y, D_start);
@@ -1253,7 +1199,6 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 	if (edt_beta3->Text != "" && edt_beta0->Text != "") {
 		Screen->Cursor = crHourGlass;
 		int i, j, ii, irot;
-
 		int PulsesOfPacket = GetCountPulsesOfPacket(); // 58
 		int CntPack = GetCountPacketOfRotaion(); // 170
 		int step = 0, currentPulse = 0;
@@ -1285,61 +1230,45 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 			ugol = t1 - t2;
 
 		Memo1->Lines->Add("”гол между нач. и кон. положением цели = " + FloatToStr(ugol));
-
 		Memo1->Lines->Add("");
 
 		Memo1->Lines->Add("«а врем€ одного оборота цель пролетит рассто€ние, км = " + FloatToStr(currentTarget.Velocity * 10));
-
-		Memo1->Lines->Add("");
-		Memo1->Lines->Add("”гол teta = " + FloatToStr
-			(180 / Pi * (acos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
-
-		deltaDD = currentTarget.Velocity * 10;
-
 		Memo1->Lines->Add("");
 
-		// Memo1->Lines->Add("D_start_next = " + FloatToStr(sqrt(D_start*D_start + deltaDD*deltaDD -
-		// 2*D_start*deltaDD * cos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
-		//
-		// Memo1->Lines->Add("");
+		Memo1->Lines->Add("”гол teta = " + FloatToStr(180 / Pi * (acos((D_start*D_start + Route*Route - D_end*D_end) / (2*D_start*Route)))));
+				deltaDD = currentTarget.Velocity * 10;
+		Memo1->Lines->Add("");
 
 		Memo1->Lines->Add("GetTimePacket = " + FloatToStr(GetTimePacket()));
 		Memo1->Lines->Add("GetCountPacketOfRotation = " + FloatToStr(GetCountPacketOfRotaion()));
 		Memo1->Lines->Add("GetCountPulsesOfPacket = " + FloatToStr(GetCountPulsesOfPacket()));
-
 		Memo1->Lines->Add("");
 
 		Memo1->Lines->Add(" ол-во оборотов антенны, кот. совершает антенна за врем€ наблюдени€ цели= " + FloatToStr(RouteTime / 10));
 		Memo1->Lines->Add("");
 
-		Memo1->Lines->Add(" ол-во излученных пакетов за врем€ наблюдени€ цели = " +
-			FloatToStr((RouteTime / 10) *GetCountPacketOfRotaion()));
-
+		Memo1->Lines->Add(" ол-во излученных пакетов за врем€ наблюдени€ цели = " + FloatToStr((RouteTime / 10) *GetCountPacketOfRotaion()));
 		Memo1->Lines->Add("");
 
 		float number_of_DD = GetCountPulsesOfPacket() * (RouteTime / 10) * GetCountPacketOfRotaion();
-
-		Memo1->Lines->Add(" ол-во излученных парциальных запусков (дискретов дальности) за врем€ наблюдени€ цели = " +
-			FloatToStr(number_of_DD));
+		Memo1->Lines->Add(" ол-во излученных парциальных запусков (дискретов дальности) за врем€ наблюдени€ цели = " + FloatToStr(number_of_DD));
 		Memo1->Lines->Add("");
 
 		Memo1->Lines->Add(" ол-во пакетов, кот. попадают на траекторию полета цели = " + FloatToStr(ugol / 2.0713));
-
 		Memo1->Lines->Add("");
 
 		Memo1->Lines->Add(" ол-во излученных парциальных запусков (дискретов дальности) кот. попадают на траекторию полета цели = " +
 			FloatToStr(ugol / 2.0713 * GetCountPulsesOfPacket()));
 		Memo1->Lines->Add("");
 
-		Memo1->Lines->Add(" ол-во мегабайт дл€ хранени€ массива = " + FloatToStr(4*ugol / 2.0713 * GetCountPulsesOfPacket()) /
-			(1024. *1024.));
+		Memo1->Lines->Add(" ол-во мегабайт дл€ хранени€ массива = " + FloatToStr(4*ugol / 2.0713 * GetCountPulsesOfPacket()) / (1024. *1024.));
 		Memo1->Lines->Add("");
 
 		TMemoryStatusEx Status;
 		Status.dwLength = sizeof(TMemoryStatusEx);
 
 		GlobalMemoryStatusEx(&Status);
-		Memo1->Lines->Add("Status.ullAvailPhys: 		 оличество оставшейс€ физической пам€ти в мегабайтах." +
+		Memo1->Lines->Add("Status.ullAvailPhys:   оличество оставшейс€ физической пам€ти в мегабайтах." +
 			FloatToStr(Status.ullAvailPhys / (1024. *1024.)));
 		Memo1->Lines->Add("");
 
@@ -1347,59 +1276,33 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 			FloatToStr(Status.ullAvailVirtual / (1024. *1024.)));
 		Memo1->Lines->Add("");
 
-		// _HEAPINFO heap;
-		//
-		// memset(&heap, 0, sizeof(heap));
-		// heapwalk(&heap);
-		//
-		// Memo1->Lines->Add("HeapSize = " + heap._size );
-		// Memo1->Lines->Add("");
-
-		// float *heapArray = new float[50000001];
-		// for (int i = 0; i < 50000001; i++)
-		// heapArray[i] = i+5;
-		// ShowMessage(FloatToStr(heapArray[50000000]));
-		// delete[]heapArray;
-
 		grid_list2 = glGenLists(1);
-
 		glNewList(grid_list2, GL_COMPILE_AND_EXECUTE);
-
 		glPointSize(Zoom * 2);
 		glEnable(GL_POINT_SMOOTH);
 		glBegin(GL_POINTS);
 
 		double teta = acos((D_start * D_start + Route * Route - D_end * D_end) / (2 * D_start * Route));
-
 		double D_start_next = 0;
 		double X, Y = 0.0;
 		int counter = 0;
-
 		glVertex2f((D_start / 450000.) * sin(Pi * t1 / 180), (D_start / 450000.) * cos(Pi * t1 / 180));
 		glVertex2f((D_end / 450000.) * sin(Pi * t2 / 180), (D_end / 450000.) * cos(Pi * t2 / 180));
-
 		double beta_rad = t2 * Pi / 180;
 		double alfa = 0;
 
 		while (Route > 0) {
-
-//			Memo1->Lines->Add("Ќомер дискрета в кот. обнаруживаетс€ цель = " + FloatToStr(DistanceToDiskret(D_start)));
-//			Memo1->Lines->Add("");
+			// Memo1->Lines->Add("Ќомер дискрета в кот. обнаруживаетс€ цель = " + FloatToStr(DistanceToDiskret(D_start)));
+			// Memo1->Lines->Add("");
 
 			double teta = acos((D_start * D_start + Route * Route - D_end * D_end) / (2 * D_start * Route));
 			D_start_next = sqrt(D_start * D_start + deltaDD * deltaDD - 2 * D_start * deltaDD * cos(teta));
-
 			alfa = alfa + acos((D_start * D_start + D_start_next * D_start_next - deltaDD * deltaDD) / (2 * D_start * D_start_next));
-
 			X = (D_start_next / 450000.0) * sin(alfa + Pi * t1 / 180.0);
 			Y = (D_start_next / 450000.0) * cos(alfa + Pi * t1 / 180.0);
-
 			glVertex2f(X, Y);
-
 			D_start = D_start_next;
-
 			counter++;
-
 			Route = Route - deltaDD;
 		}
 		Screen->Cursor = crDefault;
@@ -1409,8 +1312,3 @@ void __fastcall TForm1::BtnDebugClick(TObject *Sender) {
 		InvalidateRect(hwnd1, 0, true);
 	}
 }
-
-void __fastcall TForm1::edt_D0Change(TObject * Sender) {
-	// edt_D0->Text =edt_D0->Text;
-}
-// --------------------------------------------------------------------------

@@ -112,11 +112,6 @@ __published: // IDE-managed Components
 	TRzLabel *lbl_D0;
 	TRzMaskEdit *edt_beta0;
 	TRzMaskEdit *edt_D0;
-	TRzGroupBox *rzgrpbx_coord1;
-	TRzLabel *lbl_beta1;
-	TRzLabel *lbl_D1;
-	TRzMaskEdit *edt_beta1;
-	TRzMaskEdit *edt_D1;
 	TRzGroupBox *rzgrpbx_coord2;
 	TRzLabel *lbl_beta2;
 	TRzLabel *lbl_D2;
@@ -157,7 +152,11 @@ __published: // IDE-managed Components
 	TRzEditListBox *RzEditListBox2;
 	TRzEditListBox *RzEditListBox3;
 	TRzRadioGroup *RzRadioGroup2;
-	TRzLabel *RzLabel1;
+	TRzGroupBox *rzgrpbx_coord1;
+	TRzLabel *lbl_beta1;
+	TRzLabel *lbl_D1;
+	TRzMaskEdit *edt_beta1;
+	TRzMaskEdit *edt_D1;
 
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);

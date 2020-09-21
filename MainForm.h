@@ -178,7 +178,6 @@ __published: // IDE-managed Components
 	void __fastcall RzPanel1MouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
 
 	void __fastcall FormKeyPress(TObject *Sender, wchar_t &Key);
-	void __fastcall edt_D0Change(TObject *Sender);
 
 private: // User declarations
 
